@@ -1,26 +1,243 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+/*
+ * Congregation of YHVH -- "Sacred Light" Theme
+ *
+ * Warm whites, soft creams, elegant gold accents.
+ * Like morning light streaming through a sanctuary window.
+ *
+ * Backgrounds:
+ *   Warm White  #FEFDFB   oklch(0.994 0.005 90)
+ *   Soft Cream  #F8F6F3   oklch(0.975 0.006 85)
+ *   Warm Sand   #F5F1EB   oklch(0.961 0.012 80)
+ *
+ * Text:
+ *   Warm Black  #1A1814   oklch(0.17 0.01 75)
+ *   Warm Gray   #4A4640   oklch(0.37 0.01 70)
+ *   Light Gray  #8A8580   oklch(0.60 0.008 65)
+ *
+ * Brand:
+ *   Gold        #C9A227   oklch(0.735 0.149 85)
+ *   Gold Light  #E8D48A   oklch(0.87 0.1 90)
+ *   Gold Dark   #8B6914   oklch(0.52 0.12 75)
+ *   Blue        #3BA9D9   oklch(0.68 0.132 230)
+ *
+ * Footer:
+ *   Dark Base   #2A2825   oklch(0.23 0.007 70)
+ */
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ---- YHVH brand tokens (raw hex) ---- */
+  --yhvh-gold: #C9A227;
+  --yhvh-gold-light: #E8D48A;
+  --yhvh-gold-dark: #8B6914;
+  --yhvh-blue: #3BA9D9;
+
+  /* ---- Sacred Light palette ---- */
+  --bg-warm-white: #FEFDFB;
+  --bg-soft-cream: #F8F6F3;
+  --bg-warm-sand: #F5F1EB;
+  --text-warm-black: #1A1814;
+  --text-warm-gray: #4A4640;
+  --text-light-gray: #8A8580;
+  --border-warm: #E8E4DE;
+  --shadow-warm: rgba(26, 24, 20, 0.08);
+  --footer-dark: #2A2825;
+
+  /* ---- ShadCN semantic tokens ---- */
+
+  /* Page background / foreground */
+  --background: oklch(0.994 0.005 90);
+  --foreground: oklch(0.17 0.01 75);
+
+  /* Card surfaces -- pure white for lift */
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.17 0.01 75);
+
+  /* Popover / dropdown */
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.17 0.01 75);
+
+  /* Primary = Divine Gold */
+  --primary: oklch(0.735 0.149 85);
+  --primary-foreground: oklch(1 0 0);
+
+  /* Secondary = Living Water Blue */
+  --secondary: oklch(0.68 0.132 230);
+  --secondary-foreground: oklch(1 0 0);
+
+  /* Muted = soft cream tones */
+  --muted: oklch(0.961 0.012 80);
+  --muted-foreground: oklch(0.37 0.01 70);
+
+  /* Accent = Gold Dark / Bronze */
+  --accent: oklch(0.52 0.12 75);
+  --accent-foreground: oklch(1 0 0);
+
+  /* Destructive */
+  --destructive: oklch(0.55 0.18 27);
+  --destructive-foreground: oklch(1 0 0);
+
+  /* Success */
+  --success: oklch(0.54 0.1 120);
+  --success-foreground: oklch(1 0 0);
+
+  /* Borders, inputs, focus */
+  --border: oklch(0.92 0.008 80);
+  --input: oklch(0.961 0.012 80);
+  --ring: oklch(0.735 0.149 85);
+
+  /* Charts */
+  --chart-1: oklch(0.735 0.149 85);
+  --chart-2: oklch(0.68 0.132 230);
+  --chart-3: oklch(0.52 0.12 75);
+  --chart-4: oklch(0.955 0.015 90);
+  --chart-5: oklch(0.54 0.1 120);
+
+  /* Border radius */
+  --radius: 0.5rem;
+
+  /* Sidebar (future) */
+  --sidebar: oklch(0.975 0.006 85);
+  --sidebar-foreground: oklch(0.17 0.01 75);
+  --sidebar-primary: oklch(0.735 0.149 85);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.961 0.012 80);
+  --sidebar-accent-foreground: oklch(0.17 0.01 75);
+  --sidebar-border: oklch(0.92 0.008 80);
+  --sidebar-ring: oklch(0.735 0.149 85);
 }
 
 @theme inline {
+  /* ---- ShadCN color mappings ---- */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* ---- Border radius scale ---- */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* ---- Direct brand color tokens ---- */
+  --color-yhvh-gold: var(--yhvh-gold);
+  --color-yhvh-gold-light: var(--yhvh-gold-light);
+  --color-yhvh-gold-dark: var(--yhvh-gold-dark);
+  --color-yhvh-blue: var(--yhvh-blue);
+
+  /* ---- Sacred Light palette tokens ---- */
+  --color-warm-white: var(--bg-warm-white);
+  --color-soft-cream: var(--bg-soft-cream);
+  --color-warm-sand: var(--bg-warm-sand);
+  --color-warm-black: var(--text-warm-black);
+  --color-warm-gray: var(--text-warm-gray);
+  --color-light-gray: var(--text-light-gray);
+  --color-warm-border: var(--border-warm);
+  --color-footer-dark: var(--footer-dark);
+
+  /* ---- Font families ---- */
+  --font-heading: var(--font-cinzel), "Times New Roman", serif;
+  --font-subheading: var(--font-dm-sans), "Helvetica Neue", sans-serif;
+  --font-body: var(--font-source-serif), "Georgia", serif;
+  --font-scripture: var(--font-crimson-pro), "Georgia", serif;
+  --font-ui: var(--font-dm-sans), "Helvetica Neue", sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: var(--font-body);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection highlight -- gold on parchment */
+::selection {
+  background-color: var(--yhvh-gold);
+  color: white;
+}
+
+/* Subtle linen texture for sections that need it */
+.bg-linen {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%23d4cfc7' fill-opacity='0.03' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E");
+}
+
+/* Gold gradient accent bar */
+.gold-accent-bar {
+  background: linear-gradient(90deg, transparent, var(--yhvh-gold), transparent);
+  height: 1px;
+}
+
+/* Sacred shadow for cards */
+.sacred-shadow {
+  box-shadow: 0 2px 12px var(--shadow-warm);
+}
+
+/* Gold top border for cards */
+.gold-top-border {
+  border-top: 3px solid var(--yhvh-gold);
+}
+
+/* Mobile touch target minimum */
+@media (pointer: coarse) {
+  button,
+  a,
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
