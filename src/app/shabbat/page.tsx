@@ -3,7 +3,7 @@ import Link from "next/link";
 import { PageHero } from "@/components/ui/page-hero";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { SITE_CONFIG } from "@/lib/constants";
-import { TORAH_PORTIONS } from "@/lib/content";
+import { getCurrentPortion, getPortionByHebrewName } from "@/lib/torah-utils";
 import { Clock, MapPin, ScrollText, BookOpen, Users, Flame, ArrowRight } from "@/components/icons";
 
 export const metadata: Metadata = {
@@ -22,7 +22,14 @@ const orderOfService = [
 ];
 
 export default function ShabbatPage() {
-  const currentPortion = TORAH_PORTIONS[0];
+  // Get the current portion dynamically based on today's date
+  const currentPortionName = getCurrentPortion();
+  const currentPortion = getPortionByHebrewName(currentPortionName);
+
+  // Fallback if portion not found (shouldn't happen)
+  if (!currentPortion) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>

@@ -9,7 +9,7 @@ export const SITE_CONFIG = {
     "A Messianic congregation devoted to honoring YHVH through faith in Yahshua the Messiah and obedience to His commandments.",
   // TODO: Update when confirmed by Pastor Frank
   serviceDay: "Saturday",
-  serviceTime: "10:00 AM",
+  serviceTime: "3:00 PM",
   address: "11050 W Little York Rd. Suite A1, Houston, TX 77041",
   addressLine1: "11050 W Little York Rd.",
   addressLine2: "Suite A1",
