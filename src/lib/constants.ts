@@ -10,7 +10,12 @@ export const SITE_CONFIG = {
   // TODO: Update when confirmed by Pastor Frank
   serviceDay: "Saturday",
   serviceTime: "10:00 AM",
-  address: "Houston, TX", // TODO: Full address from Pastor Frank
+  address: "11050 W Little York Rd. Suite A1, Houston, TX 77041",
+  addressLine1: "11050 W Little York Rd.",
+  addressLine2: "Suite A1",
+  city: "Houston",
+  state: "TX",
+  zip: "77041",
   phone: "", // TODO: From Pastor Frank
   email: "", // TODO: From Pastor Frank
   domain: "", // TODO: Client to provide

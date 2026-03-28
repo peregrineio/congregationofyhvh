@@ -86,7 +86,7 @@ export default function RootLayout({
     >
       <body className="min-h-screen antialiased">
         <Header />
-        <main id="main-content" className="pt-16">{children}</main>
+        <main id="main-content" className="pt-28 md:pt-32 lg:pt-36">{children}</main>
         <Footer />
       </body>
     </html>

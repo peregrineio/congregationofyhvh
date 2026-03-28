@@ -244,15 +244,15 @@ export function Header() {
         )}
         role="banner"
       >
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-28 md:h-32 lg:h-36 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* Logo / Name */}
           <Link href="/" className="flex items-center outline-none focus-visible:ring-2 focus-visible:ring-yhvh-gold rounded-sm" aria-label="Congregation of YHVH - Home">
             <Image
-              src="/images/logo.png"
+              src="/images/logo2.png"
               alt="Congregation of YHVH"
-              width={180}
-              height={50}
-              className="h-10 md:h-12 w-auto"
+              width={300}
+              height={112}
+              className="h-20 md:h-24 lg:h-28 w-auto"
               priority
             />
           </Link>

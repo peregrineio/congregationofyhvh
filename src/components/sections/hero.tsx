@@ -22,41 +22,31 @@ export function Hero() {
         <source src="/videos/hero-bg.mp4" type="video/mp4" />
       </video>
 
-      {/* Overlay for readability -- falls back to solid color if video fails */}
-      <div className="absolute inset-0 z-10 bg-[#FEFDFB]/75" />
+      {/* Subtle gradient overlay -- edges only, keeps video vibrant */}
+      <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/20 via-transparent to-black/30" />
 
       {/* Content */}
       <div className="relative z-20 mx-auto max-w-3xl space-y-8">
-        {/* Congregation name */}
+        {/* Short statement of faith -- prominent, white text over vibrant video */}
         <FadeIn delay={0}>
-          <h1 className="font-heading text-4xl font-bold tracking-wide text-warm-black sm:text-5xl md:text-6xl lg:text-7xl">
-            {SITE_CONFIG.name}
-          </h1>
-          {/* Gold underline accent */}
-          <div className="mx-auto mt-5 h-[2px] w-16 bg-yhvh-gold" />
-        </FadeIn>
-
-        {/* Tagline */}
-        <FadeIn delay={0.15}>
-          <p className="font-subheading text-lg text-warm-gray md:text-xl">
-            {SITE_CONFIG.tagline}
-          </p>
-        </FadeIn>
-
-        {/* Short statement of faith */}
-        <FadeIn delay={0.3}>
-          <p className="mx-auto max-w-xl font-body text-sm leading-relaxed text-light-gray md:text-base">
+          <p
+            className="mx-auto max-w-2xl font-body text-lg leading-relaxed text-white md:text-xl lg:text-2xl"
+            style={{ textShadow: "0 2px 12px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.3)" }}
+          >
             {STATEMENT_OF_FAITH_SHORT}
           </p>
         </FadeIn>
 
         {/* Service time badge */}
-        <FadeIn delay={0.4}>
-          <div className="mx-auto inline-flex items-center gap-3 rounded-lg border border-warm-border bg-soft-cream px-5 py-3 shadow-sm">
-            <div className="flex size-8 items-center justify-center rounded-full bg-yhvh-gold/10">
+        <FadeIn delay={0.15}>
+          <div className="mx-auto inline-flex items-center gap-3 rounded-lg border border-white/20 bg-black/30 backdrop-blur-sm px-5 py-3 shadow-sm">
+            <div className="flex size-8 items-center justify-center rounded-full bg-yhvh-gold/20">
               <Clock className="size-4 text-yhvh-gold" />
             </div>
-            <span className="font-subheading text-sm font-medium text-warm-gray">
+            <span
+              className="font-subheading text-sm font-medium text-white"
+              style={{ textShadow: "0 1px 4px rgba(0,0,0,0.3)" }}
+            >
               Shabbat Services: {SITE_CONFIG.serviceDay} at{" "}
               {SITE_CONFIG.serviceTime}
             </span>
@@ -64,20 +54,25 @@ export function Hero() {
         </FadeIn>
 
         {/* CTAs */}
-        <FadeIn delay={0.5}>
+        <FadeIn delay={0.3}>
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <Link href="/shabbat">
               <GoldButton size="lg">Join Us This Shabbat</GoldButton>
             </Link>
             <Link href="/about/vision-mission">
-              <OutlinedButton size="lg">Learn More</OutlinedButton>
+              <OutlinedButton size="lg" className="border-white text-white hover:bg-white/10">
+                Learn More
+              </OutlinedButton>
             </Link>
           </div>
         </FadeIn>
 
         {/* Hero scripture */}
-        <FadeIn delay={0.65}>
-          <p className="pt-6 font-scripture text-sm italic text-light-gray md:text-base">
+        <FadeIn delay={0.45}>
+          <p
+            className="pt-6 font-scripture text-sm italic text-white/90 md:text-base"
+            style={{ textShadow: "0 2px 8px rgba(0,0,0,0.4)" }}
+          >
             &ldquo;{SCRIPTURES.hero}&rdquo;
             <span className="ml-1 not-italic">&mdash; {SCRIPTURES.heroRef}</span>
           </p>

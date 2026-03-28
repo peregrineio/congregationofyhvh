@@ -1,12 +1,19 @@
 import Link from "next/link";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { SITE_CONFIG } from "@/lib/constants";
-import { TORAH_PORTIONS } from "@/lib/content";
+import { getCurrentPortion, getPortionByHebrewName } from "@/lib/torah-utils";
 import { GoldButton } from "@/components/ui/gold-button";
 import { Clock, MapPin, ScrollText, ArrowRight } from "@/components/icons";
 
 export function UpcomingShabbat() {
-  const currentPortion = TORAH_PORTIONS[0];
+  // Get the current portion dynamically based on today's date
+  const currentPortionName = getCurrentPortion();
+  const currentPortion = getPortionByHebrewName(currentPortionName);
+
+  // Fallback if portion not found
+  if (!currentPortion) {
+    return null;
+  }
 
   return (
     <section className="bg-soft-cream py-24 px-4">

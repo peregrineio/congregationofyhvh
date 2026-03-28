@@ -1,16 +1,27 @@
-import type { Metadata } from "next";
-import { PageHero } from "@/components/ui/page-hero";
-import { TORAH_PORTIONS } from "@/lib/content";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Torah Portions | Congregation of YHVH",
-  description:
-    "The complete annual Torah portion reading schedule with all 54 parashot, Haftarah, and Brit Chadashah readings.",
-};
+import { useState } from "react";
+import { PageHero } from "@/components/ui/page-hero";
+import { BookColumn } from "@/components/ui/book-column";
+import {
+  getCurrentPortion,
+  getCurrentBook,
+  getPortionsByBook,
+  BOOK_NAMES,
+  type TorahBook,
+} from "@/lib/torah-utils";
+
+const BOOKS: TorahBook[] = ['genesis', 'exodus', 'leviticus', 'numbers', 'deuteronomy'];
 
 export default function TorahPortionsPage() {
-  // In production, the "current" portion would be calculated by date
-  const currentPortionNumber = 1;
+  const [expandedPortion, setExpandedPortion] = useState<string | null>(null);
+  const currentPortion = getCurrentPortion();
+  const currentBook = getCurrentBook();
+
+  const handlePortionClick = (hebrewName: string) => {
+    // Toggle - if already expanded, collapse it
+    setExpandedPortion((prev) => (prev === hebrewName ? null : hebrewName));
+  };
 
   return (
     <>
@@ -23,81 +34,47 @@ export default function TorahPortionsPage() {
         }}
       />
 
-      <div className="mx-auto max-w-6xl px-4 py-16">
-        {/* Table */}
-        <div className="overflow-x-auto rounded-lg border border-border/40">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border/40 bg-card">
-                <th className="px-4 py-3 text-left font-subheading text-xs font-semibold uppercase tracking-wider text-primary">
-                  #
-                </th>
-                <th className="px-4 py-3 text-left font-subheading text-xs font-semibold uppercase tracking-wider text-primary">
-                  Portion
-                </th>
-                <th className="px-4 py-3 text-left font-subheading text-xs font-semibold uppercase tracking-wider text-primary hidden sm:table-cell">
-                  Hebrew
-                </th>
-                <th className="px-4 py-3 text-left font-subheading text-xs font-semibold uppercase tracking-wider text-primary">
-                  Torah Reading
-                </th>
-                <th className="px-4 py-3 text-left font-subheading text-xs font-semibold uppercase tracking-wider text-primary hidden md:table-cell">
-                  Haftarah
-                </th>
-                <th className="px-4 py-3 text-left font-subheading text-xs font-semibold uppercase tracking-wider text-primary hidden lg:table-cell">
-                  Brit Chadashah
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {TORAH_PORTIONS.map((portion) => {
-                const isCurrent = portion.number === currentPortionNumber;
-                return (
-                  <tr
-                    key={portion.number}
-                    className={`border-b border-border/20 transition-colors hover:bg-card/50 ${
-                      isCurrent ? "bg-primary/5 border-l-2 border-l-primary" : ""
-                    }`}
-                  >
-                    <td className="px-4 py-3 text-muted-foreground">
-                      {isCurrent ? (
-                        <span className="flex size-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold">
-                          {portion.number}
-                        </span>
-                      ) : (
-                        portion.number
-                      )}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className="font-medium text-foreground">
-                        {portion.name}
-                      </span>
-                      <span className="sm:hidden block text-xs text-primary/70 mt-0.5">
-                        {portion.hebrewName}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-primary/80 font-subheading hidden sm:table-cell">
-                      {portion.hebrewName}
-                    </td>
-                    <td className="px-4 py-3 text-muted-foreground">
-                      {portion.torahReading}
-                    </td>
-                    <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">
-                      {portion.haftarah}
-                    </td>
-                    <td className="px-4 py-3 text-muted-foreground hidden lg:table-cell">
-                      {portion.britChadashah}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+      <div className="mx-auto max-w-7xl px-4 py-16">
+        {/* Intro text */}
+        <div className="text-center mb-12">
+          <p className="text-muted-foreground max-w-3xl mx-auto">
+            The Torah is divided into 54 weekly portions (parashot) that are read throughout the year,
+            completing the entire cycle from Genesis to Deuteronomy. Click any portion to see the
+            complete Scripture readings.
+          </p>
         </div>
 
-        <p className="text-center text-xs text-muted-foreground/50 pt-6">
-          The highlighted portion indicates the current week&apos;s reading. The
-          annual cycle restarts on Simchat Torah.
+        {/* 5-column grid for books */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          {BOOKS.map((book) => (
+            <BookColumn
+              key={book}
+              title={BOOK_NAMES[book]}
+              portions={getPortionsByBook(book)}
+              currentPortion={currentPortion}
+              isCurrentBook={book === currentBook}
+              expandedPortion={expandedPortion}
+              onPortionClick={handlePortionClick}
+            />
+          ))}
+        </div>
+
+        {/* Legend */}
+        <div className="mt-12 flex flex-wrap justify-center gap-6 text-sm">
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded bg-primary" />
+            <span className="text-muted-foreground">Current Week</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded bg-gray-800" />
+            <span className="text-muted-foreground">Book Header</span>
+          </div>
+        </div>
+
+        {/* Note about cycle */}
+        <p className="text-center text-xs text-muted-foreground/60 pt-8">
+          Dates shown are for the 2025-2026 reading cycle. The annual cycle restarts on Simchat Torah.
+          Some portions are combined in certain years.
         </p>
       </div>
     </>
