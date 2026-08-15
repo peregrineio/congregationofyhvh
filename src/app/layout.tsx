@@ -8,6 +8,7 @@ import {
 } from "next/font/google";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { LiveBar } from "@/components/layout/live-bar";
 import "./globals.css";
 
 const cinzel = Cinzel({
@@ -98,6 +99,9 @@ export default function RootLayout({
       className={`${cinzel.variable} ${dmSans.variable} ${sourceSerif.variable} ${crimsonPro.variable} ${frankRuhl.variable}`}
     >
       <body className="min-h-screen antialiased">
+        {/* Renders only while the channel is actually streaming; otherwise
+            it returns null and costs the layout nothing. */}
+        <LiveBar />
         <Header />
         <main id="main-content" className="pt-28 md:pt-32 lg:pt-36">{children}</main>
         <Footer />

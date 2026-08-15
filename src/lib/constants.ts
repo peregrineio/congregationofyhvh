@@ -41,6 +41,7 @@ export const NAV_LINKS: NavLink[] = [
     ],
   },
   { label: "Weekly Shabbat", href: "/shabbat" },
+  { label: "Events", href: "/events" },
   {
     label: "Resources",
     href: "/resources",

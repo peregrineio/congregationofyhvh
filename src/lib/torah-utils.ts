@@ -99,7 +99,7 @@ export function getCurrentPortion(): string {
 /**
  * Parse a portion date string like "17 OCT 2025" to a Date object
  */
-function parsePortionDate(dateStr: string): Date | null {
+export function parsePortionDate(dateStr: string): Date | null {
   const months: Record<string, number> = {
     'JAN': 0, 'FEB': 1, 'MAR': 2, 'APR': 3, 'MAY': 4, 'JUN': 5,
     'JUL': 6, 'AUG': 7, 'SEP': 8, 'OCT': 9, 'NOV': 10, 'DEC': 11
@@ -149,4 +149,56 @@ export const BOOK_NAMES: Record<TorahBook, string> = {
  */
 export function getPortionByHebrewName(hebrewName: string): TorahPortionWithDate | undefined {
   return TORAH_PORTIONS_WITH_DATES.find(p => p.hebrewName === hebrewName);
+}
+
+// ============================================================
+// Calendar helpers (Upcoming Events page)
+// ============================================================
+
+/** Local YYYY-MM-DD. Never use toISOString() here -- it converts to UTC and
+ *  shifts the date by a day for anyone west of Greenwich, which is everyone
+ *  in this congregation. */
+export function toDateKey(date: Date): string {
+  const month = `${date.getMonth() + 1}`.padStart(2, '0');
+  const day = `${date.getDate()}`.padStart(2, '0');
+  return `${date.getFullYear()}-${month}-${day}`;
+}
+
+/** Every portion in the cycle keyed by the Saturday it is read. */
+export function getPortionsByDateKey(): Map<string, TorahPortionWithDate> {
+  const map = new Map<string, TorahPortionWithDate>();
+
+  for (const portion of TORAH_PORTIONS_WITH_DATES) {
+    const date = parsePortionDate(portion.date);
+    if (date) map.set(toDateKey(date), portion);
+  }
+
+  return map;
+}
+
+/** The portion read on a specific day, if that day is a reading Saturday. */
+export function getPortionOnDate(date: Date): TorahPortionWithDate | undefined {
+  return getPortionsByDateKey().get(toDateKey(date));
+}
+
+/** First reading Saturday on or after `from`. Undefined once the cycle ends. */
+export function getNextPortion(from: Date = new Date()): TorahPortionWithDate | undefined {
+  const cutoff = new Date(from);
+  cutoff.setHours(0, 0, 0, 0);
+
+  return TORAH_PORTIONS_WITH_DATES.filter(portion => {
+    const date = parsePortionDate(portion.date);
+    return date !== null && date >= cutoff;
+  })[0];
+}
+
+/** Bounds of the reading cycle, for clamping calendar navigation. */
+export function getCycleRange(): { first: Date; last: Date } | null {
+  const dates = TORAH_PORTIONS_WITH_DATES
+    .map(portion => parsePortionDate(portion.date))
+    .filter((date): date is Date => date !== null)
+    .sort((a, b) => a.getTime() - b.getTime());
+
+  if (dates.length === 0) return null;
+  return { first: dates[0], last: dates[dates.length - 1] };
 }
