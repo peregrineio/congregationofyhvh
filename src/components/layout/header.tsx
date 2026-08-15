@@ -268,15 +268,53 @@ export function Header() {
 
         <div className="mx-auto flex h-24 md:h-28 lg:h-32 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* Logo / Name */}
-          <Link href="/" className="flex items-center outline-none focus-visible:ring-2 focus-visible:ring-yhvh-gold rounded-sm" aria-label="Congregation of YHVH - Home">
+          {/* Lockup: emblem as an image, wordmark as live text.
+              The old logo2.png was a 500x120 raster of the whole lockup —
+              soft on any retina screen, since it rendered ~400px wide and
+              had no more pixels to give. Setting the type in Cinzel (already
+              loaded for display) keeps it sharp at every DPR and lets the
+              tagline drop on narrow screens instead of shrinking. */}
+          <Link
+            href="/"
+            className="flex items-center gap-3 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-yhvh-gold sm:gap-4"
+            aria-label="Congregation of YHVH - Home"
+          >
             <Image
-              src="/images/logo2.png"
-              alt="Congregation of YHVH"
-              width={300}
-              height={112}
-              className="h-[4.5rem] md:h-20 lg:h-24 w-auto"
+              src="/images/emblem.png"
+              alt=""
+              width={320}
+              height={320}
+              className="h-14 w-14 shrink-0 md:h-16 md:w-16 lg:h-[4.5rem] lg:w-[4.5rem]"
               priority
             />
+
+            {/* Gold hairline, mirroring the divider in the original artwork */}
+            <span
+              aria-hidden
+              className="h-12 w-px shrink-0 bg-[#ffd471] md:h-14 lg:h-16"
+            />
+
+            <span aria-hidden className="min-w-0 leading-none">
+              <span className="block font-heading text-[0.95rem] leading-none tracking-[0.06em] text-[#78726a] md:text-lg lg:text-xl">
+                CONGREGATION OF
+              </span>
+
+              <span className="mt-1 flex items-end gap-2.5 sm:gap-3">
+                <span className="font-heading text-2xl leading-none tracking-[0.04em] text-[#35a6e7] md:text-3xl lg:text-[2.15rem]">
+                  YHVH
+                </span>
+
+                {/* Three stacked lines in the artwork; hidden on the
+                    narrowest screens where it would be unreadable anyway. */}
+                <span className="hidden pb-0.5 text-[0.5rem] leading-[1.35] tracking-[0.22em] text-[#78726a] sm:block md:text-[0.55rem] lg:text-[0.6rem]">
+                  THE WAY
+                  <br />
+                  THE TRUTH
+                  <br />
+                  THE LIFE
+                </span>
+              </span>
+            </span>
           </Link>
 
           {/* Desktop nav */}

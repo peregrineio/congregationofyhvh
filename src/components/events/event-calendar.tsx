@@ -108,7 +108,7 @@ export function EventCalendar({ entries, todayKey }: EventCalendarProps) {
           &larr;
         </button>
 
-        <h2 className="font-display text-2xl tracking-wide sm:text-3xl">
+        <h2 className="font-heading text-2xl tracking-wide sm:text-3xl">
           <span className="gold-leaf-text">{MONTHS[view.month]}</span>{" "}
           <span className="text-[#8a7a5c]">{view.year}</span>
         </h2>
@@ -187,7 +187,7 @@ export function EventCalendar({ entries, todayKey }: EventCalendarProps) {
                   )}
                 </span>
 
-                <span className="mt-auto hidden w-full truncate font-display text-[0.7rem] leading-tight text-[#7a6a48] sm:block">
+                <span className="mt-auto hidden w-full truncate font-heading text-[0.7rem] leading-tight text-[#7a6a48] sm:block">
                   {entry.portion.hebrewName}
                 </span>
               </button>
@@ -227,10 +227,10 @@ function EventDetail({ entry, isPast }: { entry: CalendarEntry; isPast: boolean 
     <article className="parchment-plate mt-8 rounded-lg p-6 sm:p-9">
       <p className="text-xs uppercase tracking-[0.25em] text-[#8a7a5c]">{readable}</p>
 
-      <h3 className="mt-2 font-display text-3xl sm:text-4xl">
+      <h3 className="mt-2 font-heading text-3xl sm:text-4xl">
         <span className="gold-leaf-text">{portion.hebrewName}</span>
       </h3>
-      <p className="mt-1 font-display text-lg text-[#6b5a3e]">
+      <p className="mt-1 font-heading text-lg text-[#6b5a3e]">
         &ldquo;{portion.name}&rdquo; &mdash; Portion {portion.number} of 54
         {portion.combined && " (combined)"}
       </p>
@@ -268,7 +268,7 @@ function EventDetail({ entry, isPast }: { entry: CalendarEntry; isPast: boolean 
             <span className="block text-[0.65rem] uppercase tracking-[0.2em] text-[#8a7a5c]">
               Watch this teaching
             </span>
-            <span className="mt-1 block font-display text-base text-[#4a3f2a] group-hover:underline">
+            <span className="mt-1 block font-heading text-base text-[#4a3f2a] group-hover:underline">
               {video.title}
             </span>
           </span>

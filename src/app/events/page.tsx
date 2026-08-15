@@ -68,7 +68,7 @@ export default async function EventsPage() {
           <p className="text-xs uppercase tracking-[0.3em] text-[#8a7a5c]">
             Congregation of YHVH
           </p>
-          <h1 className="mt-3 font-display text-4xl sm:text-5xl lg:text-6xl">
+          <h1 className="mt-3 font-heading text-4xl sm:text-5xl lg:text-6xl">
             <span className="gold-leaf-text">Upcoming Events</span>
           </h1>
 
@@ -90,10 +90,10 @@ export default async function EventsPage() {
               <p className="text-xs uppercase tracking-[0.25em] text-[#8a7a5c]">
                 Next Gathering
               </p>
-              <h2 className="mt-3 font-display text-3xl sm:text-4xl">
+              <h2 className="mt-3 font-heading text-3xl sm:text-4xl">
                 <span className="gold-leaf-text">{next.hebrewName}</span>
               </h2>
-              <p className="mt-1 font-display text-lg text-[#6b5a3e]">
+              <p className="mt-1 font-heading text-lg text-[#6b5a3e]">
                 &ldquo;{next.name}&rdquo;
               </p>
 
@@ -140,7 +140,7 @@ export default async function EventsPage() {
 
       {/* ---- Appointed times cross-link ---- */}
       <section className="border-t border-[#e3d8c0] px-4 py-16 text-center">
-        <h2 className="font-display text-2xl text-[#4a3f2a]">
+        <h2 className="font-heading text-2xl text-[#4a3f2a]">
           Looking for the feast days?
         </h2>
         <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-[#6b5a3e]">
