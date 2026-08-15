@@ -135,13 +135,13 @@ export function parseFeed(
 // ------------------------------------------------------------
 
 /**
- * Latest uploads. Revalidated every 15 minutes — the channel posts a few
- * times a week, so anything tighter is wasted work.
+ * The channel's most recent 15 uploads, via the public RSS feed.
  *
+ * No key, no quota, no billing — this is the floor the site always has.
  * Returns [] rather than throwing: a YouTube outage should quietly hide the
  * video rails, never break the calendar or take down a page.
  */
-export async function getLatestVideos(
+export async function getFeedVideos(
   portionNames: readonly string[] = [],
 ): Promise<YouTubeVideo[]> {
   try {
@@ -154,6 +154,108 @@ export async function getLatestVideos(
   } catch {
     return [];
   }
+}
+
+/**
+ * Every upload on the channel, via the Data API.
+ *
+ * Worth doing because RSS stops at 15 videos — the channel has 113, and the
+ * Torah teachings from earlier in the cycle live well past that cutoff. With
+ * only the feed, most of the reading year has no video to link.
+ *
+ * This is also the cheap half of the API. playlistItems.list costs 1 unit
+ * per 50 videos, so the whole archive is ~3 units against a 10,000 daily
+ * budget — three orders of magnitude less than the live search. Cached for
+ * an hour, that is ~72 units a day.
+ *
+ * The uploads playlist id is the channel id with the "UC" prefix swapped
+ * for "UU", so the channels.list lookup that normally precedes this is
+ * skipped entirely.
+ */
+async function getArchiveVideos(
+  apiKey: string,
+  portionNames: readonly string[],
+): Promise<YouTubeVideo[]> {
+  const uploadsPlaylistId = `UU${YOUTUBE_CHANNEL_ID.slice(2)}`;
+  const videos: YouTubeVideo[] = [];
+  let pageToken: string | undefined;
+
+  // Bounded rather than while(true): a malformed nextPageToken loop would
+  // otherwise burn quota silently. 10 pages = 500 videos, ample headroom.
+  for (let page = 0; page < 10; page++) {
+    const endpoint = new URL("https://www.googleapis.com/youtube/v3/playlistItems");
+    endpoint.searchParams.set("part", "snippet");
+    endpoint.searchParams.set("playlistId", uploadsPlaylistId);
+    endpoint.searchParams.set("maxResults", "50");
+    endpoint.searchParams.set("key", apiKey);
+    if (pageToken) endpoint.searchParams.set("pageToken", pageToken);
+
+    const response = await fetch(endpoint, {
+      next: { revalidate: 3600, tags: ["youtube-archive"] },
+    });
+    if (!response.ok) break;
+
+    const payload = (await response.json()) as {
+      nextPageToken?: string;
+      items?: {
+        snippet?: {
+          title?: string;
+          publishedAt?: string;
+          resourceId?: { videoId?: string };
+        };
+      }[];
+    };
+
+    for (const item of payload.items ?? []) {
+      const id = item.snippet?.resourceId?.videoId;
+      const title = item.snippet?.title;
+      const published = item.snippet?.publishedAt;
+      if (!id || !title || !published) continue;
+
+      // "Private video" / "Deleted video" placeholders keep their slot in
+      // the playlist; they have no watchable page, so drop them.
+      if (title === "Private video" || title === "Deleted video") continue;
+
+      videos.push({
+        id,
+        title,
+        published,
+        url: `https://www.youtube.com/watch?v=${id}`,
+        thumbnail: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
+        portionHebrewName: detectPortion(title, portionNames),
+        isSpanish: looksSpanish(title),
+      });
+    }
+
+    pageToken = payload.nextPageToken;
+    if (!pageToken) break;
+  }
+
+  return videos;
+}
+
+/**
+ * Channel videos, best source available.
+ *
+ * With a key: the full archive, so every portion in the cycle can find its
+ * teaching. Without one: the latest 15 from RSS. The API path falls back to
+ * the feed if it yields nothing, so a revoked key or exhausted quota
+ * degrades to a smaller archive rather than an empty page.
+ */
+export async function getChannelVideos(
+  portionNames: readonly string[] = [],
+): Promise<YouTubeVideo[]> {
+  const apiKey = process.env.YOUTUBE_API_KEY;
+  if (!apiKey) return getFeedVideos(portionNames);
+
+  try {
+    const archive = await getArchiveVideos(apiKey, portionNames);
+    if (archive.length > 0) return archive;
+  } catch {
+    // fall through to the feed
+  }
+
+  return getFeedVideos(portionNames);
 }
 
 /** The teaching video for a portion, newest first if several exist. */

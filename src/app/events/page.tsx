@@ -7,7 +7,7 @@ import {
   toDateKey,
   getNextPortion,
 } from "@/lib/torah-utils";
-import { getLatestVideos, findPortionVideo, YOUTUBE_CHANNEL_URL } from "@/lib/youtube";
+import { getChannelVideos, findPortionVideo, YOUTUBE_CHANNEL_URL } from "@/lib/youtube";
 import {
   EventCalendar,
   type CalendarEntry,
@@ -28,7 +28,7 @@ export const revalidate = 900;
 
 export default async function EventsPage() {
   const portionNames = TORAH_PORTIONS_WITH_DATES.map(portion => portion.hebrewName);
-  const videos = await getLatestVideos(portionNames);
+  const videos = await getChannelVideos(portionNames);
 
   const entries: CalendarEntry[] = TORAH_PORTIONS_WITH_DATES.flatMap(portion => {
     const date = parsePortionDate(portion.date);
