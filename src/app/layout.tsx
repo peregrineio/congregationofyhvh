@@ -9,6 +9,7 @@ import {
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { LiveBar } from "@/components/layout/live-bar";
+import { FeedbackWidget } from "@/components/feedback-widget";
 import "./globals.css";
 
 const cinzel = Cinzel({
@@ -105,6 +106,9 @@ export default function RootLayout({
         <Header />
         <main id="main-content" className="pt-28 md:pt-32 lg:pt-36">{children}</main>
         <Footer />
+        {/* Staging-only client feedback. Inert unless the env vars say
+            staging AND the host is *.vercel.app — see the component. */}
+        <FeedbackWidget />
       </body>
     </html>
   );
