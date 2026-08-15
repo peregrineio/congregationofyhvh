@@ -86,7 +86,12 @@ export const config = {
   // Everything except the assets the construction page itself needs, plus
   // Next's own static output. Without these exclusions the image request
   // would be rewritten back to the HTML and the page would render blank.
+  //
+  // The icon entries matter as much as the image ones: the App Router serves
+  // icon.png and apple-icon.png as routes, so without them listed the gate
+  // answers those requests with the placeholder HTML and the tab icon breaks
+  // on the live domain while still working on staging.
   matcher: [
-    "/((?!_next/static|_next/image|images/|videos/|construction\\.html|construction-robots\\.txt|favicon\\.ico).*)",
+    "/((?!_next/static|_next/image|images/|videos/|construction\\.html|construction-robots\\.txt|favicon\\.ico|icon\\.png|apple-icon\\.png).*)",
   ],
 };
