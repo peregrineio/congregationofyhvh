@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { SectionHeading } from "@/components/ui/section-heading";
-import { MapPin, BookOpen, HandHeart, Users } from "@/components/icons";
-import { ArrowRight } from "@/components/icons";
+import { MapPin, BookOpen, HandHeart, Users, ArrowRight } from "@/components/icons";
+import { FadeIn } from "@/components/ui/motion";
 
-const cards = [
+const gates = [
   {
+    numeral: "I",
+    hebrew: "ביקור",
     title: "Visit Us",
     description:
       "Join us for Shabbat services. Learn about service times, location, and what to expect.",
@@ -12,6 +13,8 @@ const cards = [
     icon: MapPin,
   },
   {
+    numeral: "II",
+    hebrew: "לימוד",
     title: "Learn",
     description:
       "Explore our beliefs, statement of faith, and the foundational truths of our congregation.",
@@ -19,6 +22,8 @@ const cards = [
     icon: BookOpen,
   },
   {
+    numeral: "III",
+    hebrew: "נתינה",
     title: "Give",
     description:
       "Support the ministry through tithes and offerings. Every gift advances the kingdom.",
@@ -26,6 +31,8 @@ const cards = [
     icon: HandHeart,
   },
   {
+    numeral: "IV",
+    hebrew: "קהילה",
     title: "Connect",
     description:
       "Reach out to our community. Whether you have questions or want to get involved, we are here.",
@@ -36,33 +43,70 @@ const cards = [
 
 export function QuickAccess() {
   return (
-    <section className="bg-warm-white py-24 px-4">
+    <section className="relative bg-soft-cream px-4 py-28">
       <div className="mx-auto max-w-6xl">
-        <SectionHeading title="Get Started" subtitle="Find your place in our community" />
+        {/* Editorial header — left-aligned, asymmetric */}
+        <FadeIn>
+          <div className="mb-16 grid items-end gap-6 md:grid-cols-[1fr_auto]">
+            <div>
+              <p className="mb-3 font-subheading text-xs font-semibold uppercase tracking-[0.35em] text-yhvh-gold-dark">
+                Begin Here
+              </p>
+              <h2 className="font-heading text-4xl font-bold tracking-wide text-warm-black md:text-5xl">
+                Four Gates<span className="text-yhvh-gold">.</span>
+              </h2>
+            </div>
+            <p className="max-w-sm font-body text-base leading-relaxed text-warm-gray md:text-right">
+              Every journey into this community passes through one of these
+              doors. Choose yours.
+            </p>
+          </div>
+        </FadeIn>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {cards.map((card) => {
-            const Icon = card.icon;
+        {/* The ledger */}
+        <div className="border-t border-yhvh-gold/25">
+          {gates.map((gate, i) => {
+            const Icon = gate.icon;
             return (
-              <Link key={card.title} href={card.href} className="group">
-                <div className="h-full rounded-lg border border-warm-border bg-white p-6 shadow-sm gold-top-border transition-all duration-200 hover:shadow-md hover:shadow-black/5 hover:-translate-y-0.5">
-                  <div className="space-y-4">
-                    <div className="flex size-12 items-center justify-center rounded-full bg-yhvh-gold/10">
+              <FadeIn key={gate.title} delay={i * 0.08}>
+                <Link href={gate.href} className="group block">
+                  <div className="gate-row grid grid-cols-[auto_1fr_auto] items-center gap-5 border-b border-yhvh-gold/25 px-2 py-7 md:grid-cols-[5rem_auto_1fr_auto_auto] md:gap-8 md:px-4 md:py-9">
+                    {/* Roman numeral */}
+                    <span className="font-heading text-3xl font-semibold text-yhvh-gold/45 transition-colors duration-300 group-hover:text-yhvh-gold md:text-4xl">
+                      {gate.numeral}
+                    </span>
+
+                    {/* Hebrew gate word */}
+                    <span
+                      dir="rtl"
+                      lang="he"
+                      aria-hidden
+                      className="hidden w-24 text-2xl font-medium text-yhvh-gold-dark/50 transition-colors duration-300 group-hover:text-yhvh-gold-dark md:block"
+                      style={{ fontFamily: "var(--font-hebrew)" }}
+                    >
+                      {gate.hebrew}
+                    </span>
+
+                    {/* Title + description */}
+                    <div className="min-w-0">
+                      <h3 className="font-heading text-xl font-semibold tracking-wide text-warm-black md:text-2xl">
+                        {gate.title}
+                      </h3>
+                      <p className="mt-1.5 max-w-xl font-body text-sm leading-relaxed text-warm-gray md:text-base">
+                        {gate.description}
+                      </p>
+                    </div>
+
+                    {/* Icon medallion */}
+                    <div className="hidden size-12 items-center justify-center rounded-full border border-yhvh-gold/30 bg-warm-white transition-all duration-300 group-hover:border-yhvh-gold group-hover:bg-yhvh-gold/10 md:flex">
                       <Icon className="size-5 text-yhvh-gold" />
                     </div>
-                    <h3 className="font-subheading text-lg font-semibold text-warm-black">
-                      {card.title}
-                    </h3>
-                    <p className="font-body text-sm leading-relaxed text-warm-gray">
-                      {card.description}
-                    </p>
-                    <span className="inline-flex items-center gap-1 text-sm font-subheading font-medium text-yhvh-gold opacity-0 transition-opacity group-hover:opacity-100">
-                      Learn more
-                      <ArrowRight className="size-3.5" />
-                    </span>
+
+                    {/* Arrow */}
+                    <ArrowRight className="size-5 shrink-0 text-yhvh-gold-dark/40 transition-all duration-300 group-hover:translate-x-1.5 group-hover:text-yhvh-gold" />
                   </div>
-                </div>
-              </Link>
+                </Link>
+              </FadeIn>
             );
           })}
         </div>

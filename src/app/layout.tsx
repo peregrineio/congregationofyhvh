@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
-import { Cinzel, DM_Sans, Source_Serif_4, Crimson_Pro } from "next/font/google";
+import {
+  Cinzel,
+  DM_Sans,
+  Source_Serif_4,
+  Crimson_Pro,
+  Frank_Ruhl_Libre,
+} from "next/font/google";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import "./globals.css";
@@ -30,6 +36,13 @@ const crimsonPro = Crimson_Pro({
   weight: ["400"],
   style: ["italic"],
   variable: "--font-crimson-pro",
+  display: "swap",
+});
+
+const frankRuhl = Frank_Ruhl_Libre({
+  subsets: ["hebrew", "latin"],
+  weight: ["400", "500", "700"],
+  variable: "--font-frank-ruhl",
   display: "swap",
 });
 
@@ -82,7 +95,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${cinzel.variable} ${dmSans.variable} ${sourceSerif.variable} ${crimsonPro.variable}`}
+      className={`${cinzel.variable} ${dmSans.variable} ${sourceSerif.variable} ${crimsonPro.variable} ${frankRuhl.variable}`}
     >
       <body className="min-h-screen antialiased">
         <Header />

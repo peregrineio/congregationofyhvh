@@ -11,15 +11,16 @@ function FooterLinkGroup({
 }) {
   return (
     <div>
-      <h3 className="font-subheading text-sm font-semibold text-yhvh-gold mb-4 uppercase tracking-wider">
+      <h3 className="mb-5 font-subheading text-[0.7rem] font-semibold uppercase tracking-[0.3em] text-yhvh-gold">
         {title}
       </h3>
-      <ul className="space-y-2.5">
+      <div className="mb-5 h-px w-8 bg-gradient-to-r from-yhvh-gold/60 to-transparent" />
+      <ul className="space-y-3">
         {links.map((link) => (
           <li key={link.href}>
             <Link
               href={link.href}
-              className="text-sm text-white/60 hover:text-yhvh-gold transition-colors font-body"
+              className="font-body text-sm text-white/55 transition-colors hover:text-yhvh-gold-light"
             >
               {link.label}
             </Link>
@@ -35,30 +36,58 @@ export function Footer() {
 
   return (
     <footer>
-      {/* Scripture banner -- warm cream above dark footer */}
-      <div className="bg-soft-cream py-8 border-t border-warm-border">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
-          <p className="font-scripture text-base md:text-lg italic text-warm-gray">
+      {/* Illuminated colophon — the closing scripture on ruled parchment */}
+      <div className="scribe-lines relative overflow-hidden border-t border-yhvh-gold/20 bg-soft-cream py-14">
+        {/* Ghosted Hebrew — "Shema" (Hear) */}
+        <span
+          aria-hidden
+          dir="rtl"
+          className="hebrew-ghost absolute -top-4 right-[2%] text-[7rem] font-bold md:text-[10rem]"
+        >
+          שמע
+        </span>
+        <div className="relative mx-auto max-w-3xl px-4 text-center sm:px-6">
+          <div className="mx-auto mb-6 h-px w-16 bg-gradient-to-r from-transparent via-yhvh-gold to-transparent" />
+          <p className="font-scripture text-lg italic leading-relaxed text-warm-gray md:text-xl">
             &ldquo;{SCRIPTURES.footer}&rdquo;
           </p>
-          <p className="text-xs text-light-gray mt-2 font-subheading tracking-wide">
-            &mdash; {SCRIPTURES.footerRef}
+          <p className="mt-3 font-subheading text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-yhvh-gold-dark">
+            {SCRIPTURES.footerRef}
           </p>
+          <div className="mx-auto mt-6 h-px w-16 bg-gradient-to-r from-transparent via-yhvh-gold to-transparent" />
         </div>
       </div>
 
-      {/* Main footer -- dark for grounding contrast */}
-      <div className="bg-footer-dark text-white/70">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {/* Column 1: About */}
+      {/* Night-sky footer — every page ends at sundown */}
+      <div className="night-sky relative overflow-hidden text-white/70">
+        <div aria-hidden className="star-field absolute inset-0 opacity-60" />
+        <div
+          aria-hidden
+          className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-yhvh-gold/10 to-transparent"
+        />
+
+        <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
+            {/* Column 1: Identity */}
             <div>
-              <Link href="/" className="inline-block mb-4">
-                <span className="font-heading text-xl font-bold text-yhvh-gold tracking-wide">
+              <Link href="/" className="inline-block">
+                <span className="gold-leaf-text font-heading text-xl font-bold tracking-wide">
                   {SITE_CONFIG.name}
                 </span>
               </Link>
-              <p className="text-sm text-white/50 leading-relaxed font-body">
+              {/* John 14:6 — the tagline, in Hebrew and English */}
+              <p
+                dir="rtl"
+                lang="he"
+                className="mt-2 text-lg text-yhvh-gold/80"
+                style={{ fontFamily: "var(--font-hebrew)" }}
+              >
+                הדרך והאמת והחיים
+              </p>
+              <p className="mt-1 font-subheading text-[0.6rem] font-semibold uppercase tracking-[0.3em] text-white/40">
+                {SITE_CONFIG.tagline}
+              </p>
+              <p className="mt-5 font-body text-sm leading-relaxed text-white/45">
                 {SITE_CONFIG.description}
               </p>
             </div>
@@ -71,37 +100,38 @@ export function Footer() {
 
             {/* Column 4: Contact */}
             <div>
-              <h3 className="font-subheading text-sm font-semibold text-yhvh-gold mb-4 uppercase tracking-wider">
+              <h3 className="mb-5 font-subheading text-[0.7rem] font-semibold uppercase tracking-[0.3em] text-yhvh-gold">
                 Contact
               </h3>
-              <ul className="space-y-3">
-                <li className="flex items-start gap-2.5 text-sm text-white/60 font-body">
-                  <MapPin className="size-4 text-yhvh-gold/70 mt-0.5 shrink-0" />
+              <div className="mb-5 h-px w-8 bg-gradient-to-r from-yhvh-gold/60 to-transparent" />
+              <ul className="space-y-3.5">
+                <li className="flex items-start gap-3 font-body text-sm text-white/55">
+                  <MapPin className="mt-0.5 size-4 shrink-0 text-yhvh-gold/70" />
                   <span>{SITE_CONFIG.address}</span>
                 </li>
-                <li className="flex items-center gap-2.5 text-sm text-white/60 font-body">
-                  <Clock className="size-4 text-yhvh-gold/70 shrink-0" />
+                <li className="flex items-center gap-3 font-body text-sm text-white/55">
+                  <Clock className="size-4 shrink-0 text-yhvh-gold/70" />
                   <span>
                     {SITE_CONFIG.serviceDay} at {SITE_CONFIG.serviceTime}
                   </span>
                 </li>
                 {SITE_CONFIG.email && (
-                  <li className="flex items-center gap-2.5 text-sm text-white/60 font-body">
-                    <Mail className="size-4 text-yhvh-gold/70 shrink-0" />
+                  <li className="flex items-center gap-3 font-body text-sm text-white/55">
+                    <Mail className="size-4 shrink-0 text-yhvh-gold/70" />
                     <a
                       href={`mailto:${SITE_CONFIG.email}`}
-                      className="hover:text-yhvh-gold transition-colors"
+                      className="transition-colors hover:text-yhvh-gold-light"
                     >
                       {SITE_CONFIG.email}
                     </a>
                   </li>
                 )}
                 {SITE_CONFIG.phone && (
-                  <li className="flex items-center gap-2.5 text-sm text-white/60 font-body">
-                    <Phone className="size-4 text-yhvh-gold/70 shrink-0" />
+                  <li className="flex items-center gap-3 font-body text-sm text-white/55">
+                    <Phone className="size-4 shrink-0 text-yhvh-gold/70" />
                     <a
                       href={`tel:${SITE_CONFIG.phone}`}
-                      className="hover:text-yhvh-gold transition-colors"
+                      className="transition-colors hover:text-yhvh-gold-light"
                     >
                       {SITE_CONFIG.phone}
                     </a>
@@ -113,16 +143,16 @@ export function Footer() {
         </div>
 
         {/* Copyright */}
-        <div className="border-t border-white/10">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
-            <p className="text-center text-xs text-white/30 font-subheading">
+        <div className="relative border-t border-yhvh-gold/15">
+          <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+            <p className="text-center font-subheading text-xs text-white/30">
               &copy; {currentYear} {SITE_CONFIG.name}. All rights reserved. Built
               with reverence by{" "}
               <a
-                href="https://peregrine.io"
+                href="https://peregrineio.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-yhvh-gold transition-colors"
+                className="transition-colors hover:text-yhvh-gold-light"
               >
                 Peregrine IO
               </a>
