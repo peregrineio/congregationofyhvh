@@ -1,0 +1,6 @@
+# Served only on hosts listed in CONSTRUCTION_HOSTS (see src/proxy.ts).
+# While the public site shows the under-construction notice, keep crawlers
+# out entirely so the real pages index fresh at launch rather than being
+# recorded as duplicates of the placeholder.
+User-agent: *
+Disallow: /
