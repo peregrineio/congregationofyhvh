@@ -369,6 +369,20 @@ html {
   }
 }
 
+/* Live bar clearance
+   The live bar and the header are both fixed to top-0, so without this the
+   bar covers the nav. LiveBar publishes its own measured height as
+   --live-bar-h on <html> while it is showing; the header drops by exactly
+   that much and the content below gains matching clearance. Both rules fall
+   back to 0 when the bar is absent, which is six days out of seven. */
+:root[data-live-bar="true"] header[role="banner"] {
+  top: var(--live-bar-h, 0px);
+}
+
+:root[data-live-bar="true"] #main-content {
+  margin-top: var(--live-bar-h, 0px);
+}
+
 /* Reduce motion for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
   *,

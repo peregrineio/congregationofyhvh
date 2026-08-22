@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /**
  * Site-wide "we are streaming" bar.
@@ -26,6 +26,7 @@ interface LiveResponse {
 
 export function LiveBar() {
   const [live, setLive] = useState<LiveResponse | null>(null);
+  const barRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -56,6 +57,42 @@ export function LiveBar() {
     };
   }, []);
 
+  /**
+   * Publish the bar's own height on <html> so the fixed header and the page
+   * content can drop by exactly that much (see globals.css). Both the bar and
+   * the header are fixed to top-0, so without this the bar simply covers the
+   * nav. Measured rather than hard-coded because the stream title wraps to a
+   * second line on narrow screens.
+   */
+  useEffect(() => {
+    const root = document.documentElement;
+    const node = barRef.current;
+
+    const clear = () => {
+      root.removeAttribute("data-live-bar");
+      root.style.removeProperty("--live-bar-h");
+    };
+
+    if (!node) {
+      clear();
+      return;
+    }
+
+    const publish = () => {
+      root.dataset.liveBar = "true";
+      root.style.setProperty("--live-bar-h", `${node.offsetHeight}px`);
+    };
+
+    publish();
+    const observer = new ResizeObserver(publish);
+    observer.observe(node);
+
+    return () => {
+      observer.disconnect();
+      clear();
+    };
+  }, [live?.isLive]);
+
   if (!live?.isLive) return null;
 
   const href = live.videoId
@@ -64,6 +101,7 @@ export function LiveBar() {
 
   return (
     <a
+      ref={barRef}
       href={href}
       target="_blank"
       rel="noopener noreferrer"
