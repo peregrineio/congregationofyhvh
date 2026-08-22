@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 const orderOfService = [
   { title: "Shofar Sounding", description: "We begin by sounding the shofar, calling the congregation to worship.", icon: Flame },
-  { title: "Opening Prayer & Worship", description: "Songs of praise and thanksgiving to YHVH.", icon: Flame },
+  { title: "Opening Prayer", description: "Songs of praise and thanksgiving to YHVH.", icon: Flame },
   { title: "Torah Portion Reading", description: "The weekly reading from the Torah, Haftarah, and Brit Chadashah.", icon: ScrollText },
   { title: "Teaching", description: "A message grounded in Scripture, applying truth to daily life.", icon: BookOpen },
   { title: "Prayer & Ministry", description: "Corporate prayer and individual ministry as led by the Spirit.", icon: Flame },
@@ -166,7 +166,7 @@ export default function ShabbatPage() {
               <p className="text-sm text-muted-foreground max-w-md mx-auto">
                 We are developing dedicated children&apos;s programming to help
                 the next generation grow in their understanding of YHVH&apos;s
-                Word. More details coming soon.
+                Word. Service for kids is from 2:00 to 2:45 PM.
               </p>
             </CardContent>
           </Card>
