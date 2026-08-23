@@ -1,7 +1,10 @@
 import type { MetadataRoute } from "next";
+import { SITE_CONFIG } from "@/lib/constants";
 
-// TODO: Update baseUrl when domain is confirmed
-const baseUrl = "https://congregationyhvh.com";
+// Single source of truth — this used to be hard-coded to congregationyhvh.com,
+// which is not a domain we own, so every canonical and every sitemap entry
+// pointed at a stranger's namespace.
+const baseUrl = SITE_CONFIG.domain;
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const routes = [
@@ -13,6 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/about/core-values",
     "/about/our-team",
     "/shabbat",
+    "/events",
     "/resources",
     "/resources/calendar",
     "/resources/torah-portions",

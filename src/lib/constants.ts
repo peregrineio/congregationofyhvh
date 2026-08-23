@@ -16,9 +16,9 @@ export const SITE_CONFIG = {
   city: "Houston",
   state: "TX",
   zip: "77041",
-  phone: "", // TODO: From Pastor Frank
-  email: "", // TODO: From Pastor Frank
-  domain: "", // TODO: Client to provide
+  phone: "(281) 469-9555",
+  email: "info@congregationofyhvh.com",
+  domain: "https://congregationofyhvh.com",
 } as const;
 
 export interface NavLink {

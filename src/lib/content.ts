@@ -294,49 +294,65 @@ export const PASTOR_WELCOME =
 
 // ------ FAQ ------
 
+export type FAQCategory =
+  | "About YHVH"
+  | "Faith & Beliefs"
+  | "Worship & Shabbat"
+  | "Visiting"
+  | "Get Involved";
+
 export interface FAQItem {
   question: string;
   answer: string;
+  category: FAQCategory;
 }
 
 export const FAQ_ITEMS: FAQItem[] = [
   {
     question: "What is a Messianic congregation?",
+    category: "Faith & Beliefs",
     answer:
       "A Messianic congregation is a community of believers who follow Yahshua (Jesus) as the Messiah while also honoring the Torah (the first five books of the Bible) and the biblical feasts. We embrace both the Tanakh (Old Testament) and the Brit Chadashah (New Testament) as the inspired Word of YHVH.",
   },
   {
     question: "Do I need to be Jewish to attend?",
+    category: "Visiting",
     answer:
       "Absolutely not. Our congregation welcomes people from all backgrounds and nations. We believe that through faith in Yahshua, all believers are grafted into the commonwealth of Israel and share in the covenants and promises of YHVH.",
   },
   {
     question: "Why do you meet on Saturday instead of Sunday?",
+    category: "Worship & Shabbat",
     answer:
       "We observe the biblical Shabbat (Sabbath), which begins on Friday evening and ends on Saturday evening. The Shabbat was established by YHVH at creation and is one of the Ten Commandments. We honor this appointed time as an act of obedience and worship.",
   },
   {
     question: "What should I expect at a Shabbat service?",
+    category: "Worship & Shabbat",
     answer:
       "Our services include worship through song, the sounding of the shofar, the reading and teaching of the Torah portion for the week, prayer, and fellowship. We strive to create a reverent yet welcoming atmosphere for all who attend.",
   },
   {
     question: "Do you celebrate Christmas and Easter?",
+    category: "Faith & Beliefs",
     answer:
       "We observe the biblical appointed times (moedim) found in Leviticus 23, which include Passover (Pesach), Unleavened Bread, Firstfruits, Pentecost (Shavuot), Feast of Trumpets (Yom Teruah), Day of Atonement (Yom Kippur), and Tabernacles (Sukkot).",
   },
   {
     question: "What does YHVH mean?",
+    category: "About YHVH",
     answer:
       "YHVH (often transliterated as Yahuah or Yahweh) represents the sacred name of the Creator as revealed in the Hebrew Scriptures. It is derived from the four Hebrew letters Yod-He-Vav-He and is sometimes referred to as the Tetragrammaton.",
   },
   {
     question: "Are children welcome?",
+    category: "Visiting",
     answer:
       "Yes! Children are an important part of our congregation. We believe in generational discipleship and are working to develop dedicated children\u2019s programming to help young ones grow in their understanding of YHVH\u2019s Word.",
   },
   {
     question: "How can I get involved?",
+    category: "Get Involved",
     answer:
       "The best way to get involved is to join us for a Shabbat service. From there, you can connect with our leadership to learn about volunteer opportunities, small groups, and ways to serve within the community.",
   },
@@ -350,6 +366,10 @@ export interface FeastDay {
   dates: string;
   description: string;
   scripture: string;
+  /** First day of the feast, ISO. Used to order and to find what is next. */
+  isoStart: string;
+  /** Illustration for the biblical calendar and the appointed-times band. */
+  image: string;
 }
 
 export const FEAST_DAYS_2026: FeastDay[] = [
@@ -360,6 +380,8 @@ export const FEAST_DAYS_2026: FeastDay[] = [
     description:
       "Commemorates YHVH\u2019s deliverance of Israel from slavery in Egypt. Prophetically fulfilled in the sacrifice of Yahshua, the Lamb of Elohim.",
     scripture: "Leviticus 23:5",
+    isoStart: "2026-04-01",
+    image: "/images/gs/feast-pesach.webp",
   },
   {
     name: "Unleavened Bread",
@@ -368,6 +390,8 @@ export const FEAST_DAYS_2026: FeastDay[] = [
     description:
       "A seven-day feast of removing leaven (sin) from our homes and lives. Points to Yahshua\u2019s sinless body and our call to walk in purity.",
     scripture: "Leviticus 23:6\u20138",
+    isoStart: "2026-04-02",
+    image: "/images/gs/feast-matzot.webp",
   },
   {
     name: "Firstfruits",
@@ -376,6 +400,8 @@ export const FEAST_DAYS_2026: FeastDay[] = [
     description:
       "Celebrates the first harvest offering to YHVH. Fulfilled in Yahshua\u2019s resurrection \u2014 the firstfruits of those who have fallen asleep.",
     scripture: "Leviticus 23:9\u201314",
+    isoStart: "2026-04-05",
+    image: "/images/gs/feast-bikkurim.webp",
   },
   {
     name: "Pentecost",
@@ -384,6 +410,8 @@ export const FEAST_DAYS_2026: FeastDay[] = [
     description:
       "Celebrates the giving of the Torah at Mount Sinai and the outpouring of the Ruach HaKodesh (Holy Spirit) on the early believers.",
     scripture: "Leviticus 23:15\u201321",
+    isoStart: "2026-05-24",
+    image: "/images/gs/feast-shavuot.webp",
   },
   {
     name: "Feast of Trumpets",
@@ -392,6 +420,8 @@ export const FEAST_DAYS_2026: FeastDay[] = [
     description:
       "A day of blowing the shofar, calling the people to repentance and awakening. Prophetically points to the return of Yahshua the Messiah.",
     scripture: "Leviticus 23:23\u201325",
+    isoStart: "2026-09-12",
+    image: "/images/gs/feast-teruah.webp",
   },
   {
     name: "Day of Atonement",
@@ -400,6 +430,8 @@ export const FEAST_DAYS_2026: FeastDay[] = [
     description:
       "The most solemn day of the year \u2014 a day of fasting, repentance, and seeking YHVH\u2019s forgiveness. Fulfilled in Yahshua\u2019s atoning sacrifice.",
     scripture: "Leviticus 23:26\u201332",
+    isoStart: "2026-09-21",
+    image: "/images/gs/feast-kippur.webp",
   },
   {
     name: "Tabernacles",
@@ -408,6 +440,8 @@ export const FEAST_DAYS_2026: FeastDay[] = [
     description:
       "A joyful seven-day feast dwelling in temporary shelters, remembering YHVH\u2019s faithfulness in the wilderness. Points to Yahshua tabernacling among us.",
     scripture: "Leviticus 23:33\u201343",
+    isoStart: "2026-09-26",
+    image: "/images/gs/feast-sukkot.webp",
   },
   {
     name: "Eighth Day Assembly",
@@ -416,6 +450,8 @@ export const FEAST_DAYS_2026: FeastDay[] = [
     description:
       "A solemn assembly immediately following Sukkot. A day of intimate gathering with YHVH, pointing to the eternal rest in His kingdom.",
     scripture: "Leviticus 23:36",
+    isoStart: "2026-10-03",
+    image: "/images/gs/feast-shemini.webp",
   },
 ];
 

@@ -10,6 +10,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { LiveBar } from "@/components/layout/live-bar";
 import { FeedbackWidget } from "@/components/feedback-widget";
+import { SITE_CONFIG } from "@/lib/constants";
 import "./globals.css";
 
 const cinzel = Cinzel({
@@ -86,7 +87,7 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
-  metadataBase: new URL("https://congregationyhvh.com"),
+  metadataBase: new URL(SITE_CONFIG.domain),
 };
 
 export default function RootLayout({
