@@ -1,89 +1,99 @@
 import type { Metadata } from "next";
-import { PageHero } from "@/components/ui/page-hero";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
+import Image from "next/image";
 import { WHAT_WE_BELIEVE, CLOSING_AFFIRMATION } from "@/lib/content";
+import {
+  AboutHero,
+  PillarStrip,
+  ClosingBand,
+  AffirmationBand,
+} from "@/components/about/about-hero";
+import { BeliefAccordion } from "@/components/about/belief-accordion";
+import {
+  BookOpen,
+  Cross,
+  Sparkles,
+  Users,
+  ScrollText,
+  Star,
+  Flame,
+} from "@/components/icons";
 
 export const metadata: Metadata = {
   title: "What We Believe | Congregation of YHVH",
   description:
-    "The 12 doctrinal points of the Congregation of YHVH, rooted in Scripture and the testimony of Yahshua the Messiah.",
+    "Twelve foundational truths that guide the faith and practice of the Congregation of YHVH.",
 };
+
+const pillars = [
+  { title: "Biblical Foundation", detail: "The entire Bible is our authority.", icon: BookOpen },
+  { title: "Messiah Centered", detail: "Yahshua is the heart of our faith.", icon: Cross },
+  { title: "Spirit Empowered", detail: "Led by the Ruach Ha'Qodesh.", icon: Flame },
+  { title: "Covenant People", detail: "Rooted in Israel, called to all nations.", icon: Users },
+  { title: "Set-Apart Living", detail: "Obedience as an act of worship.", icon: ScrollText },
+  { title: "Eternal Hope", detail: "Awaiting the return of our King.", icon: Star },
+];
 
 export default function WhatWeBelievePage() {
   return (
     <>
-      <PageHero
-        title="What We Believe"
-        subtitle="12 foundational truths that guide our faith and practice"
-        scripture={{
-          quote:
-            "Your word is truth.",
-          reference: "John 17:17",
-        }}
-      />
+      <AboutHero
+        eyebrow="The Foundation of Our Faith"
+        title={["What We", "Believe"]}
+        tagline={`${WHAT_WE_BELIEVE.length} foundational truths that guide our faith and practice.`}
+        image={{ src: "/images/gs/about-wwb-hero.webp" }}
+      >
+        <p>
+          Our beliefs are rooted in the Scriptures, centered on Yahshua the Messiah,
+          and empowered by the Ruach Ha&apos;Qodesh to live set-apart lives for the
+          glory of YHVH.
+        </p>
+      </AboutHero>
 
-      <div className="mx-auto max-w-4xl px-4 py-16 space-y-8">
-        {WHAT_WE_BELIEVE.map((point, index) => (
-          <div key={point.number}>
-            <Card className="border-border/40 bg-card">
-              <CardContent className="py-6">
-                <div className="flex items-start gap-4">
-                  {/* Number badge */}
-                  <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary font-heading text-lg font-bold">
-                    {point.number}
-                  </div>
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pb-20 space-y-14">
+        <PillarStrip items={pillars} />
 
-                  <div className="space-y-3 flex-1">
-                    <div>
-                      <h3 className="font-heading text-xl font-bold text-foreground">
-                        {point.title}
-                      </h3>
-                      {point.hebrewTerm && (
-                        <p className="text-xs text-primary/70 font-subheading mt-0.5">
-                          {point.hebrewTerm}
-                        </p>
-                      )}
-                    </div>
+        {/* ── The twelve points + built on truth ───────────────── */}
+        <section className="grid gap-8 lg:grid-cols-[1fr_300px] lg:items-start">
+          <BeliefAccordion points={[...WHAT_WE_BELIEVE]} />
 
-                    <p className="font-body text-sm leading-relaxed text-muted-foreground md:text-base">
-                      {point.description}
-                    </p>
+          <aside className="parchment-plate relative overflow-hidden rounded-xl">
+            <div className="relative z-10 p-7 text-center">
+              <span className="inline-flex size-16 items-center justify-center rounded-full border border-yhvh-gold/25 bg-yhvh-gold/[0.07] text-yhvh-gold-dark">
+                <ScrollText className="size-7" aria-hidden />
+              </span>
+              <h2 className="mt-5 font-heading text-xl text-foreground">
+                Built on Truth
+              </h2>
+              <span aria-hidden className="mx-auto mt-3 block h-px w-14 bg-yhvh-gold/50" />
+              <p className="mt-5 font-body text-sm leading-relaxed text-muted-foreground">
+                Every doctrine we hold is shaped by the Word of YHVH and the example of
+                Yahshua the Messiah.
+              </p>
+              <p className="mt-4 font-body text-sm leading-relaxed text-muted-foreground">
+                We stand on eternal truth that transforms hearts, strengthens families,
+                and advances the Kingdom of Elohim.
+              </p>
+            </div>
 
-                    {/* Scripture tags */}
-                    <div className="flex flex-wrap gap-2 pt-1">
-                      {point.scriptures.map((ref) => (
-                        <Badge
-                          key={ref}
-                          variant="outline"
-                          className="border-primary/20 text-xs text-muted-foreground/80"
-                        >
-                          {ref}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            {index < WHAT_WE_BELIEVE.length - 1 && (
-              <Separator className="bg-border/20 my-0" />
-            )}
-          </div>
-        ))}
+            {/* Landscape fades up into the card rather than sitting in a box. */}
+            <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-52">
+              <Image
+                src="/images/gs/about-wwb-truth.webp"
+                alt=""
+                fill
+                sizes="300px"
+                className="object-cover object-bottom"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-[#fdfbf6] via-[#fdfbf6]/40 to-transparent" />
+            </div>
+          </aside>
+        </section>
 
-        {/* Closing affirmation */}
-        <Card className="border-accent/30 bg-card mt-12">
-          <CardContent className="py-6 text-center">
-            <h2 className="font-subheading text-sm font-semibold text-primary uppercase tracking-wider mb-3">
-              Our Affirmation
-            </h2>
-            <p className="font-scripture text-base italic text-muted-foreground leading-relaxed md:text-lg">
-              {CLOSING_AFFIRMATION}
-            </p>
-          </CardContent>
-        </Card>
+        <AffirmationBand heading="Our Affirmation" icon={Sparkles}>
+          {CLOSING_AFFIRMATION}
+        </AffirmationBand>
+
+        <ClosingBand />
       </div>
     </>
   );
