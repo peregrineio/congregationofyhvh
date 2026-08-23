@@ -60,7 +60,7 @@ function DesktopDropdown({ link }: { link: NavLink }) {
 
 function DesktopNav() {
   return (
-    <nav className="hidden lg:flex items-center gap-7" aria-label="Main navigation">
+    <nav className="hidden xl:flex items-center gap-6" aria-label="Main navigation">
       {NAV_LINKS.map((link) => {
         if (link.label === "Give") return null;
         if (link.children) {
@@ -166,7 +166,7 @@ function MobileNav({
   return (
     <div
       className={cn(
-        "fixed inset-0 z-[60] lg:hidden transition-all duration-300",
+        "fixed inset-0 z-[60] xl:hidden transition-all duration-300",
         isOpen
           ? "opacity-100 pointer-events-auto"
           : "opacity-0 pointer-events-none"
@@ -266,7 +266,10 @@ export function Header() {
           className="h-[3px] w-full bg-gradient-to-r from-transparent via-yhvh-gold to-transparent"
         />
 
-        <div className="mx-auto flex h-24 md:h-28 lg:h-32 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        {/* gap-6 rather than justify-between alone: the nav gained an
+            "Events" item and began butting straight up against the lockup,
+            which squeezed the wordmark into two lines. */}
+        <div className="mx-auto flex h-24 md:h-28 lg:h-32 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
           {/* Logo / Name */}
           {/* Lockup: emblem as an image, wordmark as live text.
               The old logo2.png was a 500x120 raster of the whole lockup —
@@ -276,7 +279,7 @@ export function Header() {
               tagline drop on narrow screens instead of shrinking. */}
           <Link
             href="/"
-            className="flex items-center gap-3 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-yhvh-gold sm:gap-4"
+            className="flex shrink-0 items-center gap-3 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-yhvh-gold sm:gap-4"
             aria-label="Congregation of YHVH - Home"
           >
             <Image
@@ -294,19 +297,22 @@ export function Header() {
               className="h-12 w-px shrink-0 bg-[#ffd471] md:h-14 lg:h-16"
             />
 
-            <span aria-hidden className="min-w-0 leading-none">
-              <span className="block font-heading text-[0.95rem] leading-none tracking-[0.06em] text-[#78726a] md:text-lg lg:text-xl">
+            <span aria-hidden className="leading-none">
+              {/* nowrap: "CONGREGATION OF" is one line in the artwork, and
+                  letting it break turns the lockup into three ragged rows. */}
+              <span className="block whitespace-nowrap font-heading text-[0.95rem] leading-none tracking-[0.06em] text-[#78726a] md:text-lg lg:text-[1.15rem]">
                 CONGREGATION OF
               </span>
 
               <span className="mt-1 flex items-end gap-2.5 sm:gap-3">
-                <span className="font-heading text-2xl leading-none tracking-[0.04em] text-[#35a6e7] md:text-3xl lg:text-[2.15rem]">
+                <span className="font-heading text-2xl leading-none tracking-[0.04em] text-[#35a6e7] md:text-3xl lg:text-[2rem]">
                   YHVH
                 </span>
 
-                {/* Three stacked lines in the artwork; hidden on the
-                    narrowest screens where it would be unreadable anyway. */}
-                <span className="hidden pb-0.5 text-[0.5rem] leading-[1.35] tracking-[0.22em] text-[#78726a] sm:block md:text-[0.55rem] lg:text-[0.6rem]">
+                {/* Three stacked lines in the artwork. Shown on small screens
+                    where the nav is a hamburger, hidden through lg where the
+                    full nav needs the room, then back at xl. */}
+                <span className="hidden whitespace-nowrap pb-0.5 text-[0.5rem] leading-[1.35] tracking-[0.22em] text-[#78726a] sm:block md:text-[0.55rem] lg:text-[0.6rem]">
                   THE WAY
                   <br />
                   THE TRUTH
@@ -323,7 +329,7 @@ export function Header() {
           {/* Mobile hamburger */}
           <button
             onClick={() => setMobileOpen(true)}
-            className="lg:hidden p-2 text-warm-gray hover:text-yhvh-gold-dark transition-colors outline-none focus-visible:ring-2 focus-visible:ring-yhvh-gold rounded-sm"
+            className="xl:hidden p-2 text-warm-gray hover:text-yhvh-gold-dark transition-colors outline-none focus-visible:ring-2 focus-visible:ring-yhvh-gold rounded-sm"
             aria-label="Open navigation menu"
           >
             <Menu className="size-6" />
