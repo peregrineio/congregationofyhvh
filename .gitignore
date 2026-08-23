@@ -43,3 +43,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Design source, not site assets. These live under public/ for convenience
+# while building, but they are ~28 MB of internal mocks and this repo is
+# public — committing them would serve them at /images/golden-standard-mocks/.
+public/images/golden-standard-mocks/
