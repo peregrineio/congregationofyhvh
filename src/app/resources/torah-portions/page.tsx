@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import {
-  TORAH_PORTIONS_WITH_DATES,
-  getCurrentPortion,
-} from "@/lib/torah-utils";
+import { getCurrentCycle, getCurrentPortion } from "@/lib/torah-utils";
 import { PortionBrowser } from "@/components/resources/portion-browser";
 import {
   CalendarDays,
@@ -127,7 +124,7 @@ export default function TorahPortionsPage() {
         {/* ── The schedule ─────────────────────────────────────── */}
         <section>
           <PortionBrowser
-            portions={TORAH_PORTIONS_WITH_DATES}
+            portions={getCurrentCycle()}
             currentHebrewName={currentHebrewName}
           />
         </section>

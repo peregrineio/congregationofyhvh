@@ -26,7 +26,7 @@ const gates = [
     hebrew: "נתינה",
     title: "Give",
     description:
-      "Support the ministry through tithes and offerings. Every gift advances the kingdom.",
+      "Support the ministry with a freewill offering from the heart. Every gift advances the kingdom.",
     href: "/give",
     icon: HandHeart,
   },

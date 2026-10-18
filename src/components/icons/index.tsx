@@ -43,7 +43,8 @@ export {
 
   // Faith / Ministry
   Church,
-  Cross,
+  Crown,
+  Shield,
   Flame,
   Sun,
   Moon,

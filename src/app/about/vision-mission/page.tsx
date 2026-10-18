@@ -16,7 +16,7 @@ import {
   Star,
   Sparkles,
   ScrollText,
-  Cross,
+  Crown,
   Users,
   HandHeart,
   Heart,
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 
 const defines = [
   { title: "Torah-Rooted", detail: "We base our lives on the Torah, the eternal Word of YHVH.", icon: ScrollText },
-  { title: "Messiah-Centered", detail: "We follow Yahshua the Messiah, our Lord and Redeemer.", icon: Cross },
+  { title: "Messiah-Centered", detail: "We follow Yahshua the Messiah, our Lord and Redeemer.", icon: Crown },
   { title: "Family-Focused", detail: "We strengthen and encourage families to walk in righteousness.", icon: Users },
   { title: "Disciple-Making", detail: "We teach, train, and equip believers to fulfill their calling.", icon: Sparkles },
   { title: "Community-Driven", detail: "We walk together in love, unity, and accountability as one body.", icon: HandHeart },

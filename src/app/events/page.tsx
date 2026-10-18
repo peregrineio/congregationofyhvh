@@ -46,9 +46,10 @@ export const metadata: Metadata = {
 export const revalidate = 900;
 
 export default async function EventsPage() {
-  const portionNames = TORAH_PORTIONS_WITH_DATES.map(
-    (portion) => portion.hebrewName,
-  );
+  // Names repeat once per cycle; the detector only needs each one once.
+  const portionNames = [
+    ...new Set(TORAH_PORTIONS_WITH_DATES.map((portion) => portion.hebrewName)),
+  ];
   const videos = await getChannelVideos(portionNames);
 
   const entries: CalendarEntry[] = TORAH_PORTIONS_WITH_DATES.flatMap(
@@ -56,7 +57,7 @@ export default async function EventsPage() {
       const date = parsePortionDate(portion.date);
       if (!date) return [];
 
-      const video = findPortionVideo(videos, portion.hebrewName);
+      const video = findPortionVideo(videos, portion.hebrewName, date);
 
       return [
         {

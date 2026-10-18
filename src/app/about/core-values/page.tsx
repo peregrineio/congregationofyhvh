@@ -8,7 +8,7 @@ import {
 } from "@/components/about/about-hero";
 import {
   BookOpen,
-  Cross,
+  Crown,
   Flame,
   Users,
   ScrollText,
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 
 const pillars = [
   { title: "Scripture Centered", detail: "The Word of YHVH is our foundation and final authority.", icon: BookOpen },
-  { title: "Messiah Exalted", detail: "Yahshua is the heart of our faith and the focus of our worship.", icon: Cross },
+  { title: "Messiah Exalted", detail: "Yahshua is the heart of our faith and the focus of our worship.", icon: Crown },
   { title: "Spirit Empowered", detail: "We rely on the Ruach Ha'Qodesh to live, serve, and grow.", icon: Flame },
   { title: "Covenant People", detail: "We walk together as one body, called out and set apart.", icon: Users },
   { title: "Set-Apart Living", detail: "Obedience to YHVH is our expression of love and faith.", icon: ScrollText },
@@ -42,7 +42,7 @@ const pillars = [
  */
 const VALUE_ICONS: Record<number, React.ComponentType<{ className?: string }>> = {
   1: Sun,
-  2: Cross,
+  2: Crown,
   3: ScrollText,
   4: BookOpen,
   5: Flame,

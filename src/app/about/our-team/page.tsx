@@ -9,15 +9,35 @@ export const metadata: Metadata = {
     "Meet the leadership team of the Congregation of YHVH, shepherding the flock in truth and love.",
 };
 
-// TODO: Replace with actual team data from Pastor Frank
+// The board of the Congregation of YHVH. Bios are short role descriptions
+// only until each member provides their own; photos are placeholders.
 const teamMembers = [
   {
-    name: "Pastor Frank",
-    role: "Senior Pastor",
-    bio: "Pastor Frank leads the Congregation of YHVH with a heart for discipleship, Torah teaching, and shepherding families in faithful obedience to YHVH through Yahshua the Messiah.",
+    name: "Franklin \u201cFrank\u201d Longoria",
+    role: "Pastor & President",
+    bio: "Shepherds the congregation, teaches the Word, and serves as President of the board.",
     featured: true,
   },
-  // TODO: Add additional team members as provided by client
+  {
+    // TODO: Confirm Matt's surname with the client (heard as both "Wong" and
+    // "Coux"). First name only until it is confirmed.
+    name: "Matt",
+    role: "Secretary & Treasurer",
+    bio: "Keeps the records and oversees the finances of the congregation.",
+    featured: false,
+  },
+  {
+    name: "Raymond E. Flowers",
+    role: "Director",
+    bio: "Serves on the board of directors.",
+    featured: false,
+  },
+  {
+    name: "Jeremiah Longoria",
+    role: "Director",
+    bio: "Serves on the board of directors.",
+    featured: false,
+  },
 ];
 
 export default function OurTeamPage() {

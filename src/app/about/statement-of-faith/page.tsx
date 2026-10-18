@@ -12,7 +12,7 @@ import {
 } from "@/components/about/about-hero";
 import {
   BookOpen,
-  Cross,
+  Crown,
   Sparkles,
   ScrollText,
   Flame,
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 
 const pillars = [
   { title: "Scripture as Authority", detail: "The final authority in all matters of faith and practice.", icon: BookOpen },
-  { title: "Yahshua the Messiah", detail: "The promised Savior and Son of the living Elohim.", icon: Cross },
+  { title: "Yahshua the Messiah", detail: "The promised Savior and Son of the living Elohim.", icon: Crown },
   { title: "Salvation By Grace", detail: "Through faith in Yahshua, not by our works.", icon: Sparkles },
   { title: "Obedience In Faith", detail: "Walking in the commandments as an expression of love.", icon: ScrollText },
   { title: "Ruach Ha'Qodesh", detail: "Empowers, guides, and equips every believer.", icon: Flame },
@@ -39,7 +39,7 @@ const pillars = [
 
 const coreBeliefs = [
   { title: "The Word of YHVH", detail: "Our standard for truth and life.", icon: BookOpen },
-  { title: "Yahshua the Messiah", detail: "Our Lord, Redeemer, and King.", icon: Cross },
+  { title: "Yahshua the Messiah", detail: "Our Lord, Redeemer, and King.", icon: Crown },
   { title: "Grace Through Faith", detail: "Our entry into righteousness.", icon: Sparkles },
   { title: "Walking in Obedience", detail: "Our response of love and devotion.", icon: ScrollText },
   { title: "Empowered by the Ruach", detail: "Our strength for daily victory.", icon: Flame },

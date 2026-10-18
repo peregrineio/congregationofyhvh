@@ -10,7 +10,7 @@ import {
 import { BeliefAccordion } from "@/components/about/belief-accordion";
 import {
   BookOpen,
-  Cross,
+  Crown,
   Sparkles,
   Users,
   ScrollText,
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 
 const pillars = [
   { title: "Biblical Foundation", detail: "The entire Bible is our authority.", icon: BookOpen },
-  { title: "Messiah Centered", detail: "Yahshua is the heart of our faith.", icon: Cross },
+  { title: "Messiah Centered", detail: "Yahshua is the heart of our faith.", icon: Crown },
   { title: "Spirit Empowered", detail: "Led by the Ruach Ha'Qodesh.", icon: Flame },
   { title: "Covenant People", detail: "Rooted in Israel, called to all nations.", icon: Users },
   { title: "Set-Apart Living", detail: "Obedience as an act of worship.", icon: ScrollText },

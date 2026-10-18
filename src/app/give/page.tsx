@@ -7,7 +7,7 @@ import {
   Users,
   Sparkles,
   Heart,
-  Cross,
+  Shield,
   HandHeart,
   Mail,
   ArrowRight,
@@ -16,7 +16,7 @@ import {
 export const metadata: Metadata = {
   title: "Give | Congregation of YHVH",
   description:
-    "Support the ministry of the Congregation of YHVH through tithes and offerings. Every gift advances the kingdom of YHVH.",
+    "Support the ministry of the Congregation of YHVH with a freewill offering, given willingly from the heart. Every gift advances the kingdom of YHVH.",
 };
 
 const whyWeGive = [
@@ -48,8 +48,8 @@ const whyWeGive = [
   {
     title: "Trust & Providence",
     detail: "When we give, we declare our trust in YHVH as our Provider and Sustainer.",
-    reference: "Malachi 3:10",
-    icon: Cross,
+    reference: "Philippians 4:19",
+    icon: Shield,
   },
 ];
 
@@ -97,7 +97,8 @@ export default function GivePage() {
         <p>
           Your generosity helps us fulfill our calling &mdash; proclaiming the Word,
           discipling believers, serving our community, and equipping the next
-          generation to walk in obedience to YHVH.
+          generation to walk in obedience to YHVH. Every gift is a freewill
+          offering, given joyfully and from the heart, never out of obligation.
         </p>
       </AboutHero>
 
@@ -196,7 +197,7 @@ export default function GivePage() {
                   <div>
                     <h3 className="font-heading text-base text-foreground">By Mail</h3>
                     <p className="mt-1 font-body text-sm leading-relaxed text-muted-foreground">
-                      Send your tithes and offerings to:
+                      Send your freewill offerings to:
                     </p>
                     <address className="mt-2 font-body text-sm not-italic leading-relaxed text-foreground">
                       {SITE_CONFIG.name}

@@ -42,6 +42,14 @@ export function PortionBrowser({ portions, currentHebrewName }: Props) {
 
   const searching = query.trim().length > 0;
 
+  // "2026–2027", from the first and last readings passed in.
+  const firstYear = portions[0]?.date.split(" ")[2];
+  const lastYear = portions[portions.length - 1]?.date.split(" ")[2];
+  const cycleYears =
+    firstYear && lastYear && firstYear !== lastYear
+      ? `${firstYear}\u2013${lastYear}`
+      : (firstYear ?? "");
+
   const visible = useMemo(() => {
     if (searching) {
       const q = query.trim().toLowerCase();
@@ -219,7 +227,7 @@ export function PortionBrowser({ portions, currentHebrewName }: Props) {
           </li>
         </ul>
         <p className="text-center font-body text-xs text-muted-foreground/70 sm:text-right">
-          Dates shown are for the 2025&ndash;2026 reading cycle.
+          Dates shown are for the {cycleYears} reading cycle.
           <br className="hidden sm:block" /> The annual cycle restarts on Simchat Torah.
         </p>
       </div>

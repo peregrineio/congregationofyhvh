@@ -259,11 +259,35 @@ export async function getChannelVideos(
 }
 
 /** The teaching video for a portion, newest first if several exist. */
+/** Half a year: a portion recurs once a year, so a recording further than
+ *  this from a reading belongs to that portion's other year. */
+const SAME_CYCLE_WINDOW_MS = 183 * 24 * 60 * 60 * 1000;
+
+/**
+ * The recording of a portion. Each portion is read once per cycle, so when
+ * `readOn` is given only a video published within half a year of that
+ * reading counts, and the nearest one wins. Without it, the first match.
+ */
 export function findPortionVideo(
   videos: readonly YouTubeVideo[],
   hebrewName: string,
+  readOn?: Date,
 ): YouTubeVideo | undefined {
-  return videos.find(video => video.portionHebrewName === hebrewName);
+  const matches = videos.filter(video => video.portionHebrewName === hebrewName);
+  if (!readOn) return matches[0];
+
+  let best: YouTubeVideo | undefined;
+  let bestDistance = Infinity;
+  for (const video of matches) {
+    const published = new Date(video.published).getTime();
+    if (Number.isNaN(published)) continue;
+    const distance = Math.abs(published - readOn.getTime());
+    if (distance <= SAME_CYCLE_WINDOW_MS && distance < bestDistance) {
+      best = video;
+      bestDistance = distance;
+    }
+  }
+  return best;
 }
 
 // ------------------------------------------------------------
