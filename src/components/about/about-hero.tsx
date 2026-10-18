@@ -131,29 +131,6 @@ export function PillarStrip({
   );
 }
 
-/** The closing Ecclesiastes band shared by every About page. */
-export function ClosingBand() {
-  return (
-    <section className="parchment-plate scribe-lines relative overflow-hidden rounded-xl px-7 py-10 text-center md:px-12">
-      <span
-        aria-hidden
-        className="hebrew-ghost pointer-events-none absolute -right-2 top-1/2 -translate-y-1/2 text-[6rem] md:text-[9rem]"
-      >
-        אמת
-      </span>
-      <figure className="relative">
-        <blockquote className="mx-auto max-w-2xl font-scripture text-lg italic leading-relaxed text-foreground md:text-xl">
-          &ldquo;Fear Elohim and keep His commandments, for this is the whole duty of
-          man.&rdquo;
-        </blockquote>
-        <figcaption className="mt-3 font-subheading text-xs uppercase tracking-[0.25em] text-yhvh-gold-dark">
-          Ecclesiastes 12:13
-        </figcaption>
-      </figure>
-    </section>
-  );
-}
-
 /** Dark navy affirmation / commitment band. */
 export function AffirmationBand({
   heading,

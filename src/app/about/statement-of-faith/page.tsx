@@ -8,7 +8,6 @@ import {
 import {
   AboutHero,
   PillarStrip,
-  ClosingBand,
 } from "@/components/about/about-hero";
 import {
   BookOpen,
@@ -157,7 +156,6 @@ export default function StatementOfFaithPage() {
           </div>
         </section>
 
-        <ClosingBand />
       </div>
     </>
   );

@@ -10,7 +10,6 @@ import {
 import {
   AboutHero,
   PillarStrip,
-  ClosingBand,
 } from "@/components/about/about-hero";
 import {
   Star,
@@ -176,7 +175,6 @@ export default function VisionMissionPage() {
           </ul>
         </section>
 
-        <ClosingBand />
       </div>
     </>
   );

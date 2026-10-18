@@ -3,7 +3,6 @@ import { CORE_VALUES, CLOSING_AFFIRMATION } from "@/lib/content";
 import {
   AboutHero,
   PillarStrip,
-  ClosingBand,
   AffirmationBand,
 } from "@/components/about/about-hero";
 import {
@@ -150,7 +149,6 @@ export default function CoreValuesPage() {
           {CLOSING_AFFIRMATION}
         </AffirmationBand>
 
-        <ClosingBand />
       </div>
     </>
   );

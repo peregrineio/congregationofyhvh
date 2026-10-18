@@ -4,7 +4,6 @@ import { WHAT_WE_BELIEVE, CLOSING_AFFIRMATION } from "@/lib/content";
 import {
   AboutHero,
   PillarStrip,
-  ClosingBand,
   AffirmationBand,
 } from "@/components/about/about-hero";
 import { BeliefAccordion } from "@/components/about/belief-accordion";
@@ -93,7 +92,6 @@ export default function WhatWeBelievePage() {
           {CLOSING_AFFIRMATION}
         </AffirmationBand>
 
-        <ClosingBand />
       </div>
     </>
   );
