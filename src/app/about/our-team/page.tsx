@@ -19,9 +19,7 @@ const teamMembers = [
     featured: true,
   },
   {
-    // TODO: Confirm Matt's surname with the client (heard as both "Wong" and
-    // "Coux"). First name only until it is confirmed.
-    name: "Matt",
+    name: "Matt Wong",
     role: "Secretary & Treasurer",
     bio: "Keeps the records and oversees the finances of the congregation.",
     featured: false,
