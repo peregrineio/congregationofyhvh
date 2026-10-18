@@ -149,6 +149,28 @@ export const TORAH_CYCLES: { year: number; portions: TorahPortionWithDate[] }[] 
   { year: 5787, portions: PORTIONS_5787 },
 ];
 
+/** The congregation's time zone. "Today" is always the calendar date here,
+ *  not on the server (Vercel runs in UTC, which rolled the week over at
+ *  7 PM CDT on Saturday). */
+export const CONGREGATION_TIME_ZONE = 'America/Chicago';
+
+/**
+ * Today's date in Houston, as a Date at local midnight -- the same shape
+ * parsePortionDate returns, so the two compare directly. Changeover is at
+ * local midnight; there is no sunset logic.
+ */
+export function chicagoToday(now: Date = new Date()): Date {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: CONGREGATION_TIME_ZONE,
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+  }).formatToParts(now);
+  const get = (type: string) =>
+    parseInt(parts.find(part => part.type === type)?.value ?? '', 10);
+  return new Date(get('year'), get('month') - 1, get('day'));
+}
+
 /**
  * Every dated portion across all cycles, in reading order. Hebrew names repeat
  * once per cycle, so look a portion up with getPortionByHebrewName (which picks
@@ -162,7 +184,7 @@ export const TORAH_PORTIONS_WITH_DATES: TorahPortionWithDate[] = TORAH_CYCLES.fl
  * The portion being read now: the latest reading on or before `today`.
  * Before the first cycle starts it falls back to the first portion.
  */
-export function getCurrentPortionEntry(today: Date = new Date()): TorahPortionWithDate {
+export function getCurrentPortionEntry(today: Date = chicagoToday()): TorahPortionWithDate {
   for (let i = TORAH_PORTIONS_WITH_DATES.length - 1; i >= 0; i--) {
     const portion = TORAH_PORTIONS_WITH_DATES[i];
     const portionDate = parsePortionDate(portion.date);
@@ -178,7 +200,7 @@ export function getCurrentPortionEntry(today: Date = new Date()): TorahPortionWi
 /**
  * Get the current Torah portion based on today's date
  */
-export function getCurrentPortion(today: Date = new Date()): string {
+export function getCurrentPortion(today: Date = chicagoToday()): string {
   return getCurrentPortionEntry(today).hebrewName;
 }
 
@@ -186,7 +208,7 @@ export function getCurrentPortion(today: Date = new Date()): string {
  * The cycle being read now: the latest cycle that has begun by `today`
  * (the first cycle if none has). The Torah Portions page shows only this one.
  */
-export function getCurrentCycle(today: Date = new Date()): TorahPortionWithDate[] {
+export function getCurrentCycle(today: Date = chicagoToday()): TorahPortionWithDate[] {
   let current = TORAH_CYCLES[0];
   for (const cycle of TORAH_CYCLES) {
     const first = parsePortionDate(cycle.portions[0].date);
@@ -247,7 +269,7 @@ export const BOOK_NAMES: Record<TorahBook, string> = {
  */
 export function getPortionByHebrewName(
   hebrewName: string,
-  near: Date = new Date(),
+  near: Date = chicagoToday(),
 ): TorahPortionWithDate | undefined {
   let best: TorahPortionWithDate | undefined;
   let bestDistance = Infinity;
@@ -296,7 +318,7 @@ export function getPortionOnDate(date: Date): TorahPortionWithDate | undefined {
 }
 
 /** First reading Saturday on or after `from`. Undefined once the cycle ends. */
-export function getNextPortion(from: Date = new Date()): TorahPortionWithDate | undefined {
+export function getNextPortion(from: Date = chicagoToday()): TorahPortionWithDate | undefined {
   const cutoff = new Date(from);
   cutoff.setHours(0, 0, 0, 0);
 

@@ -30,6 +30,10 @@ export const metadata: Metadata = {
     "Join us for Shabbat services. Learn about service times, what to expect, and the weekly Torah portion.",
 };
 
+// The weekly portion has to move with the calendar rather than being frozen
+// at build time.
+export const revalidate = 3600;
+
 /** The four things a visitor is being invited into, shown in the hero. */
 const invitation = [
   { label: "Worship", detail: "Exalt YHVH together", icon: Heart },

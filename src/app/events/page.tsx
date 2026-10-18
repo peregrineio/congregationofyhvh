@@ -8,6 +8,7 @@ import {
   parsePortionDate,
   toDateKey,
   getNextPortion,
+  chicagoToday,
 } from "@/lib/torah-utils";
 import {
   getChannelVideos,
@@ -76,7 +77,8 @@ export default async function EventsPage() {
     },
   );
 
-  const today = new Date();
+  // Houston's calendar date, not the server's (UTC) one.
+  const today = chicagoToday();
   const next = getNextPortion(today);
   const matchedCount = entries.filter((entry) => entry.video).length;
 

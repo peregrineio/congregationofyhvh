@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/constants";
-import { AboutHero, ClosingBand } from "@/components/about/about-hero";
+import { AboutHero } from "@/components/about/about-hero";
 import {
   BookOpen,
   Users,
@@ -285,8 +285,6 @@ export default function GivePage() {
             </div>
           </div>
         </section>
-
-        <ClosingBand />
       </div>
     </>
   );

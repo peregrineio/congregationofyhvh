@@ -16,7 +16,7 @@ import {
   Sparkles,
   HandHeart,
   Heart,
-  Church,
+  House,
   Baby,
   Sun,
 } from "@/components/icons";
@@ -47,7 +47,7 @@ const VALUE_ICONS: Record<number, React.ComponentType<{ className?: string }>> =
   4: BookOpen,
   5: Flame,
   6: Users,
-  7: Church,
+  7: House,
   8: Sparkles,
   9: Baby,
 };

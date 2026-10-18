@@ -32,6 +32,7 @@ export {
   User,
   UserPlus,
   Baby,
+  House,
 
   // Location / Contact
   MapPin,
@@ -41,8 +42,8 @@ export {
   Calendar,
   CalendarDays,
 
-  // Faith / Ministry
-  Church,
+  // Faith / Ministry (no cross-bearing glyphs: Cross and Church are
+  // deliberately not exported)
   Crown,
   Shield,
   Flame,

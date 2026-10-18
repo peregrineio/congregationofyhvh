@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import type { FAQCategory, FAQItem } from "@/lib/content";
 import {
-  Church,
+  House,
   BookOpen,
   Flame,
   Users,
@@ -19,8 +19,8 @@ import {
  * belongs to before they can read anything.
  */
 
-const CATEGORY_ICONS: Record<FAQCategory, typeof Church> = {
-  "About YHVH": Church,
+const CATEGORY_ICONS: Record<FAQCategory, typeof House> = {
+  "About YHVH": House,
   "Faith & Beliefs": BookOpen,
   "Worship & Shabbat": Flame,
   Visiting: Users,

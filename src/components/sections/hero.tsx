@@ -107,7 +107,7 @@ export function Hero() {
               <GoldButton size="lg">Join Us This Shabbat</GoldButton>
             </Link>
             <Link href="/about/vision-mission">
-              <OutlinedButton size="lg" className="border-white text-white hover:bg-white/10">
+              <OutlinedButton size="lg" className="border-white bg-black/55 text-white shadow-sm backdrop-blur-sm hover:bg-black/70 hover:text-white">
                 Learn More
               </OutlinedButton>
             </Link>

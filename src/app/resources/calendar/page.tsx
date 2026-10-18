@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { FEAST_DAYS_2026 } from "@/lib/content";
+import { chicagoToday } from "@/lib/torah-utils";
 import {
   CalendarDays,
   BookOpen,
@@ -39,8 +40,12 @@ const principles = [
   },
 ];
 
+// Past feasts are marked against today's date, so the page cannot be frozen
+// at build time.
+export const revalidate = 3600;
+
 export default function BiblicalCalendarPage() {
-  const today = new Date();
+  const today = chicagoToday();
 
   return (
     <>
