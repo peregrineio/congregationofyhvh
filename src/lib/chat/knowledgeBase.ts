@@ -493,6 +493,22 @@ export const faqPatterns: KBEntry[] = [
     boostOn: ["/ministries", "/give"],
   },
   {
+    id: "plan-visit",
+    title: "Plan a visit",
+    utterances: [
+      "i'd like to plan a visit",
+      "i want to plan a visit",
+      "i want to visit",
+      "can i come visit",
+      "i'm thinking of visiting",
+      "i would like to come this saturday",
+      "first time visiting",
+    ],
+    keywords: ["plan", "visit", "visiting", "come", "attend"],
+    response: "We'd love to have you! 🕯️ Tap below and I'll let the congregation know you're coming.",
+    quickReplies: ["Plan a visit", "What to expect", "Service times"],
+  },
+  {
     id: "prayer",
     title: "Share a prayer request",
     utterances: [

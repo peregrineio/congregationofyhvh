@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 import { AboutHero } from "@/components/about/about-hero";
 import {
   BookOpen,
@@ -110,8 +111,9 @@ export default function GivePage() {
           </div>
 
           <ul className="mt-9 grid divide-y divide-yhvh-gold/15 sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-5 lg:divide-x">
-            {whyWeGive.map(({ title, detail, reference, icon: Icon }) => (
-              <li key={title} className="p-5 text-center">
+            {whyWeGive.map(({ title, detail, reference, icon: Icon }, i) => (
+              // The fifth card spans both columns at sm so it doesn't sit alone on the left.
+              <li key={title} className={cn("p-5 text-center", i === whyWeGive.length - 1 && "sm:col-span-2 lg:col-span-1")}>
                 <span className="inline-flex size-12 items-center justify-center rounded-full border border-yhvh-gold/25 bg-yhvh-gold/[0.07] text-yhvh-gold-dark">
                   <Icon className="size-5" aria-hidden />
                 </span>

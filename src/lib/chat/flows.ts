@@ -63,7 +63,7 @@ export const visitFlow: Flow = {
     },
     done: {
       id: "done",
-      say: ["Thank you, {name}! We look forward to meeting you. 🙏"],
+      say: [],
     },
   },
   submitWithout: "name",
@@ -101,7 +101,7 @@ export const prayerFlow: Flow = {
     },
     done: {
       id: "done",
-      say: ["Thank you, {name}. You are not alone in this. 🙏"],
+      say: [],
     },
   },
   submitWithout: "prayer",
@@ -136,7 +136,7 @@ export const humanFlow: Flow = {
     },
     done: {
       id: "done",
-      say: ["Thank you, {name}."],
+      say: [],
     },
   },
 };
@@ -263,10 +263,10 @@ function validateInput(input: FlowInput, value: string): string | null {
 }
 
 function finishFrom(state: FlowState): FlowAdvance {
-  const name = state.slots.name;
   return {
     state: null,
-    say: [name ? `Thank you, ${name}.` : "Thank you."],
+    // The widget asks to confirm, then thanks only after a real send.
+    say: [],
     retrying: false,
     completedLead: leadFromState(state),
   };

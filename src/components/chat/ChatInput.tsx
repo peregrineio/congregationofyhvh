@@ -42,7 +42,8 @@ export const ChatInput = forwardRef<HTMLInputElement, ChatInputProps>(
             disabled={disabled}
             className={cn(
               "flex-1 px-4 py-2.5 rounded-full border border-stone-300 bg-white",
-              "font-subheading text-sm text-stone-900 placeholder:text-stone-500",
+              // 16px below sm so iOS doesn't zoom the page on focus
+              "font-subheading text-base sm:text-sm text-stone-900 placeholder:text-stone-500",
               "focus:outline-none focus:ring-2 focus:ring-yhvh-gold/50 focus:border-yhvh-gold",
               "transition-all",
               disabled && "bg-stone-50 cursor-not-allowed opacity-60"

@@ -82,7 +82,7 @@ export const ChatWindow = forwardRef<HTMLDivElement, ChatWindowProps>(
 
             {/* Trust line — must stay true: see /api/chat-transcript */}
             <p className="shrink-0 px-4 pb-2 font-subheading text-[10px] text-stone-500 text-center bg-white">
-              Runs in your browser — nothing leaves this page unless you choose to send it.
+              Runs in your browser — nothing leaves this page unless you press Send.
             </p>
           </motion.div>
         )}

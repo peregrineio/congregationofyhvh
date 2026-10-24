@@ -36,7 +36,7 @@ function YouTubeButton({ className }: { className?: string }) {
 // Shared editorial nav-link treatment — small caps with a gold underline
 // that draws in from the left on hover/focus
 const navLinkClasses =
-  "relative whitespace-nowrap font-subheading text-[0.8rem] font-semibold uppercase tracking-[0.18em] text-warm-gray transition-colors duration-300 hover:text-yhvh-gold-dark focus:text-yhvh-gold-dark outline-none focus-visible:ring-2 focus-visible:ring-yhvh-gold rounded-sm " +
+  "relative whitespace-nowrap font-subheading text-[0.74rem] min-[1680px]:text-[0.8rem] font-semibold uppercase tracking-[0.1em] min-[1680px]:tracking-[0.18em] text-warm-gray transition-colors duration-300 hover:text-yhvh-gold-dark focus:text-yhvh-gold-dark outline-none focus-visible:ring-2 focus-visible:ring-yhvh-gold rounded-sm " +
   "after:absolute after:-bottom-1 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-gradient-to-r after:from-yhvh-gold after:to-yhvh-gold/30 after:transition-transform after:duration-300 hover:after:scale-x-100 focus-visible:after:scale-x-100";
 
 // ---- Desktop dropdown ----
@@ -84,7 +84,7 @@ function DesktopDropdown({ link }: { link: NavLink }) {
 function DesktopNav() {
   return (
     <nav
-      className="hidden xl:flex items-center gap-6"
+      className="hidden xl:flex items-center gap-3.5 min-[1680px]:gap-6"
       aria-label="Main navigation"
     >
       {NAV_LINKS.map((link) => {
@@ -350,7 +350,7 @@ export function Header() {
                 {/* Three stacked lines in the artwork. Shown on small screens
                     where the nav is a hamburger, hidden through lg where the
                     full nav needs the room, then back at xl. */}
-                <span className="hidden whitespace-nowrap pb-0.5 text-[0.5rem] leading-[1.35] tracking-[0.22em] text-[#78726a] sm:block md:text-[0.55rem] lg:text-[0.6rem]">
+                <span className="hidden whitespace-nowrap pb-0.5 text-[0.5rem] leading-[1.35] tracking-[0.22em] text-[#78726a] sm:block md:text-[0.55rem] lg:text-[0.6rem] xl:hidden min-[1680px]:block">
                   THE WAY
                   <br />
                   THE TRUTH

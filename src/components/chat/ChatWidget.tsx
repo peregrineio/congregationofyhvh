@@ -42,6 +42,25 @@ const FLOW_CHIPS: Record<string, string> = {
   "talk to a human": "human",
 };
 
+const SEND_CHIP = "Send it";
+const CANCEL_CHIP = "Don't send";
+
+/** What the visitor is about to send, shown before anything leaves the page. */
+function summarizeLead(lead: LeadInfo): string {
+  const lines: string[] = [];
+  if (lead.name) lines.push(`• Name: ${lead.name}`);
+  if (lead.visitWhen) lines.push(`• When: ${lead.visitWhen}`);
+  if (lead.party) lines.push(`• Coming with: ${lead.party}`);
+  if (lead.prayer) lines.push(`• Prayer request: ${lead.prayer}`);
+  if (lead.topic) lines.push(`• About: ${lead.topic}`);
+  lines.push(`• Contact: ${lead.contact || "(none, no follow-up)"}`);
+  return `Here's what I'll send to the congregation, along with this part of our chat:
+
+${lines.join("\n")}
+
+Send it?`;
+}
+
 const SENT_MESSAGE: Record<string, string> = {
   prayer: "Your prayer request has been sent to the congregation. 🙏",
   visit: "Your note has been sent — the congregation will know to look out for you.",
@@ -69,6 +88,10 @@ export function ChatWidget() {
   const isOpenRef = useRef(false);
   const flowRef = useRef<FlowState | null>(null);
   const leadRef = useRef<LeadInfo>({});
+  // A completed flow waits here until the visitor presses Send.
+  const pendingLeadRef = useRef<LeadInfo | null>(null);
+  // Index of the first message of the current flow: only that part is sent.
+  const flowStartRef = useRef(0);
   const unmatchedRef = useRef<string[]>([]);
   const missStreakRef = useRef(0);
   const restoredRef = useRef(false);
@@ -142,13 +165,13 @@ export function ChatWidget() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: conversation.messages.map((m) => ({
+          messages: conversation.messages.slice(flowStartRef.current).map((m) => ({
             role: m.role,
             content: m.content,
             timestamp: m.timestamp.toISOString(),
           })),
           page: conversation.page,
-          startTime: (conversation.startTime ?? new Date()).toISOString(),
+          startTime: (conversation.messages[flowStartRef.current]?.timestamp ?? conversation.startTime ?? new Date()).toISOString(),
           endTime: new Date().toISOString(),
           lead,
           unmatched: unmatchedRef.current.length > 0 ? unmatchedRef.current : undefined,
@@ -311,6 +334,8 @@ export function ChatWidget() {
 
   const beginFlow = useCallback(
     (flowId: string) => {
+      pendingLeadRef.current = null;
+      flowStartRef.current = Math.max(0, conversationRef.current.messages.length - 1);
       const state = startFlow(flowId);
       const opening = enterFlow(state);
       flowRef.current = opening.state;
@@ -345,17 +370,39 @@ export function ChatWidget() {
         leadRef.current = { ...leadRef.current, ...lead };
       }
 
+      if (lead) {
+        // Nothing is sent until the visitor reviews it and presses Send.
+        pendingLeadRef.current = lead;
+        sendBotBubbles([summarizeLead(lead)], { quickReplies: [SEND_CHIP, CANCEL_CHIP] });
+        return;
+      }
+
       sendBotBubbles(result.say, {
         quickReplies: result.input?.type === "buttons" ? result.input.options : undefined,
       });
+    },
+    [pathname, sendBotBubbles]
+  );
 
-      if (lead) {
+  const confirmPending = useCallback(
+    (send: boolean) => {
+      const lead = pendingLeadRef.current;
+      pendingLeadRef.current = null;
+      if (!lead) return;
+      if (!send) {
+        sendBotBubbles(["Okay, nothing was sent. What else can I help with?"], {
+          quickReplies: getPageContext(pathname).quickReplies,
+        });
+        return;
+      }
+      {
         // Report the real outcome — never confirm a send that didn't happen
         const delivery = sendTranscript(lead);
         bubbleQueueRef.current.then(async () => {
           const ok = await delivery;
           if (ok) {
-            sendBotBubbles([SENT_MESSAGE[lead.flow ?? "human"] ?? SENT_MESSAGE.human, "Anything else I can help with?"], {
+            const name = lead.name && lead.name.toLowerCase() !== "anonymous" ? `, ${lead.name}` : "";
+            sendBotBubbles([`Thank you${name}. ${SENT_MESSAGE[lead.flow ?? "human"] ?? SENT_MESSAGE.human}`, "Anything else I can help with?"], {
               quickReplies: getPageContext(pathname).quickReplies,
             });
           } else {
@@ -380,6 +427,14 @@ export function ChatWidget() {
       if (!trimmed) return;
 
       appendMessage({ id: generateId(), role: "user", content: trimmed, timestamp: new Date() });
+
+      // 0. A completed flow is waiting for Send / Don't send
+      if (pendingLeadRef.current) {
+        if (isAffirmation(trimmed) || /^send\b/i.test(trimmed)) confirmPending(true);
+        else if (/^(no|nope|don'?t|cancel|stop)\b/i.test(trimmed)) confirmPending(false);
+        else sendBotBubbles([`Shall I send it? Tap "${SEND_CHIP}" or "${CANCEL_CHIP}".`], { quickReplies: [SEND_CHIP, CANCEL_CHIP] });
+        return;
+      }
 
       // 1. Active guided flow consumes the answer — but questions typed
       //    mid-flow must be ANSWERED, never stored as a slot value
@@ -466,12 +521,18 @@ export function ChatWidget() {
       missStreakRef.current = 0;
       sendBotBubbles(chunkResponse(result.response), { quickReplies: result.quickReplies });
     },
-    [appendMessage, beginFlow, feedFlow, pathname, sendBotBubbles]
+    [appendMessage, beginFlow, confirmPending, feedFlow, pathname, sendBotBubbles]
   );
 
   const handleQuickReply = useCallback(
     (reply: string) => {
       const lower = reply.toLowerCase();
+
+      if (pendingLeadRef.current && (reply === SEND_CHIP || reply === CANCEL_CHIP)) {
+        appendMessage({ id: generateId(), role: "user", content: reply, timestamp: new Date() });
+        confirmPending(reply === SEND_CHIP);
+        return;
+      }
 
       // Flow-starting chips
       const flowId = FLOW_CHIPS[lower];
@@ -499,7 +560,7 @@ export function ChatWidget() {
 
       handleSendMessage(reply);
     },
-    [appendMessage, beginFlow, handleSendMessage, pathname, sendBotBubbles]
+    [appendMessage, beginFlow, confirmPending, handleSendMessage, pathname, sendBotBubbles]
   );
 
   // Stable ref so handleSendMessage can dispatch affirmations without a

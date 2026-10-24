@@ -30,8 +30,20 @@ const SIMILARITY_THRESHOLD = 0.45;
 const QUERY_TIMEOUT_MS = 3000;
 
 /** Kick off the lazy model load. Called when the chat first opens. */
+/**
+ * Off unless NEXT_PUBLIC_CHAT_SEMANTIC=1. The model and its WASM runtime
+ * load from huggingface.co and cdn.jsdelivr.net (tens of MB, and the
+ * visitor's IP goes to both), so by default the chat answers from the
+ * lexical engine alone and nothing loads from a third party.
+ */
+const SEMANTIC_ENABLED = process.env.NEXT_PUBLIC_CHAT_SEMANTIC === "1";
+
 export function warmSemantic(): void {
   if (state !== "idle") return;
+  if (!SEMANTIC_ENABLED) {
+    state = "failed";
+    return;
+  }
   if (typeof window === "undefined" || typeof Worker === "undefined") {
     state = "failed";
     return;
