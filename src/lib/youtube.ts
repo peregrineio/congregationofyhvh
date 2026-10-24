@@ -384,7 +384,12 @@ function livePageMiss(html: string): string {
   const canonical = html.match(/<link rel="canonical" href="([^"]*)"/)?.[1]?.replace("https://www.youtube.com", "") ?? "none";
   const details = playerDetails(html);
   if (!details) return `no-player ${size} canonical=${canonical} isLive:${(html.match(/isLive(?:\\x22|\\"|")?:true/g) ?? []).length}`;
-  if (!/"isLive":true\b/.test(details)) return `player-not-live ${size} canonical=${canonical}`;
+  if (!/"isLive":true\b/.test(details)) {
+    const n = html.replace(/\\x22/g, '"');
+    const play = n.match(/"playabilityStatus":\{"status":"([A-Z_]+)"/)?.[1] ?? "?";
+    const vid = details.match(/"videoId":"([A-Za-z0-9_-]{11})"/)?.[1] ?? "?";
+    return `player-not-live ${size} canonical=${canonical} playability=${play} video=${vid}`;
+  }
   if (!details.includes(`"channelId":"${YOUTUBE_CHANNEL_ID}"`)) return `other-channel ${size}`;
   return `canonical-mismatch ${size} canonical=${canonical}`;
 }
