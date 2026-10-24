@@ -41,6 +41,10 @@ const FEAST_WORDS = [
   "bikkurim",
 ];
 
+// Extra Spanish cues for titles the shared detector in lib/youtube misses
+// (e.g. "Deberían Los Cristianos Seguir Observando Las Fiestas Bíblicas").
+const SPANISH_WORDS = /\b(deberían|cristianos|fiestas|bíblicas|nuestro|dios|iglesia|enseñanza|porción)\b/i;
+
 interface Topic {
   id: string;
   title: string;
@@ -84,8 +88,10 @@ function groupByTopic(videos: YouTubeVideo[]): Topic[] {
 
   for (const video of videos) {
     const lower = video.title.toLowerCase();
-    if (video.isSpanish) spanish.videos.push(video);
-    else if (video.portionHebrewName) torah.videos.push(video);
+    if (video.isSpanish || SPANISH_WORDS.test(video.title)) spanish.videos.push(video);
+    // Titles that say "Torah Portion" count even when the portion name is
+    // spelled differently from our data (Bereshit vs Bereishit).
+    else if (video.portionHebrewName || lower.includes("torah portion")) torah.videos.push(video);
     else if (FEAST_WORDS.some((word) => lower.includes(word)))
       feasts.videos.push(video);
     else more.videos.push(video);
