@@ -302,6 +302,8 @@ export interface LiveStatus {
   reason?: "no-api-key" | "outside-window" | "not-live" | "error" | "quota";
   /** Which check answered: the Data API, or the keyless public /live page. */
   source?: "api" | "page";
+  /** Page check only: which step said "not live" (diagnostic, not sensitive). */
+  pageCheck?: string;
 }
 
 const OFFLINE: LiveStatus = { isLive: false, reason: "not-live" };
@@ -360,6 +362,17 @@ export function parseLivePage(html: string, channelId: string = YOUTUBE_CHANNEL_
   return { videoId, title: title ? decodeEntities(title.replace(/\\u0026/g, "&").replace(/\\"/g, '"')) : undefined };
 }
 
+/** Why parseLivePage said no, for the /api/live response. */
+function livePageMiss(html: string): string {
+  const size = `${Math.round(html.length / 1024)}kB`;
+  if (/consent\.youtube\.com|Before you continue/i.test(html)) return `consent-wall ${size}`;
+  const details = html.match(/"videoDetails":\{"videoId":"[A-Za-z0-9_-]{11}"([^{}]*)/);
+  if (!details) return `no-player ${size}`;
+  if (!/"isLive":true\b/.test(details[1])) return `player-not-live ${size}`;
+  if (!details[1].includes(`"channelId":"${YOUTUBE_CHANNEL_ID}"`)) return `other-channel ${size}`;
+  return `canonical-mismatch ${size}`;
+}
+
 /** Keyless fallback: the public live page, cached 60s like the API path. */
 async function getLiveStatusFromPage(): Promise<LiveStatus> {
   try {
@@ -371,8 +384,10 @@ async function getLiveStatusFromPage(): Promise<LiveStatus> {
       next: { revalidate: 60 },
     });
     if (!response.ok) return { isLive: false, reason: "error", source: "page" };
-    const hit = parseLivePage(await response.text());
-    return hit ? { isLive: true, videoId: hit.videoId, title: hit.title, source: "page" } : { ...OFFLINE, source: "page" };
+    const html = await response.text();
+    const hit = parseLivePage(html);
+    if (hit) return { isLive: true, videoId: hit.videoId, title: hit.title, source: "page" };
+    return { ...OFFLINE, source: "page", pageCheck: livePageMiss(html) };
   } catch {
     return { isLive: false, reason: "error", source: "page" };
   }
