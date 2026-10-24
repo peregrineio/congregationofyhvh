@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import { liveHref, useLiveStatus } from "./use-live";
 
 /**
  * Site-wide "we are streaming" bar.
@@ -16,46 +17,9 @@ import { useEffect, useRef, useState } from "react";
  * while the tab is hidden — no point polling a backgrounded tab.
  */
 
-const POLL_INTERVAL_MS = 120_000;
-
-interface LiveResponse {
-  isLive: boolean;
-  videoId?: string;
-  title?: string;
-}
-
 export function LiveBar() {
-  const [live, setLive] = useState<LiveResponse | null>(null);
+  const live = useLiveStatus();
   const barRef = useRef<HTMLAnchorElement>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function check() {
-      if (document.visibilityState === "hidden") return;
-
-      try {
-        const response = await fetch("/api/live");
-        if (!response.ok) return;
-
-        const data = (await response.json()) as LiveResponse;
-        if (!cancelled) setLive(data.isLive ? data : null);
-      } catch {
-        // Offline, blocked, or the route is unhappy -- stay silent rather
-        // than surfacing an error the congregation cannot act on.
-      }
-    }
-
-    check();
-    const timer = setInterval(check, POLL_INTERVAL_MS);
-    document.addEventListener("visibilitychange", check);
-
-    return () => {
-      cancelled = true;
-      clearInterval(timer);
-      document.removeEventListener("visibilitychange", check);
-    };
-  }, []);
 
   /**
    * Publish the bar's own height on <html> so the fixed header and the page
@@ -95,9 +59,7 @@ export function LiveBar() {
 
   if (!live?.isLive) return null;
 
-  const href = live.videoId
-    ? `https://www.youtube.com/watch?v=${live.videoId}`
-    : "https://www.youtube.com/@CongregationofYHVH/live";
+  const href = liveHref(live);
 
   return (
     <a

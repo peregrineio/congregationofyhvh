@@ -300,6 +300,8 @@ export interface LiveStatus {
   title?: string;
   /** Why we are not live — useful when debugging a silent badge. */
   reason?: "no-api-key" | "outside-window" | "not-live" | "error" | "quota";
+  /** Which check answered: the Data API, or the keyless public /live page. */
+  source?: "api" | "page";
 }
 
 const OFFLINE: LiveStatus = { isLive: false, reason: "not-live" };
@@ -339,10 +341,48 @@ export function isWithinServiceWindow(now: Date = new Date()): boolean {
  * and network errors all resolve to "not live" — the badge simply does not
  * appear, which is the correct failure mode for a church website.
  */
+/**
+ * Read the channel's public /live page (no key, no quota). Live ONLY when all
+ * three agree: the player block says "isLive":true for an 11-char videoId,
+ * that block belongs to our channel, and the page's canonical URL is that
+ * same watch?v=. An upcoming stream (no isLive), a channel page canonical, a
+ * consent wall or any layout change all come out as not live.
+ */
+export function parseLivePage(html: string, channelId: string = YOUTUBE_CHANNEL_ID): { videoId: string; title?: string } | null {
+  const details = html.match(/"videoDetails":\{"videoId":"([A-Za-z0-9_-]{11})"([^{}]*)/);
+  if (!details) return null;
+  const [, videoId, rest] = details;
+  if (!/"isLive":true\b/.test(rest)) return null;
+  if (!rest.includes(`"channelId":"${channelId}"`)) return null;
+  const canonical = html.match(/<link rel="canonical" href="https:\/\/www\.youtube\.com\/watch\?v=([A-Za-z0-9_-]{11})"/);
+  if (canonical?.[1] !== videoId) return null;
+  const title = rest.match(/"title":"((?:[^"\\]|\\.)*)"/)?.[1];
+  return { videoId, title: title ? decodeEntities(title.replace(/\\u0026/g, "&").replace(/\\"/g, '"')) : undefined };
+}
+
+/** Keyless fallback: the public live page, cached 60s like the API path. */
+async function getLiveStatusFromPage(): Promise<LiveStatus> {
+  try {
+    const response = await fetch(`https://www.youtube.com/channel/${YOUTUBE_CHANNEL_ID}/live`, {
+      headers: {
+        "accept-language": "en-US,en;q=0.9",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36",
+      },
+      next: { revalidate: 60 },
+    });
+    if (!response.ok) return { isLive: false, reason: "error", source: "page" };
+    const hit = parseLivePage(await response.text());
+    return hit ? { isLive: true, videoId: hit.videoId, title: hit.title, source: "page" } : { ...OFFLINE, source: "page" };
+  } catch {
+    return { isLive: false, reason: "error", source: "page" };
+  }
+}
+
 export async function getLiveStatus(now: Date = new Date()): Promise<LiveStatus> {
-  const apiKey = process.env.YOUTUBE_API_KEY;
-  if (!apiKey) return { isLive: false, reason: "no-api-key" };
   if (!isWithinServiceWindow(now)) return { isLive: false, reason: "outside-window" };
+  const apiKey = process.env.YOUTUBE_API_KEY;
+  // No key (previews) → the public live page. The API stays primary when set.
+  if (!apiKey) return getLiveStatusFromPage();
 
   const endpoint = new URL("https://www.googleapis.com/youtube/v3/search");
   endpoint.searchParams.set("part", "snippet");
@@ -357,8 +397,9 @@ export async function getLiveStatus(now: Date = new Date()): Promise<LiveStatus>
 
     // 403 here is almost always exhausted quota. Treated as offline rather
     // than retried, so a spent quota cannot turn into a request storm.
-    if (response.status === 403) return { isLive: false, reason: "quota" };
-    if (!response.ok) return { isLive: false, reason: "error" };
+    // Spent quota or an API error falls back to the keyless page check.
+    if (response.status === 403) return getLiveStatusFromPage();
+    if (!response.ok) return getLiveStatusFromPage();
 
     const payload = (await response.json()) as {
       items?: { id?: { videoId?: string }; snippet?: { title?: string } }[];
@@ -371,8 +412,9 @@ export async function getLiveStatus(now: Date = new Date()): Promise<LiveStatus>
       isLive: true,
       videoId: item.id.videoId,
       title: item.snippet?.title,
+      source: "api",
     };
   } catch {
-    return { isLive: false, reason: "error" };
+    return getLiveStatusFromPage();
   }
 }

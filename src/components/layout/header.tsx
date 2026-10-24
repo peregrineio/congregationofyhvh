@@ -7,6 +7,7 @@ import { NAV_LINKS } from "@/lib/constants";
 import type { NavLink } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { GoldButton } from "@/components/ui/gold-button";
+import { liveHref, useLiveStatus } from "./use-live";
 import { Menu, X, ChevronDown, Youtube } from "@/components/icons";
 
 // Public channel URL. Not imported from lib/youtube: that module reads the
@@ -16,19 +17,29 @@ const YOUTUBE_CHANNEL_URL = "https://www.youtube.com/@CongregationofYHVH";
 // Always-visible YouTube button (Pastor Frank, 10/10), separate from the
 // live bar, which only appears during a stream.
 function YouTubeButton({ className }: { className?: string }) {
+  // While a service is streaming, the button links to the live video and
+  // carries a red LIVE badge (same check as the LiveBar).
+  const live = useLiveStatus();
   return (
     <a
-      href={YOUTUBE_CHANNEL_URL}
+      href={live ? liveHref(live) : YOUTUBE_CHANNEL_URL}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Our YouTube channel (opens in a new tab)"
-      title="Our YouTube channel"
+      aria-label={live ? "Watch our live stream on YouTube (opens in a new tab)" : "Our YouTube channel (opens in a new tab)"}
+      title={live ? "Live now on YouTube" : "Our YouTube channel"}
       className={cn(
-        "inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-yhvh-gold/30 text-yhvh-gold-dark transition-colors hover:bg-yhvh-gold/10 hover:text-[#c4302b] outline-none focus-visible:ring-2 focus-visible:ring-yhvh-gold",
-        className,
+        "relative inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-yhvh-gold/30 text-yhvh-gold-dark transition-colors hover:bg-yhvh-gold/10 hover:text-[#c4302b] outline-none focus-visible:ring-2 focus-visible:ring-yhvh-gold",
+        live && "border-[#c4302b]/60 text-[#c4302b]",
+        className
       )}
     >
       <Youtube className="size-5" aria-hidden="true" />
+      {live ? (
+        <span aria-hidden className="absolute -right-2 -top-1.5 inline-flex items-center gap-1 rounded-full bg-[#c4302b] px-1.5 py-px text-[0.55rem] font-bold uppercase leading-tight tracking-wider text-white shadow">
+          <span className="size-1.5 rounded-full bg-white motion-safe:animate-pulse" />
+          Live
+        </span>
+      ) : null}
     </a>
   );
 }

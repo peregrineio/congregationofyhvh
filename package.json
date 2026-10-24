@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "chat:embeddings": "tsx scripts/generate-chat-embeddings.ts"
+    "chat:embeddings": "tsx scripts/generate-chat-embeddings.ts",
+    "test": "node --import tsx --test src/lib/*.test.ts"
   },
   "dependencies": {
     "@huggingface/transformers": "^4.3.0",
