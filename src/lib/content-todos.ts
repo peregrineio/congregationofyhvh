@@ -33,14 +33,6 @@ export const CONTENT_TODOS = [
   },
   {
     category: "Service Info",
-    item: "Phone number",
-    file: "src/lib/constants.ts",
-    field: "SITE_CONFIG.phone",
-    currentValue: "(empty)",
-    note: "Need congregation phone number",
-  },
-  {
-    category: "Service Info",
     item: "Email address",
     file: "src/lib/constants.ts",
     field: "SITE_CONFIG.email",

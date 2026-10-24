@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { SITE_CONFIG, FOOTER_LINKS, SCRIPTURES } from "@/lib/constants";
-import { MapPin, Phone, Mail, Clock } from "@/components/icons";
+import { MapPin, Mail, Clock } from "@/components/icons";
 
 function FooterLinkGroup({
   title,
@@ -123,17 +123,6 @@ export function Footer() {
                       className="transition-colors hover:text-yhvh-gold-light"
                     >
                       {SITE_CONFIG.email}
-                    </a>
-                  </li>
-                )}
-                {SITE_CONFIG.phone && (
-                  <li className="flex items-center gap-3 font-body text-sm text-white/55">
-                    <Phone className="size-4 shrink-0 text-yhvh-gold/70" />
-                    <a
-                      href={`tel:${SITE_CONFIG.phone}`}
-                      className="transition-colors hover:text-yhvh-gold-light"
-                    >
-                      {SITE_CONFIG.phone}
                     </a>
                   </li>
                 )}

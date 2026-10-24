@@ -7,7 +7,6 @@ import {
   MapPin,
   Clock,
   Mail,
-  Phone,
   Flame,
   Users,
   BookOpen,
@@ -44,12 +43,6 @@ export default function ContactPage() {
       icon: Mail,
       href: `mailto:${SITE_CONFIG.email}`,
       lines: [SITE_CONFIG.email],
-    },
-    {
-      label: "Call Us",
-      icon: Phone,
-      href: `tel:${SITE_CONFIG.phone.replace(/[^\d+]/g, "")}`,
-      lines: [SITE_CONFIG.phone],
     },
   ];
 

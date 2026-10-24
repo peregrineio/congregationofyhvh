@@ -10,6 +10,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { LiveBar } from "@/components/layout/live-bar";
 import { FeedbackWidget } from "@/components/feedback-widget";
+import { ChatWidget } from "@/components/chat/ChatWidget";
 import { SITE_CONFIG } from "@/lib/constants";
 import "./globals.css";
 
@@ -110,6 +111,9 @@ export default function RootLayout({
         {/* Staging-only client feedback. Inert unless the env vars say
             staging AND the host is *.vercel.app — see the component. */}
         <FeedbackWidget />
+        {/* Ported from the Aeopic site's assistant. Runs in the browser;
+            only a completed visit / prayer / message flow is ever sent. */}
+        <ChatWidget />
       </body>
     </html>
   );

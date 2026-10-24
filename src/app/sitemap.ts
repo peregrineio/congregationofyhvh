@@ -16,6 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/about/core-values",
     "/about/our-team",
     "/shabbat",
+    "/teachings",
     "/events",
     "/resources",
     "/resources/calendar",

@@ -220,7 +220,8 @@ export default function ShabbatPage() {
               </p>
               <span aria-hidden className="mt-4 block h-px w-24 bg-yhvh-gold/40" />
               <p className="mt-4 font-body text-sm leading-relaxed text-muted-foreground">
-                All are welcome. Come as you are.
+                We meet in a rented suite at this address. All are welcome. Come
+                as you are.
               </p>
             </div>
           </article>

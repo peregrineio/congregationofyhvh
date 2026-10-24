@@ -1,5 +1,5 @@
 import { SITE_CONFIG } from "@/lib/constants";
-import { MapPin, Clock, Mail, Phone, Navigation } from "lucide-react";
+import { MapPin, Clock, Mail, Navigation } from "lucide-react";
 import { GoldButton } from "@/components/ui/gold-button";
 import { FadeIn } from "@/components/ui/motion";
 
@@ -126,25 +126,6 @@ export function Location() {
                             className="font-body text-base text-yhvh-blue transition-colors hover:text-yhvh-gold"
                           >
                             {SITE_CONFIG.email}
-                          </a>
-                        </dd>
-                      </div>
-                    </div>
-                  )}
-
-                  {SITE_CONFIG.phone && (
-                    <div className="flex items-start gap-5 py-6">
-                      <Phone className="mt-1 size-5 shrink-0 text-yhvh-gold" />
-                      <div>
-                        <dt className="font-subheading text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-yhvh-gold-dark">
-                          Phone
-                        </dt>
-                        <dd className="mt-1.5">
-                          <a
-                            href={`tel:${SITE_CONFIG.phone}`}
-                            className="font-body text-base text-yhvh-blue transition-colors hover:text-yhvh-gold"
-                          >
-                            {SITE_CONFIG.phone}
                           </a>
                         </dd>
                       </div>

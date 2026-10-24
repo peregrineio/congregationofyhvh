@@ -7,11 +7,31 @@ import { NAV_LINKS } from "@/lib/constants";
 import type { NavLink } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { GoldButton } from "@/components/ui/gold-button";
-import {
-  Menu,
-  X,
-  ChevronDown,
-} from "@/components/icons";
+import { Menu, X, ChevronDown, Youtube } from "@/components/icons";
+
+// Public channel URL. Not imported from lib/youtube: that module reads the
+// API key and must stay out of client bundles.
+const YOUTUBE_CHANNEL_URL = "https://www.youtube.com/@CongregationofYHVH";
+
+// Always-visible YouTube button (Pastor Frank, 10/10), separate from the
+// live bar, which only appears during a stream.
+function YouTubeButton({ className }: { className?: string }) {
+  return (
+    <a
+      href={YOUTUBE_CHANNEL_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Our YouTube channel (opens in a new tab)"
+      title="Our YouTube channel"
+      className={cn(
+        "inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-yhvh-gold/30 text-yhvh-gold-dark transition-colors hover:bg-yhvh-gold/10 hover:text-[#c4302b] outline-none focus-visible:ring-2 focus-visible:ring-yhvh-gold",
+        className,
+      )}
+    >
+      <Youtube className="size-5" aria-hidden="true" />
+    </a>
+  );
+}
 
 // Shared editorial nav-link treatment — small caps with a gold underline
 // that draws in from the left on hover/focus
@@ -30,7 +50,10 @@ function DesktopDropdown({ link }: { link: NavLink }) {
         aria-expanded="false"
       >
         {link.label}
-        <ChevronDown className="size-3 transition-transform duration-300 group-hover:rotate-180 text-yhvh-gold" aria-hidden="true" />
+        <ChevronDown
+          className="size-3 transition-transform duration-300 group-hover:rotate-180 text-yhvh-gold"
+          aria-hidden="true"
+        />
       </button>
       <div
         className="absolute left-0 top-full pt-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200 z-50"
@@ -60,7 +83,10 @@ function DesktopDropdown({ link }: { link: NavLink }) {
 
 function DesktopNav() {
   return (
-    <nav className="hidden xl:flex items-center gap-6" aria-label="Main navigation">
+    <nav
+      className="hidden xl:flex items-center gap-6"
+      aria-label="Main navigation"
+    >
       {NAV_LINKS.map((link) => {
         if (link.label === "Give") return null;
         if (link.children) {
@@ -72,6 +98,7 @@ function DesktopNav() {
           </Link>
         );
       })}
+      <YouTubeButton />
       <Link href="/give" aria-label="Give to the congregation">
         <GoldButton size="sm">Give</GoldButton>
       </Link>
@@ -113,7 +140,7 @@ function MobileAccordionItem({
         <ChevronDown
           className={cn(
             "size-4 text-yhvh-gold transition-transform duration-300",
-            open && "rotate-180"
+            open && "rotate-180",
           )}
           aria-hidden="true"
         />
@@ -149,7 +176,7 @@ function MobileNav({
     (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     },
-    [onClose]
+    [onClose],
   );
 
   useEffect(() => {
@@ -169,20 +196,24 @@ function MobileNav({
         "fixed inset-0 z-[60] xl:hidden transition-all duration-300",
         isOpen
           ? "opacity-100 pointer-events-auto"
-          : "opacity-0 pointer-events-none"
+          : "opacity-0 pointer-events-none",
       )}
       role="dialog"
       aria-modal="true"
       aria-label="Mobile navigation"
     >
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-warm-black/40 backdrop-blur-sm" onClick={onClose} aria-hidden="true" />
+      <div
+        className="absolute inset-0 bg-warm-black/40 backdrop-blur-sm"
+        onClick={onClose}
+        aria-hidden="true"
+      />
 
       {/* Parchment panel */}
       <div
         className={cn(
           "parchment-plate scribe-lines absolute right-0 top-0 h-full w-[300px] max-w-[85vw] rounded-none border-y-0 border-r-0 border-l border-yhvh-gold/25 transition-transform duration-300",
-          isOpen ? "translate-x-0" : "translate-x-full"
+          isOpen ? "translate-x-0" : "translate-x-full",
         )}
       >
         <div className="flex items-center justify-between border-b border-yhvh-gold/20 p-5">
@@ -208,7 +239,10 @@ function MobileNav({
           </button>
         </div>
 
-        <nav className="overflow-y-auto max-h-[calc(100vh-90px)]" aria-label="Mobile navigation">
+        <nav
+          className="overflow-y-auto max-h-[calc(100vh-90px)]"
+          aria-label="Mobile navigation"
+        >
           {NAV_LINKS.map((link) => (
             <MobileAccordionItem
               key={link.href}
@@ -217,7 +251,11 @@ function MobileNav({
             />
           ))}
           <div className="p-5">
-            <Link href="/give" onClick={onClose} aria-label="Give to the congregation">
+            <Link
+              href="/give"
+              onClick={onClose}
+              aria-label="Give to the congregation"
+            >
               <GoldButton className="w-full">Give</GoldButton>
             </Link>
           </div>
@@ -256,7 +294,7 @@ export function Header() {
           "fixed top-0 left-0 right-0 z-50 bg-warm-white/95 backdrop-blur-md transition-shadow duration-300",
           scrolled
             ? "shadow-[0_2px_20px_rgba(139,105,20,0.10)] border-b border-yhvh-gold/20"
-            : "border-b border-yhvh-gold/10"
+            : "border-b border-yhvh-gold/10",
         )}
         role="banner"
       >
@@ -326,14 +364,17 @@ export function Header() {
           {/* Desktop nav */}
           <DesktopNav />
 
-          {/* Mobile hamburger */}
-          <button
-            onClick={() => setMobileOpen(true)}
-            className="xl:hidden p-2 text-warm-gray hover:text-yhvh-gold-dark transition-colors outline-none focus-visible:ring-2 focus-visible:ring-yhvh-gold rounded-sm"
-            aria-label="Open navigation menu"
-          >
-            <Menu className="size-6" />
-          </button>
+          {/* Mobile: YouTube stays visible next to the hamburger */}
+          <div className="flex items-center gap-2 xl:hidden">
+            <YouTubeButton />
+            <button
+              onClick={() => setMobileOpen(true)}
+              className="xl:hidden p-2 text-warm-gray hover:text-yhvh-gold-dark transition-colors outline-none focus-visible:ring-2 focus-visible:ring-yhvh-gold rounded-sm"
+              aria-label="Open navigation menu"
+            >
+              <Menu className="size-6" />
+            </button>
+          </div>
         </div>
       </header>
 

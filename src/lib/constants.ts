@@ -16,7 +16,6 @@ export const SITE_CONFIG = {
   city: "Houston",
   state: "TX",
   zip: "77041",
-  phone: "(281) 469-9555",
   email: "info@congregationofyhvh.com",
   domain: "https://congregationofyhvh.com",
 } as const;
@@ -41,6 +40,7 @@ export const NAV_LINKS: NavLink[] = [
     ],
   },
   { label: "Weekly Shabbat", href: "/shabbat" },
+  { label: "Teachings", href: "/teachings" },
   { label: "Events", href: "/events" },
   {
     label: "Resources",
@@ -65,6 +65,7 @@ export const FOOTER_LINKS = {
   ],
   quickLinks: [
     { label: "Weekly Shabbat", href: "/shabbat" },
+    { label: "Teachings", href: "/teachings" },
     { label: "Give", href: "/give" },
     { label: "Contact", href: "/contact" },
     { label: "FAQ", href: "/resources/faq" },

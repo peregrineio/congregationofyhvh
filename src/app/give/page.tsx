@@ -21,10 +21,12 @@ export const metadata: Metadata = {
 
 const whyWeGive = [
   {
-    title: "Worship",
+    // DRAFT wording, pending Pastor Frank's approval (10/10 meeting: giving
+    // is not to be presented as worship).
+    title: "Thankfulness",
     detail:
-      "Giving is an act of worship and obedience to YHVH, recognizing that everything we have is from Him.",
-    reference: "Psalm 50:14",
+      "Every good gift comes from YHVH. An offering is one way we thank Him for what He has already given.",
+    reference: "James 1:17",
     icon: BookOpen,
   },
   {
@@ -46,9 +48,10 @@ const whyWeGive = [
     icon: Heart,
   },
   {
-    title: "Trust & Providence",
-    detail: "When we give, we declare our trust in YHVH as our Provider and Sustainer.",
-    reference: "Philippians 4:19",
+    // DRAFT wording, pending Pastor Frank's approval (10/10 meeting).
+    title: "From the Heart",
+    detail: "Every offering is freewill, given only as each heart is moved, never from pressure or obligation.",
+    reference: "Exodus 25:2",
     icon: Shield,
   },
 ];
@@ -69,14 +72,6 @@ const otherWays = [
     cta: "Prayer requests",
     href: "/contact",
     icon: HandHeart,
-  },
-  {
-    title: "Legacy Giving",
-    detail:
-      "Consider including the work of YHVH in your estate planning and leave a lasting impact.",
-    cta: "Contact us",
-    href: "/contact",
-    icon: Heart,
   },
 ];
 
@@ -226,7 +221,7 @@ export default function GivePage() {
             </div>
           </div>
 
-          <ul className="mt-9 grid gap-5 md:grid-cols-3">
+          <ul className="mx-auto mt-9 grid max-w-3xl gap-5 md:grid-cols-2">
             {otherWays.map(({ title, detail, cta, href, icon: Icon }) => (
               <li key={title} className="parchment-plate rounded-xl p-6">
                 <div className="flex items-start gap-4">
