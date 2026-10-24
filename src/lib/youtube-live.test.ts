@@ -39,3 +39,9 @@ test("service window: Sat 2–6 PM Central only", () => {
   assert.equal(isWithinServiceWindow(new Date("2026-10-24T18:30:00Z")), false); // Sat 1:30 PM CDT
   assert.equal(isWithinServiceWindow(new Date("2026-10-25T21:30:00Z")), false); // Sun
 });
+
+test("player JSON embedded as an escaped string (\\x22) → still live", () => {
+  const escaped = live.replace(/"videoDetails":\{[^}]*\}/, (m) => m.replace(/"/g, "\\x22"));
+  assert.notEqual(escaped, live);
+  assert.equal(parseLivePage(escaped)?.videoId, "afl4_IXfHhI");
+});

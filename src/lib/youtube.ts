@@ -351,26 +351,42 @@ export function isWithinServiceWindow(now: Date = new Date()): boolean {
  * consent wall or any layout change all come out as not live.
  */
 export function parseLivePage(html: string, channelId: string = YOUTUBE_CHANNEL_ID): { videoId: string; title?: string } | null {
-  const details = html.match(/"videoDetails":\{"videoId":"([A-Za-z0-9_-]{11})"([^{}]*)/);
+  const details = playerDetails(html);
   if (!details) return null;
-  const [, videoId, rest] = details;
-  if (!/"isLive":true\b/.test(rest)) return null;
-  if (!rest.includes(`"channelId":"${channelId}"`)) return null;
+  const videoId = details.match(/"videoId":"([A-Za-z0-9_-]{11})"/)?.[1];
+  if (!videoId) return null;
+  if (!/"isLive":true\b/.test(details)) return null;
+  if (!details.includes(`"channelId":"${channelId}"`)) return null;
   const canonical = html.match(/<link rel="canonical" href="https:\/\/www\.youtube\.com\/watch\?v=([A-Za-z0-9_-]{11})"/);
   if (canonical?.[1] !== videoId) return null;
-  const title = rest.match(/"title":"((?:[^"\\]|\\.)*)"/)?.[1];
+  const title = details.match(/"title":"((?:[^"\\]|\\.)*)"/)?.[1];
   return { videoId, title: title ? decodeEntities(title.replace(/\\u0026/g, "&").replace(/\\"/g, '"')) : undefined };
+}
+
+/**
+ * The player's videoDetails object, up to its first nested object. Pages
+ * served to some networks embed the player JSON as an escaped JS string
+ * (\x22 / \"), so both forms are normalised first; key order isn't assumed.
+ */
+function playerDetails(html: string): string | null {
+  const i = html.search(/(?:\\x22|\\"|")videoDetails(?:\\x22|\\"|"):\{/);
+  if (i < 0) return null;
+  const chunk = html.slice(i, i + 4000).replace(/\\x22/g, '"').replace(/\\"/g, '"');
+  const body = chunk.slice(chunk.indexOf("{") + 1);
+  const end = body.search(/[{}]/);
+  return end < 0 ? body : body.slice(0, end);
 }
 
 /** Why parseLivePage said no, for the /api/live response. */
 function livePageMiss(html: string): string {
   const size = `${Math.round(html.length / 1024)}kB`;
   if (/consent\.youtube\.com|Before you continue/i.test(html)) return `consent-wall ${size}`;
-  const details = html.match(/"videoDetails":\{"videoId":"[A-Za-z0-9_-]{11}"([^{}]*)/);
-  if (!details) return `no-player ${size}`;
-  if (!/"isLive":true\b/.test(details[1])) return `player-not-live ${size}`;
-  if (!details[1].includes(`"channelId":"${YOUTUBE_CHANNEL_ID}"`)) return `other-channel ${size}`;
-  return `canonical-mismatch ${size}`;
+  const canonical = html.match(/<link rel="canonical" href="([^"]*)"/)?.[1]?.replace("https://www.youtube.com", "") ?? "none";
+  const details = playerDetails(html);
+  if (!details) return `no-player ${size} canonical=${canonical} isLive:${(html.match(/isLive(?:\\x22|\\"|")?:true/g) ?? []).length}`;
+  if (!/"isLive":true\b/.test(details)) return `player-not-live ${size} canonical=${canonical}`;
+  if (!details.includes(`"channelId":"${YOUTUBE_CHANNEL_ID}"`)) return `other-channel ${size}`;
+  return `canonical-mismatch ${size} canonical=${canonical}`;
 }
 
 /** Keyless fallback: the public live page, cached 60s like the API path. */
