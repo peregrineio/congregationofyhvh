@@ -15,6 +15,7 @@ import {
   Sun,
   Sparkles,
   HandHeart,
+  Music,
   Baby,
   Mail,
   Play,
@@ -48,10 +49,10 @@ const invitation = [
  */
 const orderOfService = [
   { title: "Shofar Sounding", description: "We begin by sounding the shofar, calling the congregation to worship.", icon: Sparkles },
-  { title: "Opening Prayer", description: "Songs of praise and thanksgiving to YHVH.", icon: HandHeart },
+  { title: "Opening Prayer & Liturgy", description: "We open in prayer and read the opening liturgy together from the slides.", icon: HandHeart },
   { title: "Torah Portion Reading", description: "The weekly reading from the Torah, Haftarah, and Brit Chadashah.", icon: ScrollText },
   { title: "Teaching", description: "A message grounded in Scripture, applying truth to daily life.", icon: BookOpen },
-  { title: "Prayer & Ministry", description: "Corporate prayer and individual ministry as led by the Spirit.", icon: Flame },
+  { title: "Praise & Worship", description: "We lift up YHVH together in praise and worship.", icon: Music },
   { title: "Fellowship", description: "A time to connect, share a meal, and build community together.", icon: Users },
 ];
 

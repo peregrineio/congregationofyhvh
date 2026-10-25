@@ -168,7 +168,7 @@ export const faqPatterns: KBEntry[] = [
     ],
     keywords: ["expect", "happens", "service", "first", "visit", "visiting", "order", "shofar", "worship", "fellowship"],
     response:
-      "A Shabbat service with us includes:\n\n• **The shofar** calling the congregation to worship\n• **Praise** — songs of thanksgiving to YHVH\n• **The readings** — the week's Torah, Haftarah and Brit Chadashah portions\n• **Teaching** grounded in Scripture\n• **Prayer**\n• **Fellowship** — a shared meal afterwards\n\nWe aim for a reverent yet welcoming atmosphere. **[More about Shabbat](/shabbat)**",
+      "A Shabbat service with us includes:\n\n• **The shofar** calling the congregation to worship\n• **Opening prayer and liturgy**\n• **The readings** — the week's Torah, Haftarah and Brit Chadashah portions\n• **Teaching** grounded in Scripture\n• **Praise and worship**\n• **Fellowship** — a shared meal afterwards\n\nWe aim for a reverent yet welcoming atmosphere. **[More about Shabbat](/shabbat)**",
     quickReplies: ["Service times", "Plan a visit", "Are children welcome?"],
     boostOn: ["/shabbat"],
   },

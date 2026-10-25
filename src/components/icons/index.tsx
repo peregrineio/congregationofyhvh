@@ -51,6 +51,7 @@ export {
   Moon,
   Star,
   Sparkles,
+  Music,
 
   // UI
   Search,
