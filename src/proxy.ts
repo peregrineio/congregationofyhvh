@@ -13,10 +13,10 @@ import { NextResponse, type NextRequest } from "next/server";
  * (Deleting this file also works, but the env var is the reversible option.)
  */
 
-const DEFAULT_LOCKED_HOSTS = [
-  "congregationofyhvh.com",
-  "www.congregationofyhvh.com",
-];
+// Launched 2026-10-29: no hosts are locked by default. To put the
+// construction notice back, set CONSTRUCTION_HOSTS to
+// "congregationofyhvh.com,www.congregationofyhvh.com" and redeploy.
+const DEFAULT_LOCKED_HOSTS: string[] = [];
 
 // An explicitly-set CONSTRUCTION_HOSTS always wins -- including when it is set
 // to "", which unlocks every host. Unset falls back to the defaults above so
