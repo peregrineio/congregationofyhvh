@@ -147,6 +147,10 @@ export function Footer() {
               </a>
               .
             </p>
+            <p className="mt-2 text-center font-subheading text-[0.65rem] text-white/30">
+              Scripture taken from the New King James Version&reg;. Copyright &copy; 1982 by Thomas
+              Nelson. Used by permission. All rights reserved.
+            </p>
           </div>
         </div>
       </div>

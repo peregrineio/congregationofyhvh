@@ -125,7 +125,7 @@ export default function VisionMissionPage() {
           <div className="relative z-10 grid items-center gap-8 p-7 md:grid-cols-[1.15fr_1fr] md:p-10">
             <figure>
               <blockquote className="font-scripture text-xl italic leading-relaxed text-white/90 md:text-2xl">
-                &ldquo;Come now, let us reason together, says YHVH.&rdquo;
+                &ldquo;Come now, and let us reason together, says the LORD.&rdquo;
               </blockquote>
               <figcaption className="mt-3 font-subheading text-xs uppercase tracking-[0.25em] text-yhvh-gold-light">
                 &mdash; Isaiah 1:18

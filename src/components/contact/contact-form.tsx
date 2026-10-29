@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/constants";
 import { Send, Mail, User, CheckCircle, AlertCircle } from "@/components/icons";
 
@@ -23,6 +24,7 @@ const SUBJECTS = [
 export function ContactForm() {
   const [state, setState] = useState<State>({ status: "idle" });
   const [consent, setConsent] = useState(false);
+  const [subject, setSubject] = useState("");
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -53,6 +55,7 @@ export function ContactForm() {
       if (result.ok) {
         form.reset();
         setConsent(false);
+        setSubject("");
         setState({ status: "sent" });
         return;
       }
@@ -185,7 +188,9 @@ export function ContactForm() {
           <select
             id="subject"
             name="subject"
-            defaultValue=""
+            value={subject}
+            onChange={e => setSubject(e.target.value)}
+            aria-describedby={subject === "Prayer request" ? "prayer-note" : undefined}
             className="mt-2 w-full rounded-lg border border-yhvh-gold/25 bg-[#fdfbf6] px-4 py-3 font-body text-sm text-foreground focus:border-yhvh-gold/60 focus:outline-none focus:ring-2 focus:ring-yhvh-gold/25"
           >
             <option value="">How can we help?</option>
@@ -195,6 +200,12 @@ export function ContactForm() {
               </option>
             ))}
           </select>
+          {subject === "Prayer request" && (
+            <p id="prayer-note" className="mt-2 font-body text-xs leading-relaxed text-muted-foreground">
+              Prayer requests are shared only with the pastor and the board. Please leave out
+              medical details or anything you would not want written down.
+            </p>
+          )}
         </div>
 
         <div>
@@ -221,7 +232,13 @@ export function ContactForm() {
             onChange={e => setConsent(e.target.checked)}
             className="mt-0.5 size-4 shrink-0 rounded border-yhvh-gold/40 text-yhvh-gold focus:ring-yhvh-gold/40"
           />
-          I agree to be contacted regarding my inquiry.
+          <span>
+            I agree to be contacted regarding my inquiry. See our{" "}
+            <Link href="/privacy" className="text-yhvh-gold-dark underline underline-offset-4">
+              privacy notice
+            </Link>
+            .
+          </span>
         </label>
 
         {state.status === "unavailable" && (

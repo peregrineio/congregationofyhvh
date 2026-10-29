@@ -88,8 +88,7 @@ export default function BiblicalCalendarPage() {
 
           <figure className="mt-8">
             <blockquote className="mx-auto max-w-2xl font-scripture text-lg italic leading-relaxed text-foreground md:text-xl">
-              &ldquo;These are the appointed feasts of YHVH, the holy convocations,
-              which you shall proclaim at the time appointed for them.&rdquo;
+              &ldquo;These are the feasts of the LORD, holy convocations which you shall proclaim at their appointed times.&rdquo;
             </blockquote>
             <figcaption className="mt-3 font-subheading text-xs uppercase tracking-[0.25em] text-yhvh-gold-dark">
               &mdash; Leviticus 23:4
@@ -232,8 +231,7 @@ export default function BiblicalCalendarPage() {
             </span>
             <div>
               <blockquote className="font-scripture text-base italic leading-relaxed text-foreground">
-                &ldquo;These feasts are a shadow of good things to come, but the reality
-                is found in Messiah.&rdquo;
+                &ldquo;So let no one judge you in food or in drink, or regarding a festival or a new moon or sabbaths, which are a shadow of things to come, but the substance is of Christ.&rdquo;
               </blockquote>
               <figcaption className="mt-2 font-subheading text-xs uppercase tracking-widest text-yhvh-gold-dark">
                 &mdash; Colossians 2:16&ndash;17

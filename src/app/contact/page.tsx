@@ -222,7 +222,7 @@ export default function ContactPage() {
           </span>
           <figure className="relative">
             <blockquote className="mx-auto max-w-xl font-scripture text-xl italic leading-relaxed text-foreground md:text-2xl">
-              &ldquo;Let all that you do be done in love.&rdquo;
+              &ldquo;Let all that you do be done with love.&rdquo;
             </blockquote>
             <figcaption className="mt-4 font-subheading text-xs uppercase tracking-[0.25em] text-yhvh-gold-dark">
               &mdash; 1 Corinthians 16:14

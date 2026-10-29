@@ -200,6 +200,10 @@ export default function ShabbatPage() {
                 welcome to join, whether you are new to the faith or have been walking
                 this path for years.
               </p>
+              {/* AP-209 item 8: must match the date the board gives the Comptroller. */}
+              <p className="mt-3 font-body text-sm leading-relaxed text-muted-foreground">
+                Our first worship service was held on 7 February 2026.
+              </p>
             </div>
           </article>
 
@@ -221,8 +225,31 @@ export default function ShabbatPage() {
               </p>
               <span aria-hidden className="mt-4 block h-px w-24 bg-yhvh-gold/40" />
               <p className="mt-4 font-body text-sm leading-relaxed text-muted-foreground">
-                We meet in a rented suite at this address. All are welcome. Come
-                as you are.
+                Our services are held in Suite A1, a rented suite in this building
+                on W Little York Rd. in northwest Houston. We gather there every
+                Shabbat. All are welcome. Come as you are.
+              </p>
+            </div>
+          </article>
+
+          {/* AP-209 Option B: open to the public + how services are advertised.
+              Only channels we actually use; add others when they exist. */}
+          <article className="parchment-plate scribe-lines relative overflow-hidden rounded-xl p-7 md:col-span-2">
+            <Users
+              aria-hidden
+              className="pointer-events-none absolute -bottom-6 -right-4 size-40 text-yhvh-gold-dark/[0.06]"
+            />
+            <div className="relative">
+              <span className="inline-flex size-11 items-center justify-center rounded-full bg-yhvh-gold/15 text-yhvh-gold-dark">
+                <Users className="size-5" aria-hidden />
+              </span>
+              <h2 className="mt-4 font-heading text-2xl text-foreground">Open to the Public</h2>
+              <span aria-hidden className="mt-4 block h-px w-24 bg-yhvh-gold/40" />
+              <p className="mt-4 max-w-3xl font-body text-sm leading-relaxed text-muted-foreground">
+                Our Shabbat services are open to everyone. No invitation or sign-up is
+                needed; simply come. We share our service times and location through
+                this website, through our YouTube channel, where we stream our Shabbat
+                services live, and by word of mouth.
               </p>
             </div>
           </article>

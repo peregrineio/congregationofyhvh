@@ -166,9 +166,7 @@ export default function TorahPortionsPage() {
         {/* ── Closing ──────────────────────────────────────────── */}
         <figure className="parchment-plate scribe-lines rounded-xl p-7 md:p-10">
           <blockquote className="mx-auto max-w-2xl text-center font-scripture text-lg italic leading-relaxed text-foreground md:text-xl">
-            &ldquo;He has shown you, O man, what is good; and what does YHVH require of
-            you but to do justly, to love kindness, and to walk humbly with your
-            Elohim?&rdquo;
+            &ldquo;He has shown you, O man, what is good; and what does the LORD require of you but to do justly, to love mercy, and to walk humbly with your God?&rdquo;
           </blockquote>
           <figcaption className="mt-4 text-center font-subheading text-xs uppercase tracking-[0.25em] text-yhvh-gold-dark">
             &mdash; Micah 6:8

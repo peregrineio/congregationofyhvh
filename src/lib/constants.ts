@@ -74,15 +74,16 @@ export const FOOTER_LINKS = {
     { label: "Biblical Calendar", href: "/resources/calendar" },
     { label: "Torah Portions", href: "/resources/torah-portions" },
     { label: "Ministries", href: "/ministries" },
+    { label: "Privacy", href: "/privacy" },
   ],
 } as const;
 
 export const SCRIPTURES = {
   footer:
-    "Fear Elohim and keep His commandments, for this is the whole duty of man.",
+    "Fear God and keep His commandments, for this is man’s all.",
   footerRef: "Ecclesiastes 12:13",
   hero: "Sanctify them by Your truth. Your word is truth.",
   heroRef: "John 17:17",
-  giving: "Each one must give as he has decided in his heart, not reluctantly or under compulsion, for Elohim loves a cheerful giver.",
+  giving: "So let each one give as he purposes in his heart, not grudgingly or of necessity; for God loves a cheerful giver.",
   givingRef: "2 Corinthians 9:7",
 } as const;

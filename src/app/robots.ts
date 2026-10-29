@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
+import { SITE_CONFIG } from "@/lib/constants";
 
-// TODO: Update when domain is confirmed
-const baseUrl = "https://congregationyhvh.com";
+// Same domain as sitemap.ts.
+const baseUrl = SITE_CONFIG.domain;
 
 export default function robots(): MetadataRoute.Robots {
   return {

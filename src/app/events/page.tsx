@@ -507,8 +507,7 @@ export default async function EventsPage() {
           </span>
           <figure className="relative max-w-2xl">
             <blockquote className="font-scripture text-xl italic leading-relaxed text-foreground md:text-2xl">
-              &ldquo;Fear Elohim and keep His commandments, for this is the
-              whole duty of man.&rdquo;
+              &ldquo;Fear God and keep His commandments, for this is man’s all.&rdquo;
             </blockquote>
             <figcaption className="mt-4 font-subheading text-xs uppercase tracking-[0.25em] text-yhvh-gold-dark">
               Ecclesiastes 12:13

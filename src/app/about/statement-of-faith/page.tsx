@@ -54,7 +54,7 @@ export default function StatementOfFaithPage() {
         image={{ src: "/images/gs/about-sof-hero.webp" }}
         scripture={{
           quote:
-            "All Scripture is breathed out by Elohim and profitable for teaching, for reproof, for correction, and for training in righteousness.",
+            "All Scripture is given by inspiration of God, and is profitable for doctrine, for reproof, for correction, for instruction in righteousness.",
           reference: "2 Timothy 3:16",
         }}
       >

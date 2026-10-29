@@ -46,7 +46,7 @@ export default function OurTeamPage() {
         subtitle="The shepherds YHVH has placed over this congregation"
         scripture={{
           quote:
-            "Shepherd the flock of Elohim that is among you, exercising oversight, not under compulsion, but willingly, as Elohim would have you.",
+            "Shepherd the flock of God which is among you, serving as overseers, not by compulsion but willingly, not for dishonest gain but eagerly.",
           reference: "1 Peter 5:2",
         }}
       />

@@ -198,7 +198,7 @@ export const CORE_VALUES: CoreValue[] = [
     description:
       "We honor YHVH as the one true Elohim \u2014 Creator, Sustainer, and Sovereign over all. Everything we do flows from a heart of reverence for His name and obedience to His will.",
     scripture:
-      "Hear, O Israel: YHVH our Elohim, YHVH is one.",
+      "Hear, O Israel: The LORD our God, the LORD is one!",
     scriptureRef: "Deuteronomy 6:4",
   },
   {
@@ -235,7 +235,7 @@ export const CORE_VALUES: CoreValue[] = [
     description:
       "We depend on the Holy Spirit for power, guidance, conviction, and transformation \u2014 walking not in the flesh, but in the Spirit.",
     scripture:
-      "But you shall receive power when the Ruach HaKodesh has come upon you.",
+      "But you shall receive power when the Holy Spirit has come upon you.",
     scriptureRef: "Acts 1:8",
   },
   {
@@ -244,7 +244,7 @@ export const CORE_VALUES: CoreValue[] = [
     description:
       "We believe the family is the primary unit of spiritual growth. Parents are called to raise their children in the fear of YHVH, passing down truth from generation to generation.",
     scripture:
-      "Train up a child in the way he should go; even when he is old he will not depart from it.",
+      "Train up a child in the way he should go, and when he is old he will not depart from it.",
     scriptureRef: "Proverbs 22:6",
   },
   {
@@ -254,7 +254,7 @@ export const CORE_VALUES: CoreValue[] = [
     description:
       "We are a spiritual family united by faith in Yahshua. We gather to worship, study, pray, encourage, and walk through life together in love and accountability.",
     scripture:
-      "And let us consider how to stir up one another to love and good works, not neglecting to meet together.",
+      "And let us consider one another in order to stir up love and good works, not forsaking the assembling of ourselves together.",
     scriptureRef: "Hebrews 10:24\u201325",
   },
   {
@@ -272,7 +272,7 @@ export const CORE_VALUES: CoreValue[] = [
     description:
       "We are committed to investing in children and youth through intentional teaching, mentorship, and age-appropriate discipleship rooted in Scripture.",
     scripture:
-      "We will tell the next generation the praiseworthy deeds of YHVH, His power, and the wonders He has done.",
+      "We will not hide them from their children, telling to the generation to come the praises of the LORD, and His strength and His wonderful works that He has done.",
     scriptureRef: "Psalm 78:4",
   },
 ];

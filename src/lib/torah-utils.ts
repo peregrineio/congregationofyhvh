@@ -181,20 +181,16 @@ export const TORAH_PORTIONS_WITH_DATES: TorahPortionWithDate[] = TORAH_CYCLES.fl
 );
 
 /**
- * The portion being read now: the latest reading on or before `today`.
- * Before the first cycle starts it falls back to the first portion.
+ * "This week's" portion: the reading for the upcoming Shabbat, i.e. the first
+ * reading on or after `today` (on Shabbat itself, that day's). Every page that
+ * says "this week" uses this, so home, /shabbat, /resources and /events agree
+ * midweek. After the last dated reading it stays on that last one.
  */
 export function getCurrentPortionEntry(today: Date = chicagoToday()): TorahPortionWithDate {
-  for (let i = TORAH_PORTIONS_WITH_DATES.length - 1; i >= 0; i--) {
-    const portion = TORAH_PORTIONS_WITH_DATES[i];
-    const portionDate = parsePortionDate(portion.date);
-
-    if (portionDate && portionDate <= today) {
-      return portion;
-    }
-  }
-
-  return TORAH_PORTIONS_WITH_DATES[0];
+  return (
+    getNextPortion(today) ??
+    TORAH_PORTIONS_WITH_DATES[TORAH_PORTIONS_WITH_DATES.length - 1]
+  );
 }
 
 /**
@@ -205,16 +201,12 @@ export function getCurrentPortion(today: Date = chicagoToday()): string {
 }
 
 /**
- * The cycle being read now: the latest cycle that has begun by `today`
- * (the first cycle if none has). The Torah Portions page shows only this one.
+ * The cycle that holds this week's portion. The Torah Portions page shows only
+ * this one, so it always contains the portion the page highlights.
  */
 export function getCurrentCycle(today: Date = chicagoToday()): TorahPortionWithDate[] {
-  let current = TORAH_CYCLES[0];
-  for (const cycle of TORAH_CYCLES) {
-    const first = parsePortionDate(cycle.portions[0].date);
-    if (first && first <= today) current = cycle;
-  }
-  return current.portions;
+  const entry = getCurrentPortionEntry(today);
+  return (TORAH_CYCLES.find(cycle => cycle.portions.includes(entry)) ?? TORAH_CYCLES[0]).portions;
 }
 
 /**

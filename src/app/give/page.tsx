@@ -86,7 +86,7 @@ export default function GivePage() {
         image={{ src: "/images/gs/give-hero.webp" }}
         scripture={{
           quote:
-            "Each one must give as he has decided in his heart, not reluctantly or under compulsion, for Elohim loves a cheerful giver.",
+            "So let each one give as he purposes in his heart, not grudgingly or of necessity; for God loves a cheerful giver.",
           reference: "2 Corinthians 9:7",
         }}
       >
@@ -260,11 +260,11 @@ export default function GivePage() {
               <Sparkles className="size-9" />
             </span>
 
+            {/* Pastor Frank to review with the DRAFT cards (#335): this closing verse can read as
+                reward-for-giving framing. Left in place until he decides. */}
             <figure>
               <blockquote className="font-scripture text-lg italic leading-relaxed text-white/90 md:text-xl">
-                &ldquo;Honor YHVH with your wealth and with the firstfruits of all your
-                produce; then your barns will be filled with plenty, and your vats will
-                overflow with new wine.&rdquo;
+                &ldquo;Honor the LORD with your possessions, and with the firstfruits of all your increase; so your barns will be filled with plenty, and your vats will overflow with new wine.&rdquo;
               </blockquote>
               <figcaption className="mt-3 font-subheading text-xs uppercase tracking-[0.25em] text-yhvh-gold-light">
                 &mdash; Proverbs 3:9&ndash;10
