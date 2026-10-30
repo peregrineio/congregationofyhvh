@@ -54,6 +54,9 @@ function firstMatch(source: string, pattern: RegExp): string | undefined {
   return source.match(pattern)?.[1];
 }
 
+/** A portion name, optionally with other spellings that should match it. */
+export type PortionName = string | { name: string; aliases?: readonly string[] };
+
 /**
  * Pull the portion name out of a video title.
  *
@@ -69,7 +72,7 @@ function firstMatch(source: string, pattern: RegExp): string | undefined {
  */
 function detectPortion(
   title: string,
-  portionNames: readonly string[],
+  portionNames: readonly PortionName[],
 ): string | undefined {
   const normalise = (value: string) =>
     value.toLowerCase().replace(/[’']/g, "").replace(/[^a-z0-9]+/g, " ").trim();
@@ -77,18 +80,25 @@ function detectPortion(
   const haystack = normalise(title);
   if (!haystack.includes("torah portion")) return undefined;
 
-  // Longest name first so "Acharei Mot-Kedoshim" wins over "Kedoshim".
-  const candidates = [...portionNames].sort((a, b) => b.length - a.length);
+  // Every spelling, mapped back to the name the data uses. Longest first so
+  // "Acharei Mot-Kedoshim" wins over "Kedoshim".
+  const candidates = portionNames
+    .flatMap(entry =>
+      typeof entry === "string"
+        ? [{ variant: entry, name: entry }]
+        : [entry.name, ...(entry.aliases ?? [])].map(variant => ({ variant, name: entry.name })),
+    )
+    .sort((a, b) => b.variant.length - a.variant.length);
 
-  return candidates.find(name => {
-    const needle = normalise(name);
+  return candidates.find(({ variant }) => {
+    const needle = normalise(variant);
     // Combined portions are hyphenated in the data ("Tazria-Metzora") but
     // the channel may name only one half, so test the parts too.
     return (
       haystack.includes(needle) ||
       needle.split(" ").some(part => part.length > 3 && haystack.includes(part))
     );
-  });
+  })?.name;
 }
 
 const SPANISH_MARKERS = [
@@ -103,7 +113,7 @@ function looksSpanish(title: string): boolean {
 
 export function parseFeed(
   xml: string,
-  portionNames: readonly string[] = [],
+  portionNames: readonly PortionName[] = [],
 ): YouTubeVideo[] {
   const entries = xml.match(/<entry>[\s\S]*?<\/entry>/g) ?? [];
 
@@ -142,7 +152,7 @@ export function parseFeed(
  * video rails, never break the calendar or take down a page.
  */
 export async function getFeedVideos(
-  portionNames: readonly string[] = [],
+  portionNames: readonly PortionName[] = [],
 ): Promise<YouTubeVideo[]> {
   try {
     const response = await fetch(RSS_URL, {
@@ -174,7 +184,7 @@ export async function getFeedVideos(
  */
 async function getArchiveVideos(
   apiKey: string,
-  portionNames: readonly string[],
+  portionNames: readonly PortionName[],
 ): Promise<YouTubeVideo[]> {
   const uploadsPlaylistId = `UU${YOUTUBE_CHANNEL_ID.slice(2)}`;
   const videos: YouTubeVideo[] = [];
@@ -243,7 +253,7 @@ async function getArchiveVideos(
  * degrades to a smaller archive rather than an empty page.
  */
 export async function getChannelVideos(
-  portionNames: readonly string[] = [],
+  portionNames: readonly PortionName[] = [],
 ): Promise<YouTubeVideo[]> {
   const apiKey = process.env.YOUTUBE_API_KEY;
   if (!apiKey) return getFeedVideos(portionNames);

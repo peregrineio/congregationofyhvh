@@ -9,6 +9,9 @@ import {
   toDateKey,
   getNextPortion,
   chicagoToday,
+  getPortionMatchNames,
+  markSpecial,
+  specialNote,
 } from "@/lib/torah-utils";
 import {
   getChannelVideos,
@@ -47,10 +50,8 @@ export const metadata: Metadata = {
 export const revalidate = 900;
 
 export default async function EventsPage() {
-  // Names repeat once per cycle; the detector only needs each one once.
-  const portionNames = [
-    ...new Set(TORAH_PORTIONS_WITH_DATES.map((portion) => portion.hebrewName)),
-  ];
+  // Each portion once, with its other spellings for matching video titles.
+  const portionNames = getPortionMatchNames();
   const videos = await getChannelVideos(portionNames);
 
   const entries: CalendarEntry[] = TORAH_PORTIONS_WITH_DATES.flatMap(
@@ -344,15 +345,23 @@ export default async function EventsPage() {
               <p className="mt-2 font-scripture text-lg italic text-muted-foreground">
                 &ldquo;{next.name}&rdquo; &middot; Portion {next.number} of 54
               </p>
+              {specialNote(next) && (
+                <p className="mt-2 font-subheading text-xs uppercase tracking-widest text-yhvh-gold-dark">
+                  {specialNote(next)}
+                </p>
+              )}
+              <p className="mt-2 font-body text-xs text-muted-foreground">
+                Readings from First Fruits of Zion&rsquo;s weekly Torah portion schedule.
+              </p>
             </div>
 
             <div className="grid divide-y divide-yhvh-gold/15 sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4 lg:divide-x">
               {[
                 { label: "Torah", value: next.torahReading, icon: ScrollText },
-                { label: "Haftarah", value: next.haftarah, icon: Flame },
+                { label: "Haftarah", value: markSpecial(next.haftarah, next), icon: Flame },
                 {
-                  label: "Brit Chadashah",
-                  value: next.britChadashah,
+                  label: "Gospel",
+                  value: markSpecial(next.gospel, next),
                   icon: BookOpen,
                 },
               ].map(({ label, value, icon: Icon }) => (

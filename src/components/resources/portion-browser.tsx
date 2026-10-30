@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { TorahBook, TorahPortionWithDate } from "@/lib/torah-utils";
-import { BOOK_NAMES } from "@/lib/torah-utils";
+import { BOOK_NAMES, FFOZ_SOURCE, markSpecial, specialNote } from "@/lib/torah-utils";
 import { Search, ScrollText, ChevronDown } from "@/components/icons";
 
 /**
@@ -54,7 +54,7 @@ export function PortionBrowser({ portions, currentHebrewName }: Props) {
     if (searching) {
       const q = query.trim().toLowerCase();
       return portions.filter(p =>
-        [p.name, p.hebrewName, p.torahReading, p.haftarah, p.britChadashah, p.date]
+        [p.name, p.hebrewName, p.torahReading, p.haftarah, p.gospel, p.date]
           .join(" ")
           .toLowerCase()
           .includes(q)
@@ -181,8 +181,14 @@ export function PortionBrowser({ portions, currentHebrewName }: Props) {
                     )}
                   </div>
                   <p className="mt-1 font-body text-xs text-muted-foreground">
-                    Haftarah {portion.haftarah} · Brit Chadashah {portion.britChadashah}
+                    Haftarah {markSpecial(portion.haftarah, portion)} · Gospel{" "}
+                    {markSpecial(portion.gospel, portion)}
                   </p>
+                  {specialNote(portion) && (
+                    <p className="mt-0.5 font-body text-xs text-yhvh-gold-dark">
+                      {specialNote(portion)}
+                    </p>
+                  )}
                 </div>
 
                 <p className="flex items-center gap-2 font-body text-sm text-foreground sm:justify-end">
@@ -231,6 +237,19 @@ export function PortionBrowser({ portions, currentHebrewName }: Props) {
           <br className="hidden sm:block" /> The annual cycle restarts on Simchat Torah.
         </p>
       </div>
+      <p className="mt-4 text-center font-body text-xs leading-relaxed text-muted-foreground/70">
+        Readings follow{" "}
+        <a
+          href={FFOZ_SOURCE.schedule}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-yhvh-gold-dark underline underline-offset-4"
+        >
+          First Fruits of Zion&rsquo;s weekly Torah portion schedule
+        </a>
+        . Torah and Haftarah references are based on the Hebrew Bible, for the diaspora
+        schedule; Christian Bible references sometimes differ slightly.
+      </p>
     </div>
   );
 }

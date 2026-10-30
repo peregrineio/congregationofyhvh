@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { TORAH_PORTIONS_WITH_DATES } from "@/lib/torah-utils";
+import { getPortionMatchNames } from "@/lib/torah-utils";
 import {
   getChannelVideos,
   YOUTUBE_CHANNEL_URL,
@@ -112,9 +112,8 @@ function formatDate(iso: string): string {
 }
 
 export default async function TeachingsPage() {
-  const portionNames = [
-    ...new Set(TORAH_PORTIONS_WITH_DATES.map((portion) => portion.hebrewName)),
-  ];
+  // Each portion once, with its other spellings for matching video titles.
+  const portionNames = getPortionMatchNames();
   const videos = await getChannelVideos(portionNames);
   const topics = groupByTopic(videos);
 

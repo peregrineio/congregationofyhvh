@@ -1,6 +1,6 @@
 import { KBEntry } from "./types";
 import { SITE_CONFIG } from "../constants";
-import { getNextPortion, parsePortionDate } from "../torah-utils";
+import { getNextPortion, parsePortionDate, markSpecial, specialNote } from "../torah-utils";
 
 /**
  * Every answer here restates something the site already says — the
@@ -63,7 +63,7 @@ function torahPortionAnswer(): string {
   const portion = getNextPortion();
   if (!portion) {
     return (
-      "We've just finished the yearly reading cycle — it begins again with **Beresheet** (Genesis 1:1–6:8).\n\n" +
+      "We've just finished the yearly reading cycle — it begins again with **B’reisheet** (Genesis 1:1–6:8).\n\n" +
       "**[See all the Torah portions](/resources/torah-portions)**"
     );
   }
@@ -77,7 +77,9 @@ function torahPortionAnswer(): string {
       : `The next reading, on ${formatShortDate(date)}, is`;
   return (
     `${opener} **${portion.hebrewName}** — "${portion.name}":\n\n` +
-    `• Torah: ${portion.torahReading}\n• Haftarah: ${portion.haftarah}\n• Brit Chadashah: ${portion.britChadashah}\n\n` +
+    `• Torah: ${portion.torahReading}\n• Haftarah: ${markSpecial(portion.haftarah, portion)}\n• Gospel: ${markSpecial(portion.gospel, portion)}\n` +
+    (portion.special ? `${specialNote(portion)}\n` : "") +
+    "\nReadings follow First Fruits of Zion’s weekly schedule.\n\n" +
     "**[See all the Torah portions](/resources/torah-portions)**"
   );
 }
@@ -168,7 +170,7 @@ export const faqPatterns: KBEntry[] = [
     ],
     keywords: ["expect", "happens", "service", "first", "visit", "visiting", "order", "shofar", "worship", "fellowship"],
     response:
-      "A Shabbat service with us includes:\n\n• **The shofar** calling the congregation to worship\n• **Opening prayer and liturgy**\n• **The readings** — the week's Torah, Haftarah and Brit Chadashah portions\n• **Teaching** grounded in Scripture\n• **Praise and worship**\n• **Fellowship** — a shared meal afterwards\n\nWe aim for a reverent yet welcoming atmosphere. **[More about Shabbat](/shabbat)**",
+      "A Shabbat service with us includes:\n\n• **The shofar** calling the congregation to worship\n• **Opening prayer and liturgy**\n• **The readings** — the week’s Torah, Haftarah and Gospel readings\n• **Teaching** grounded in Scripture\n• **Praise and worship**\n• **Fellowship** — a shared meal afterwards\n\nWe aim for a reverent yet welcoming atmosphere. **[More about Shabbat](/shabbat)**",
     quickReplies: ["Service times", "Plan a visit", "Are children welcome?"],
     boostOn: ["/shabbat"],
   },
@@ -237,7 +239,7 @@ export const faqPatterns: KBEntry[] = [
       "weekly torah reading",
     ],
     keywords: ["portion", "parasha", "parashah", "parsha", "reading", "readings", "torah", "haftarah", "week", "weekly"],
-    response: "Each Shabbat we read a Torah portion, a Haftarah reading and a Brit Chadashah reading. See the full schedule on the Torah Portions page.",
+    response: "Each Shabbat we read a Torah portion, a Haftarah reading and a Gospel reading, following First Fruits of Zion’s weekly schedule. See the full schedule on the Torah Portions page.",
     resolve: torahPortionAnswer,
     quickReplies: ["Watch online", "Service times"],
     boostOn: ["/resources/torah-portions", "/events"],

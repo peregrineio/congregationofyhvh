@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { SITE_CONFIG } from "@/lib/constants";
-import { getCurrentPortion, getPortionByHebrewName } from "@/lib/torah-utils";
+import { getCurrentPortionEntry, markSpecial, specialNote } from "@/lib/torah-utils";
 import { YOUTUBE_LIVE_URL } from "@/lib/youtube";
 import {
   Clock,
@@ -50,7 +50,7 @@ const invitation = [
 const orderOfService = [
   { title: "Shofar Sounding", description: "We begin by sounding the shofar, calling the congregation to worship.", icon: Sparkles },
   { title: "Opening Prayer & Liturgy", description: "We open in prayer and read the opening liturgy together from the slides.", icon: HandHeart },
-  { title: "Torah Portion Reading", description: "The weekly reading from the Torah, Haftarah, and Brit Chadashah.", icon: ScrollText },
+  { title: "Torah Portion Reading", description: "The weekly reading from the Torah, Haftarah and Gospel.", icon: ScrollText },
   { title: "Teaching", description: "A message grounded in Scripture, applying truth to daily life.", icon: BookOpen },
   { title: "Praise & Worship", description: "We lift up YHVH together in praise and worship.", icon: Music },
   { title: "Fellowship", description: "A time to connect, share a meal, and build community together.", icon: Users },
@@ -64,8 +64,7 @@ const nextSteps = [
 ];
 
 export default function ShabbatPage() {
-  const currentPortionName = getCurrentPortion();
-  const currentPortion = getPortionByHebrewName(currentPortionName);
+  const currentPortion = getCurrentPortionEntry();
 
   return (
     <>
@@ -312,15 +311,16 @@ export default function ShabbatPage() {
                 </p>
                 <span aria-hidden className="mt-5 block h-px w-28 bg-yhvh-gold/40" />
                 <p className="mt-5 font-body text-sm leading-relaxed text-muted-foreground max-w-md">
-                  Each Sabbath we dive into the Torah, the Prophets (Haftarah), and the
-                  Brit Chadashah to grow in understanding and walk in His truth.
+                  Each Sabbath we dive into the Torah, the Prophets (Haftarah) and the
+                  Gospels, following First Fruits of Zion&rsquo;s weekly readings, to grow
+                  in understanding and walk in His truth.
                 </p>
 
                 <dl className="mt-7 space-y-4">
                   {[
                     { label: "Torah", value: currentPortion.torahReading, icon: ScrollText },
-                    { label: "Haftarah", value: currentPortion.haftarah, icon: Flame },
-                    { label: "Brit Chadashah", value: currentPortion.britChadashah, icon: BookOpen },
+                    { label: "Haftarah", value: markSpecial(currentPortion.haftarah, currentPortion), icon: Flame },
+                    { label: "Gospel", value: markSpecial(currentPortion.gospel, currentPortion), icon: BookOpen },
                   ].map(({ label, value, icon: Icon }) => (
                     <div key={label} className="flex items-start gap-3">
                       <span className="mt-0.5 inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-yhvh-gold/15 text-yhvh-gold-dark">
@@ -335,6 +335,11 @@ export default function ShabbatPage() {
                     </div>
                   ))}
                 </dl>
+                {specialNote(currentPortion) && (
+                  <p className="mt-4 font-subheading text-xs uppercase tracking-widest text-yhvh-gold-dark">
+                    {specialNote(currentPortion)}
+                  </p>
+                )}
 
                 <Link
                   href="/resources/torah-portions"

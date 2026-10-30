@@ -21,7 +21,7 @@ const resourcePages = [
   {
     title: "Torah Portions",
     description:
-      "The complete annual parashot schedule with Torah, Haftarah, and Brit Chadashah readings.",
+      "The complete annual parashot schedule with Torah, Haftarah and Gospel readings.",
     href: "/resources/torah-portions",
     icon: ScrollText,
   },

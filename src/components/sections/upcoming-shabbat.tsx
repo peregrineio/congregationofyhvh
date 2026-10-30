@@ -1,24 +1,18 @@
 import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/constants";
-import { getCurrentPortion, getPortionByHebrewName } from "@/lib/torah-utils";
+import { getCurrentPortionEntry, markSpecial, specialNote } from "@/lib/torah-utils";
 import { GoldButton } from "@/components/ui/gold-button";
 import { Clock, MapPin, ArrowRight } from "@/components/icons";
 import { FadeIn } from "@/components/ui/motion";
 
 export function UpcomingShabbat() {
-  // Get the current portion dynamically based on today's date
-  const currentPortionName = getCurrentPortion();
-  const currentPortion = getPortionByHebrewName(currentPortionName);
-
-  // Fallback if portion not found
-  if (!currentPortion) {
-    return null;
-  }
+  // This week = the upcoming Shabbat's reading, as on every other page.
+  const currentPortion = getCurrentPortionEntry();
 
   const readings = [
     { label: "Torah", value: currentPortion.torahReading },
-    { label: "Haftarah", value: currentPortion.haftarah },
-    { label: "Brit Chadashah", value: currentPortion.britChadashah },
+    { label: "Haftarah", value: markSpecial(currentPortion.haftarah, currentPortion) },
+    { label: "Gospel", value: markSpecial(currentPortion.gospel, currentPortion) },
   ];
 
   return (
@@ -92,6 +86,14 @@ export function UpcomingShabbat() {
                     </div>
                   ))}
                 </div>
+                {specialNote(currentPortion) && (
+                  <p className="mt-5 font-subheading text-xs uppercase tracking-[0.2em] text-yhvh-gold/80">
+                    {specialNote(currentPortion)}
+                  </p>
+                )}
+                <p className="mt-3 font-body text-xs text-white/40">
+                  Readings from First Fruits of Zion&rsquo;s weekly schedule.
+                </p>
 
                 <Link
                   href="/resources/torah-portions"

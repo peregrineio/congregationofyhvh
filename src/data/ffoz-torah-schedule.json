@@ -1,0 +1,811 @@
+{
+  "source": {
+    "publisher": "First Fruits of Zion",
+    "schedule": "https://ffoz.org/torahportions",
+    "portion": "https://ffoz.org/torahportions/parashah/{slug}",
+    "retrieved": "2026-10-30",
+    "note": "Torah and Haftarah references follow the Hebrew Bible, for the diaspora schedule, as FFOZ lists them. On a special Sabbath FFOZ replaces the Haftarah and Gospel; `schedule` holds those replacements."
+  },
+  "portions": {
+    "breisheet": {
+      "name": "B’reisheet",
+      "meaning": "In the Beginning",
+      "hebrew": "בְּרֵאשִׁית",
+      "book": "Genesis",
+      "torah": "Genesis 1:1-6:8",
+      "haftarah": "Isaiah 42:5-43:10",
+      "gospel": "John 1:1-17"
+    },
+    "noach": {
+      "name": "Noach",
+      "meaning": "Noah",
+      "hebrew": "נֹחַ",
+      "book": "Genesis",
+      "torah": "Genesis 6:9-11:32",
+      "haftarah": "Isaiah 54:1-55:5",
+      "gospel": "Luke 17:20-27"
+    },
+    "lech-lecha": {
+      "name": "Lech Lecha",
+      "meaning": "Go Out",
+      "hebrew": "לֶךְ־לְךָ",
+      "book": "Genesis",
+      "torah": "Genesis 12:1-17:27",
+      "haftarah": "Isaiah 40:27-41:16",
+      "gospel": "John 8:51-58"
+    },
+    "vayera": {
+      "name": "Vayera",
+      "meaning": "And He Appeared",
+      "hebrew": "וַיֵּרָא",
+      "book": "Genesis",
+      "torah": "Genesis 18:1-22:24",
+      "haftarah": "2 Kings 4:1-37",
+      "gospel": "Luke 17:28-37"
+    },
+    "chayei-sarah": {
+      "name": "Chayei Sarah",
+      "meaning": "Life of Sarah",
+      "hebrew": "חַיֵּי שָֹרָה",
+      "book": "Genesis",
+      "torah": "Genesis 23:1-25:18",
+      "haftarah": "1 Kings 1:1-31",
+      "gospel": "John 4:3-14"
+    },
+    "toldot": {
+      "name": "Toldot",
+      "meaning": "Generations",
+      "hebrew": "תּוֹלְדוֹת",
+      "book": "Genesis",
+      "torah": "Genesis 25:19-28:9",
+      "haftarah": "Malachi 1:1-2:7",
+      "gospel": "Matthew 10:21-38"
+    },
+    "vayetze": {
+      "name": "Vayetze",
+      "meaning": "And He Went Out",
+      "hebrew": "וַיֵּצֵא",
+      "book": "Genesis",
+      "torah": "Genesis 28:10-32:3",
+      "haftarah": "Hosea 12:13-14:10",
+      "gospel": "John 1:41-51"
+    },
+    "vayishlach": {
+      "name": "Vayishlach",
+      "meaning": "And He Sent",
+      "hebrew": "וַיִּשְׁלַח",
+      "book": "Genesis",
+      "torah": "Genesis 32:4-36:43",
+      "haftarah": "Obadiah 1:1-21",
+      "gospel": "Matthew 2:13-23"
+    },
+    "vayeshev": {
+      "name": "Vayeshev",
+      "meaning": "And He Dwelt",
+      "hebrew": "וַיֵּשֶׁב",
+      "book": "Genesis",
+      "torah": "Genesis 37:1-40:23",
+      "haftarah": "Amos 2:6-3:8",
+      "gospel": "Matthew 1:18-25"
+    },
+    "miketz": {
+      "name": "Miketz",
+      "meaning": "At the End",
+      "hebrew": "מִקֵּץ",
+      "book": "Genesis",
+      "torah": "Genesis 41:1-44:17",
+      "haftarah": "1 Kings 3:15-4:1",
+      "gospel": "Luke 24:13-29"
+    },
+    "vayigash": {
+      "name": "Vayigash",
+      "meaning": "And He Came Near",
+      "hebrew": "וַיִּגַּשׁ",
+      "book": "Genesis",
+      "torah": "Genesis 44:18-47:27",
+      "haftarah": "Ezekiel 37:15-28",
+      "gospel": "Luke 24:30-48"
+    },
+    "vayechi": {
+      "name": "Vayechi",
+      "meaning": "And He Lived",
+      "hebrew": "וַיְחִי",
+      "book": "Genesis",
+      "torah": "Genesis 47:28-50:26",
+      "haftarah": "1 Kings 2:1-12",
+      "gospel": "John 13:1-19"
+    },
+    "shemot": {
+      "name": "Shemot",
+      "meaning": "Names",
+      "hebrew": "שְׁמוֹת",
+      "book": "Exodus",
+      "torah": "Exodus 1:1-6:1",
+      "haftarah": "Isaiah 27:6-28:13, 29:22-23",
+      "gospel": "Matthew 2:1-12"
+    },
+    "vaera": {
+      "name": "Va’era",
+      "meaning": "And I Appeared",
+      "hebrew": "וָאֵרָא",
+      "book": "Exodus",
+      "torah": "Exodus 6:2-9:35",
+      "haftarah": "Ezekiel 28:25-29:21",
+      "gospel": "Luke 11:14-22"
+    },
+    "bo": {
+      "name": "Bo",
+      "meaning": "Come",
+      "hebrew": "בֹּא",
+      "book": "Exodus",
+      "torah": "Exodus 10:1-13:16",
+      "haftarah": "Jeremiah 46:13-28",
+      "gospel": "John 19:31-37"
+    },
+    "beshalach": {
+      "name": "Beshalach",
+      "meaning": "When He Sent",
+      "hebrew": "בְּשַׁלַּח",
+      "book": "Exodus",
+      "torah": "Exodus 13:17-17:16",
+      "haftarah": "Judges 4:4-5:31",
+      "gospel": "Matthew 14:22-33"
+    },
+    "yitro": {
+      "name": "Yitro",
+      "meaning": "Jethro",
+      "hebrew": "יִתְרוֹ",
+      "book": "Exodus",
+      "torah": "Exodus 18:1-20:23",
+      "haftarah": "Isaiah 6:1-7:6, 9:5-6",
+      "gospel": "Matthew 19:16-26"
+    },
+    "mishpatim": {
+      "name": "Mishpatim",
+      "meaning": "Judgments",
+      "hebrew": "מִּשְׁפָּטִים",
+      "book": "Exodus",
+      "torah": "Exodus 21:1-24:18",
+      "haftarah": "Jeremiah 34:8-22, 33:25-26",
+      "gospel": "Matthew 26:20-30"
+    },
+    "terumah": {
+      "name": "Terumah",
+      "meaning": "Heave Offering",
+      "hebrew": "תְּרוּמָה",
+      "book": "Exodus",
+      "torah": "Exodus 25:1-27:19",
+      "haftarah": "1 Kings 5:26-6:13",
+      "gospel": "Mark 12:35-44"
+    },
+    "tetzaveh": {
+      "name": "Tetzaveh",
+      "meaning": "You Shall Command",
+      "hebrew": "תְּצַוֶּה",
+      "book": "Exodus",
+      "torah": "Exodus 27:20-30:10",
+      "haftarah": "Ezekiel 43:10-27",
+      "gospel": "Matthew 5:13-20"
+    },
+    "ki-tisa": {
+      "name": "Ki Tisa",
+      "meaning": "When You Take",
+      "hebrew": "כִּי תִשָּׂא",
+      "book": "Exodus",
+      "torah": "Exodus 30:11-34:35",
+      "haftarah": "1 Kings 18:1-39",
+      "gospel": "Mark 9:1-10"
+    },
+    "vayakhel": {
+      "name": "Vayak’hel",
+      "meaning": "And He Assembled",
+      "hebrew": "וַיַּקְהֵל",
+      "book": "Exodus",
+      "torah": "Exodus 35:1-38:20",
+      "haftarah": "1 Kings 7:40-50",
+      "gospel": "Matthew 12:1-13"
+    },
+    "pekudei": {
+      "name": "Pekudei",
+      "meaning": "Accounts",
+      "hebrew": "פְקוּדֵי",
+      "book": "Exodus",
+      "torah": "Exodus 38:21-40:38",
+      "haftarah": "1 Kings 7:51-8:21",
+      "gospel": "Luke 16:1-13"
+    },
+    "vayakhel-pekudei": {
+      "name": "Vayak’hel-Pekudei",
+      "meaning": "And He Assembled-Accounts",
+      "hebrew": "וַיַּקְהֵל־פְקוּדֵי",
+      "book": "Exodus",
+      "torah": "Exodus 35:1-40:38",
+      "haftarah": "1 Kings 7:51-8:21",
+      "gospel": "Luke 16:1-13"
+    },
+    "vayikra": {
+      "name": "Vayikra",
+      "meaning": "And He Called",
+      "hebrew": "וַיִּקְרָא",
+      "book": "Leviticus",
+      "torah": "Leviticus 1:1-5:26",
+      "haftarah": "Isaiah 43:21-44:23",
+      "gospel": "Matthew 5:23-30"
+    },
+    "tzav": {
+      "name": "Tzav",
+      "meaning": "Command",
+      "hebrew": "צַו",
+      "book": "Leviticus",
+      "torah": "Leviticus 6:1-8:36",
+      "haftarah": "Jeremiah 7:21-8:3, 9:22-23",
+      "gospel": "Matthew 9:10-17"
+    },
+    "shemini": {
+      "name": "Sh’mini",
+      "meaning": "Eighth",
+      "hebrew": "שְּׁמִינִי",
+      "book": "Leviticus",
+      "torah": "Leviticus 9:1-11:47",
+      "haftarah": "2 Samuel 6:1-7:17",
+      "gospel": "Matthew 3:11-17"
+    },
+    "tazria": {
+      "name": "Tazria",
+      "meaning": "Conceived",
+      "hebrew": "תַזְרִיעַ",
+      "book": "Leviticus",
+      "torah": "Leviticus 12:1-13:59",
+      "haftarah": "2 Kings 4:42-5:19",
+      "gospel": "Luke 2:22-33"
+    },
+    "metzora": {
+      "name": "Metzora",
+      "meaning": "Leper",
+      "hebrew": "מְּצֹרָע",
+      "book": "Leviticus",
+      "torah": "Leviticus 14:1-15:33",
+      "haftarah": "2 Kings 7:3-20",
+      "gospel": "Mark 1:35-45"
+    },
+    "tazria-metzora": {
+      "name": "Tazria-Metzora",
+      "meaning": "Conceived-Leper",
+      "hebrew": "תַזְרִיעַ־מְּצֹרָע",
+      "book": "Leviticus",
+      "torah": "Leviticus 12:1-15:33",
+      "haftarah": "2 Kings 7:3-20",
+      "gospel": "Mark 1:35-45"
+    },
+    "acharei-mot": {
+      "name": "Acharei Mot",
+      "meaning": "After the Death",
+      "hebrew": "אַחֲרֵי מוֹת",
+      "book": "Leviticus",
+      "torah": "Leviticus 16:1-18:30",
+      "haftarah": "Ezekiel 22:1-19",
+      "gospel": "Matthew 15:10-20"
+    },
+    "kedoshim": {
+      "name": "Kedoshim",
+      "meaning": "Holy",
+      "hebrew": "קְדשִׁים",
+      "book": "Leviticus",
+      "torah": "Leviticus 19:1-20:27",
+      "haftarah": "Amos 9:7-15",
+      "gospel": "Mark 12:28-34"
+    },
+    "acharei-mot-kedoshim": {
+      "name": "Acharei Mot-Kedoshim",
+      "meaning": "After the Death-Holy",
+      "hebrew": "אַחֲרֵי מוֹת־קְדשִׁים",
+      "book": "Leviticus",
+      "torah": "Leviticus 16:1-20:27",
+      "haftarah": "Amos 9:7-15",
+      "gospel": "Mark 12:28-34"
+    },
+    "emor": {
+      "name": "Emor",
+      "meaning": "Say",
+      "hebrew": "אֱמוֹר",
+      "book": "Leviticus",
+      "torah": "Leviticus 21:1-24:23",
+      "haftarah": "Ezekiel 44:15-31",
+      "gospel": "Matthew 26:59-66, 64"
+    },
+    "behar": {
+      "name": "Behar",
+      "meaning": "On Mount Sinai",
+      "hebrew": "בְּהַר",
+      "book": "Leviticus",
+      "torah": "Leviticus 25:1-26:2",
+      "haftarah": "Jeremiah 32:6-27",
+      "gospel": "Luke 4:14-22"
+    },
+    "bechukotai": {
+      "name": "Bechukotai",
+      "meaning": "In My Statutes",
+      "hebrew": "בְּחֻקֹּתַי",
+      "book": "Leviticus",
+      "torah": "Leviticus 26:3-27:34",
+      "haftarah": "Jeremiah 16:19-17:14",
+      "gospel": "Matthew 16:20-28"
+    },
+    "behar-bechukotai": {
+      "name": "Behar-Bechukotai",
+      "meaning": "On Mount Sinai-In My Statutes",
+      "hebrew": "בְּהַר־בְּחֻקֹּתַי",
+      "book": "Leviticus",
+      "torah": "Leviticus 25:1-27:34",
+      "haftarah": "Jeremiah 16:19-17:14",
+      "gospel": "Matthew 16:20-28"
+    },
+    "bamidbar": {
+      "name": "Bamidbar",
+      "meaning": "In the Wilderness",
+      "hebrew": "בְּמִדְבַּר",
+      "book": "Numbers",
+      "torah": "Numbers 1:1-4:20",
+      "haftarah": "Hosea 2:1-22",
+      "gospel": "Matthew 4:1-17"
+    },
+    "nasso": {
+      "name": "Nasso",
+      "meaning": "Make an Accounting",
+      "hebrew": "נָשׂא",
+      "book": "Numbers",
+      "torah": "Numbers 4:21-7:89",
+      "haftarah": "Judges 13:2-25",
+      "gospel": "Luke 1:11-20"
+    },
+    "behaalotcha": {
+      "name": "Beha’alotcha",
+      "meaning": "When You Set Up",
+      "hebrew": "בְּהַעֲלֹתְךָ",
+      "book": "Numbers",
+      "torah": "Numbers 8:1-12:16",
+      "haftarah": "Zechariah 2:14-4:7",
+      "gospel": "Matthew 14:14-21"
+    },
+    "shelach": {
+      "name": "Shelach",
+      "meaning": "Send Thou",
+      "hebrew": "שְׁלַח",
+      "book": "Numbers",
+      "torah": "Numbers 13:1-15:41",
+      "haftarah": "Joshua 2:1-24",
+      "gospel": "Matthew 10:1-14"
+    },
+    "korach": {
+      "name": "Korach",
+      "meaning": "Korah",
+      "hebrew": "קוֹרַח",
+      "book": "Numbers",
+      "torah": "Numbers 16:1-18:32",
+      "haftarah": "1 Samuel 11:14-12:22",
+      "gospel": "Matthew 26:13-24"
+    },
+    "chukat": {
+      "name": "Chukat",
+      "meaning": "Statute",
+      "hebrew": "חֻקַּת",
+      "book": "Numbers",
+      "torah": "Numbers 19:1-22:1",
+      "haftarah": "Judges 11:1-33",
+      "gospel": "John 2:1-12"
+    },
+    "balak": {
+      "name": "Balak",
+      "meaning": "Balak",
+      "hebrew": "בָּלָק",
+      "book": "Numbers",
+      "torah": "Numbers 22:2-25:9",
+      "haftarah": "Micah 5:6-6:8",
+      "gospel": "Matthew 21:1-11"
+    },
+    "chukat-balak": {
+      "name": "Chukat-Balak",
+      "meaning": "Statute-Balak",
+      "hebrew": "חֻקַּת־בָּלָק",
+      "book": "Numbers",
+      "torah": "Numbers 19:1-25:9",
+      "haftarah": "Micah 5:6-6:8",
+      "gospel": "Matthew 21:1-11"
+    },
+    "pinchas": {
+      "name": "Pinchas",
+      "meaning": "Phinehas",
+      "hebrew": "פִּינְחָס",
+      "book": "Numbers",
+      "torah": "Numbers 25:10-30:1",
+      "haftarah": "Jeremiah 1:1-2:3",
+      "gospel": "Luke 13:1-10"
+    },
+    "mattot": {
+      "name": "Mattot",
+      "meaning": "Tribes",
+      "hebrew": "מַּטּוֹת",
+      "book": "Numbers",
+      "torah": "Numbers 30:2-32:42",
+      "haftarah": "Jeremiah 1:1-2:3",
+      "gospel": "Luke 13:1-10"
+    },
+    "massei": {
+      "name": "Massei",
+      "meaning": "Journeys",
+      "hebrew": "מַסְעֵי",
+      "book": "Numbers",
+      "torah": "Numbers 33:1-36:13",
+      "haftarah": "Jeremiah 2:4-28, 3:4",
+      "gospel": "Mark 11:12-25"
+    },
+    "mattot-massei": {
+      "name": "Mattot-Massei",
+      "meaning": "Tribes-Journeys",
+      "hebrew": "מַּטּוֹת־מַסְעֵי",
+      "book": "Numbers",
+      "torah": "Numbers 30:2-36:13",
+      "haftarah": "Jeremiah 2:4-28, 3:4",
+      "gospel": "Mark 11:12-25"
+    },
+    "devarim": {
+      "name": "Devarim",
+      "meaning": "Words",
+      "hebrew": "דְּבָרִים",
+      "book": "Deuteronomy",
+      "torah": "Deuteronomy 1:1-3:22",
+      "haftarah": "Isaiah 1:1-27",
+      "gospel": "Matthew 24:1-22"
+    },
+    "vaetchanan": {
+      "name": "Va’etchanan",
+      "meaning": "And I Besought",
+      "hebrew": "וָאֶתְחַנַּן",
+      "book": "Deuteronomy",
+      "torah": "Deuteronomy 3:23-7:11",
+      "haftarah": "Isaiah 40:1-26",
+      "gospel": "Luke 3:2-15"
+    },
+    "ekev": {
+      "name": "Ekev",
+      "meaning": "Because",
+      "hebrew": "עֵקֶב",
+      "book": "Deuteronomy",
+      "torah": "Deuteronomy 7:12-11:25",
+      "haftarah": "Isaiah 49:14-51:3",
+      "gospel": "Matthew 16:13-20"
+    },
+    "reeh": {
+      "name": "Re’eh",
+      "meaning": "Behold",
+      "hebrew": "רְאֵה",
+      "book": "Deuteronomy",
+      "torah": "Deuteronomy 11:26-16:17",
+      "haftarah": "Isaiah 54:11-55:5",
+      "gospel": "John 6:35-51"
+    },
+    "shoftim": {
+      "name": "Shoftim",
+      "meaning": "Judges",
+      "hebrew": "שׁוֹפְטִים",
+      "book": "Deuteronomy",
+      "torah": "Deuteronomy 16:18-21:9",
+      "haftarah": "Isaiah 51:12-52:12",
+      "gospel": "John 14:9-20"
+    },
+    "ki-tetze": {
+      "name": "Ki Tetze",
+      "meaning": "When You Go",
+      "hebrew": "כִּי־תֵצֵא",
+      "book": "Deuteronomy",
+      "torah": "Deuteronomy 21:10-25:19",
+      "haftarah": "Isaiah 54:1-10",
+      "gospel": "Matthew 24:29-42"
+    },
+    "ki-tavo": {
+      "name": "Ki Tavo",
+      "meaning": "When You Come",
+      "hebrew": "כִּי־תָבוֹא",
+      "book": "Deuteronomy",
+      "torah": "Deuteronomy 26:1-29:8",
+      "haftarah": "Isaiah 60:1-22",
+      "gospel": "Matthew 4:13-24"
+    },
+    "nitzavim": {
+      "name": "Nitzavim",
+      "meaning": "You Are Standing",
+      "hebrew": "נִצָּבִים",
+      "book": "Deuteronomy",
+      "torah": "Deuteronomy 29:9-30:20",
+      "haftarah": "Isaiah 61:10-63:9",
+      "gospel": "John 12:41-50"
+    },
+    "vayelech": {
+      "name": "Vayelech",
+      "meaning": "And He Went",
+      "hebrew": "וַיֵּלֶךְ",
+      "book": "Deuteronomy",
+      "torah": "Deuteronomy 31:1-30",
+      "haftarah": "Isaiah 55:6-56:8",
+      "gospel": "Matthew 21:9-17"
+    },
+    "nitzavim-vayelech": {
+      "name": "Nitzavim-Vayelech",
+      "meaning": "You Are Standing-And He Went",
+      "hebrew": "נִצָּבִים־וַיֵּלֶךְ",
+      "book": "Deuteronomy",
+      "torah": "Deuteronomy 29:9-31:30",
+      "haftarah": "Isaiah 61:10-63:9",
+      "gospel": "John 12:41-50"
+    },
+    "haazinu": {
+      "name": "Ha’azinu",
+      "meaning": "Give Ear",
+      "hebrew": "הַאֲזִינוּ",
+      "book": "Deuteronomy",
+      "torah": "Deuteronomy 32:1-52",
+      "haftarah": "Hosea 14:2-10",
+      "gospel": "John 6:26-35"
+    },
+    "vezot-habracha": {
+      "name": "Vezot ha’Bracha",
+      "meaning": "And This Is the Blessing",
+      "hebrew": "וְזֹאת הַבְּרָכָה",
+      "book": "Deuteronomy",
+      "torah": "Deuteronomy 33:1-34:12",
+      "haftarah": "Joshua 1:1-18",
+      "gospel": "Acts 1:1-14"
+    }
+  },
+  "schedule": [
+    {
+      "date": "2026-09-19",
+      "slug": "haazinu",
+      "special": "Shabbat Shuva (Ha’azinu)",
+      "haftarah": "Hosea 14:2-10; Joel 2:15-27",
+      "gospel": "Matthew 18:21-35"
+    },
+    {
+      "date": "2026-10-04",
+      "slug": "vezot-habracha"
+    },
+    {
+      "date": "2026-10-10",
+      "slug": "breisheet",
+      "special": "Shabbat Machar Chodesh",
+      "haftarah": "I Samuel 20:18–42",
+      "gospel": "Matthew 24:29–36"
+    },
+    {
+      "date": "2026-10-17",
+      "slug": "noach"
+    },
+    {
+      "date": "2026-10-24",
+      "slug": "lech-lecha"
+    },
+    {
+      "date": "2026-10-31",
+      "slug": "vayera"
+    },
+    {
+      "date": "2026-11-07",
+      "slug": "chayei-sarah"
+    },
+    {
+      "date": "2026-11-14",
+      "slug": "toldot"
+    },
+    {
+      "date": "2026-11-21",
+      "slug": "vayetze"
+    },
+    {
+      "date": "2026-11-28",
+      "slug": "vayishlach"
+    },
+    {
+      "date": "2026-12-05",
+      "slug": "vayeshev",
+      "special": "Shabbat Hanukkah",
+      "haftarah": "Zechariah 2:14-4:7",
+      "gospel": "John 10:22-28"
+    },
+    {
+      "date": "2026-12-12",
+      "slug": "miketz",
+      "special": "Shabbat Hanukkah II",
+      "haftarah": "1 Kings 7:40-50",
+      "gospel": "Matthew 24:8-22"
+    },
+    {
+      "date": "2026-12-19",
+      "slug": "vayigash"
+    },
+    {
+      "date": "2026-12-26",
+      "slug": "vayechi"
+    },
+    {
+      "date": "2027-01-02",
+      "slug": "shemot"
+    },
+    {
+      "date": "2027-01-09",
+      "slug": "vaera",
+      "special": "Shabbat Rosh Chodesh",
+      "haftarah": "Isaiah 66:1-24",
+      "gospel": "Mark 9:40-50"
+    },
+    {
+      "date": "2027-01-16",
+      "slug": "bo"
+    },
+    {
+      "date": "2027-01-23",
+      "slug": "beshalach"
+    },
+    {
+      "date": "2027-01-30",
+      "slug": "yitro"
+    },
+    {
+      "date": "2027-02-06",
+      "slug": "mishpatim",
+      "special": "Shabbat Machar Chodesh",
+      "haftarah": "I Samuel 20:18–42",
+      "gospel": "Matthew 24:29–36"
+    },
+    {
+      "date": "2027-02-13",
+      "slug": "terumah"
+    },
+    {
+      "date": "2027-02-20",
+      "slug": "tetzaveh"
+    },
+    {
+      "date": "2027-02-27",
+      "slug": "ki-tisa"
+    },
+    {
+      "date": "2027-03-06",
+      "slug": "vayakhel",
+      "special": "Shabbat Shekalim",
+      "haftarah": "2 Kings 12:1-17",
+      "gospel": "Matthew 17:22-27"
+    },
+    {
+      "date": "2027-03-13",
+      "slug": "pekudei"
+    },
+    {
+      "date": "2027-03-20",
+      "slug": "vayikra",
+      "special": "Shabbat Zachor",
+      "haftarah": "1 Samuel 15:2-34",
+      "gospel": "Mark 6:14-29"
+    },
+    {
+      "date": "2027-03-27",
+      "slug": "tzav",
+      "special": "Shabbat Parah",
+      "haftarah": "Ezekiel 36:16-38",
+      "gospel": "John 11:47-56"
+    },
+    {
+      "date": "2027-04-03",
+      "slug": "shemini",
+      "special": "Shabbat HaChodesh",
+      "haftarah": "Ezekiel 45:16-46:18",
+      "gospel": "Luke 22:1-13"
+    },
+    {
+      "date": "2027-04-10",
+      "slug": "tazria"
+    },
+    {
+      "date": "2027-04-17",
+      "slug": "metzora",
+      "special": "Shabbat HaGadol",
+      "haftarah": "Malachi 3:4-24",
+      "gospel": "Matthew 17:9-13"
+    },
+    {
+      "date": "2027-05-01",
+      "slug": "acharei-mot"
+    },
+    {
+      "date": "2027-05-08",
+      "slug": "kedoshim",
+      "special": "Shabbat Rosh Chodesh",
+      "haftarah": "Isaiah 66:1-24",
+      "gospel": "Mark 9:40-50"
+    },
+    {
+      "date": "2027-05-15",
+      "slug": "emor"
+    },
+    {
+      "date": "2027-05-22",
+      "slug": "behar"
+    },
+    {
+      "date": "2027-05-29",
+      "slug": "bechukotai"
+    },
+    {
+      "date": "2027-06-05",
+      "slug": "bamidbar",
+      "special": "Shabbat Machar Chodesh",
+      "haftarah": "I Samuel 20:18–42",
+      "gospel": "Matthew 24:29–36"
+    },
+    {
+      "date": "2027-06-19",
+      "slug": "nasso"
+    },
+    {
+      "date": "2027-06-26",
+      "slug": "behaalotcha"
+    },
+    {
+      "date": "2027-07-03",
+      "slug": "shelach"
+    },
+    {
+      "date": "2027-07-10",
+      "slug": "korach"
+    },
+    {
+      "date": "2027-07-17",
+      "slug": "chukat-balak"
+    },
+    {
+      "date": "2027-07-24",
+      "slug": "pinchas"
+    },
+    {
+      "date": "2027-07-31",
+      "slug": "mattot-massei"
+    },
+    {
+      "date": "2027-08-07",
+      "slug": "devarim",
+      "special": "Shabbat Chazon",
+      "haftarah": "Isaiah 1:1-27",
+      "gospel": "Matthew 24:1-22"
+    },
+    {
+      "date": "2027-08-14",
+      "slug": "vaetchanan",
+      "special": "Shabbat Nachamu",
+      "haftarah": "Isaiah 40:1–26",
+      "gospel": "Luke 3:2-15"
+    },
+    {
+      "date": "2027-08-21",
+      "slug": "ekev"
+    },
+    {
+      "date": "2027-08-28",
+      "slug": "reeh"
+    },
+    {
+      "date": "2027-09-04",
+      "slug": "shoftim"
+    },
+    {
+      "date": "2027-09-11",
+      "slug": "ki-tetze"
+    },
+    {
+      "date": "2027-09-18",
+      "slug": "ki-tavo"
+    },
+    {
+      "date": "2027-09-25",
+      "slug": "nitzavim-vayelech"
+    }
+  ]
+}

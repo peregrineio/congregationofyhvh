@@ -1,146 +1,179 @@
 // Torah Portions Utilities
 // Helper functions for Torah portion date calculations and categorization
+//
+// The congregation follows First Fruits of Zion's weekly readings (Torah,
+// Haftarah and Gospel). Every reading below comes from
+// src/data/ffoz-torah-schedule.json, which scripts/fetch-ffoz-schedule.ts
+// pulls from ffoz.org (source URLs and date inside the file). Don't hand-edit
+// readings here; re-run the script.
+
+import ffoz from '../data/ffoz-torah-schedule.json';
 
 export type TorahBook = 'genesis' | 'exodus' | 'leviticus' | 'numbers' | 'deuteronomy';
 
 export interface TorahPortionWithDate {
   number: number;
+  /** English meaning, as FFOZ gives it ("And He Appeared"). */
   name: string;
+  /** Portion name as FFOZ spells it ("Vayera", "B’reisheet"). */
   hebrewName: string;
+  /** FFOZ's slug, e.g. "vayera" (https://ffoz.org/torahportions/parashah/vayera). */
+  slug: string;
   torahReading: string;
   haftarah: string;
-  britChadashah: string;
+  /** FFOZ's Gospel (or Apostolic) reading for the week. */
+  gospel: string;
   book: TorahBook;
   date: string; // e.g., "17 OCT 2025"
   combined?: boolean; // true for combined portions like Vayakhel-Pekudei
+  /** Special Sabbath whose Haftarah and Gospel replace the regular ones
+   *  (FFOZ marks these with an asterisk), e.g. "Shabbat Hanukkah". */
+  special?: string;
+  /** Not yet on FFOZ's published schedule; date from the Hebrew calendar. */
+  provisional?: boolean;
 }
 
-// Torah portion dates for the 5786 cycle (2025-2026)
-const PORTIONS_5786: TorahPortionWithDate[] = [
-  // GENESIS (Oct-Dec 2025) - Portions 1-12
-  { number: 1, name: "In the Beginning", hebrewName: "Beresheet", torahReading: "Genesis 1:1–6:8", haftarah: "Isaiah 42:5–43:10", britChadashah: "John 1:1–18", book: "genesis", date: "18 OCT 2025" },
-  { number: 2, name: "Noah", hebrewName: "Noach", torahReading: "Genesis 6:9–11:32", haftarah: "Isaiah 54:1–55:5", britChadashah: "Matthew 24:36–46", book: "genesis", date: "25 OCT 2025" },
-  { number: 3, name: "Go Forth", hebrewName: "Lech Lecha", torahReading: "Genesis 12:1–17:27", haftarah: "Isaiah 40:27–41:16", britChadashah: "Romans 4:1–25", book: "genesis", date: "1 NOV 2025" },
-  { number: 4, name: "He Appeared", hebrewName: "Vayera", torahReading: "Genesis 18:1–22:24", haftarah: "2 Kings 4:1–37", britChadashah: "Luke 1:26–38", book: "genesis", date: "8 NOV 2025" },
-  { number: 5, name: "Life of Sarah", hebrewName: "Chayei Sarah", torahReading: "Genesis 23:1–25:18", haftarah: "1 Kings 1:1–31", britChadashah: "Matthew 8:19–22", book: "genesis", date: "15 NOV 2025" },
-  { number: 6, name: "Generations", hebrewName: "Toldot", torahReading: "Genesis 25:19–28:9", haftarah: "Malachi 1:1–2:7", britChadashah: "Romans 9:6–16", book: "genesis", date: "22 NOV 2025" },
-  { number: 7, name: "He Went Out", hebrewName: "Vayetze", torahReading: "Genesis 28:10–32:3", haftarah: "Hosea 12:13–14:10", britChadashah: "John 1:43–51", book: "genesis", date: "29 NOV 2025" },
-  { number: 8, name: "He Sent", hebrewName: "Vayishlach", torahReading: "Genesis 32:4–36:43", haftarah: "Obadiah 1:1–21", britChadashah: "Hebrews 11:11–20", book: "genesis", date: "6 DEC 2025" },
-  { number: 9, name: "He Settled", hebrewName: "Vayeshev", torahReading: "Genesis 37:1–40:23", haftarah: "Amos 2:6–3:8", britChadashah: "Acts 7:9–16", book: "genesis", date: "13 DEC 2025" },
-  { number: 10, name: "At the End", hebrewName: "Miketz", torahReading: "Genesis 41:1–44:17", haftarah: "1 Kings 3:15–4:1", britChadashah: "Luke 4:16–30", book: "genesis", date: "20 DEC 2025" },
-  { number: 11, name: "He Approached", hebrewName: "Vayigash", torahReading: "Genesis 44:18–47:27", haftarah: "Ezekiel 37:15–28", britChadashah: "Ephesians 2:1–22", book: "genesis", date: "27 DEC 2025" },
-  { number: 12, name: "He Lived", hebrewName: "Vayechi", torahReading: "Genesis 47:28–50:26", haftarah: "1 Kings 2:1–12", britChadashah: "1 Peter 1:3–9", book: "genesis", date: "3 JAN 2026" },
+interface FfozPortion {
+  name: string;
+  meaning: string;
+  hebrew: string;
+  book: string;
+  torah: string;
+  haftarah: string;
+  gospel: string;
+}
 
-  // EXODUS (Jan-Mar 2026) - Portions 13-23
-  { number: 13, name: "Names", hebrewName: "Shemot", torahReading: "Exodus 1:1–6:1", haftarah: "Isaiah 27:6–28:13", britChadashah: "Acts 7:17–35", book: "exodus", date: "10 JAN 2026" },
-  { number: 14, name: "I Appeared", hebrewName: "Va'eira", torahReading: "Exodus 6:2–9:35", haftarah: "Ezekiel 28:25–29:21", britChadashah: "Revelation 15:1–8", book: "exodus", date: "17 JAN 2026" },
-  { number: 15, name: "Go/Come", hebrewName: "Bo", torahReading: "Exodus 10:1–13:16", haftarah: "Jeremiah 46:13–28", britChadashah: "Luke 22:7–20", book: "exodus", date: "24 JAN 2026" },
-  { number: 16, name: "When He Sent", hebrewName: "Beshalach", torahReading: "Exodus 13:17–17:16", haftarah: "Judges 4:4–5:31", britChadashah: "John 6:22–40", book: "exodus", date: "31 JAN 2026" },
-  { number: 17, name: "He Heard", hebrewName: "Yitro", torahReading: "Exodus 18:1–20:23", haftarah: "Isaiah 6:1–7:6", britChadashah: "Matthew 5:17–20", book: "exodus", date: "7 FEB 2026" },
-  { number: 18, name: "Judgments", hebrewName: "Mishpatim", torahReading: "Exodus 21:1–24:18", haftarah: "Jeremiah 34:8–22", britChadashah: "Hebrews 9:15–22", book: "exodus", date: "14 FEB 2026" },
-  { number: 19, name: "Contribution", hebrewName: "Terumah", torahReading: "Exodus 25:1–27:19", haftarah: "1 Kings 5:12–6:13", britChadashah: "2 Corinthians 9:1–15", book: "exodus", date: "21 FEB 2026" },
-  { number: 20, name: "You Shall Command", hebrewName: "Tetzaveh", torahReading: "Exodus 27:20–30:10", haftarah: "Ezekiel 43:10–27", britChadashah: "Hebrews 13:10–16", book: "exodus", date: "28 FEB 2026" },
-  { number: 21, name: "When You Take", hebrewName: "Ki Tisa", torahReading: "Exodus 30:11–34:35", haftarah: "1 Kings 18:1–39", britChadashah: "2 Corinthians 3:1–18", book: "exodus", date: "7 MAR 2026" },
-  { number: 22, name: "He Assembled / Accounts", hebrewName: "Vayakhel-Pekudei", torahReading: "Exodus 35:1–40:38", haftarah: "1 Kings 7:40–8:21", britChadashah: "Hebrews 9:1–14", book: "exodus", date: "14 MAR 2026", combined: true },
+interface FfozWeek {
+  date: string; // YYYY-MM-DD
+  slug: string;
+  special?: string;
+  haftarah?: string;
+  gospel?: string;
+}
 
-  // LEVITICUS (Mar-May 2026) - Portions 24-33
-  { number: 23, name: "He Called", hebrewName: "Vayikra", torahReading: "Leviticus 1:1–5:26", haftarah: "Isaiah 43:21–44:23", britChadashah: "Hebrews 10:1–18", book: "leviticus", date: "21 MAR 2026" },
-  { number: 24, name: "Command", hebrewName: "Tzav", torahReading: "Leviticus 6:1–8:36", haftarah: "Jeremiah 7:21–8:3", britChadashah: "Hebrews 7:23–28", book: "leviticus", date: "28 MAR 2026" },
-  { number: 25, name: "Eighth", hebrewName: "Shemini", torahReading: "Leviticus 9:1–11:47", haftarah: "2 Samuel 6:1–7:17", britChadashah: "Acts 10:1–35", book: "leviticus", date: "11 APR 2026" },
-  { number: 26, name: "She Conceives / Infected", hebrewName: "Tazria-Metzora", torahReading: "Leviticus 12:1–15:33", haftarah: "2 Kings 4:42–5:19", britChadashah: "Luke 5:12–16", book: "leviticus", date: "18 APR 2026", combined: true },
-  { number: 27, name: "After Death / Holy", hebrewName: "Acharei Mot-Kedoshim", torahReading: "Leviticus 16:1–20:27", haftarah: "Amos 9:7–15", britChadashah: "1 Peter 1:13–21", book: "leviticus", date: "25 APR 2026", combined: true },
-  { number: 28, name: "Say", hebrewName: "Emor", torahReading: "Leviticus 21:1–24:23", haftarah: "Ezekiel 44:15–31", britChadashah: "Luke 14:12–24", book: "leviticus", date: "2 MAY 2026" },
-  { number: 29, name: "On the Mount / In My Statutes", hebrewName: "Behar-Bechukotai", torahReading: "Leviticus 25:1–27:34", haftarah: "Jeremiah 16:19–17:14", britChadashah: "John 14:15–21", book: "leviticus", date: "9 MAY 2026", combined: true },
+export const FFOZ_SOURCE = ffoz.source;
+const FFOZ_PORTIONS = ffoz.portions as Record<string, FfozPortion>;
+export const FFOZ_SCHEDULE = ffoz.schedule as FfozWeek[];
 
-  // NUMBERS (May-Jul 2026) - Portions 34-43
-  { number: 30, name: "In the Wilderness", hebrewName: "Bamidbar", torahReading: "Numbers 1:1–4:20", haftarah: "Hosea 2:1–22", britChadashah: "Romans 9:22–33", book: "numbers", date: "16 MAY 2026" },
-  { number: 31, name: "Take Up", hebrewName: "Naso", torahReading: "Numbers 4:21–7:89", haftarah: "Judges 13:2–25", britChadashah: "Acts 21:17–26", book: "numbers", date: "30 MAY 2026" },
-  { number: 32, name: "When You Set Up", hebrewName: "Beha'alotcha", torahReading: "Numbers 8:1–12:16", haftarah: "Zechariah 2:14–4:7", britChadashah: "John 6:1–14", book: "numbers", date: "6 JUN 2026" },
-  { number: 33, name: "Send for Yourself", hebrewName: "Shelach", torahReading: "Numbers 13:1–15:41", haftarah: "Joshua 2:1–24", britChadashah: "Hebrews 3:7–19", book: "numbers", date: "13 JUN 2026" },
-  { number: 34, name: "Korach", hebrewName: "Korach", torahReading: "Numbers 16:1–18:32", haftarah: "1 Samuel 11:14–12:22", britChadashah: "Jude 1:1–25", book: "numbers", date: "20 JUN 2026" },
-  { number: 35, name: "Statute / Balak", hebrewName: "Chukat-Balak", torahReading: "Numbers 19:1–25:9", haftarah: "Micah 5:6–6:8", britChadashah: "John 3:10–21", book: "numbers", date: "27 JUN 2026", combined: true },
-  { number: 36, name: "Phinehas", hebrewName: "Pinchas", torahReading: "Numbers 25:10–30:1", haftarah: "1 Kings 18:46–19:21", britChadashah: "John 2:13–22", book: "numbers", date: "4 JUL 2026" },
-  { number: 37, name: "Tribes / Journeys", hebrewName: "Matot-Masei", torahReading: "Numbers 30:2–36:13", haftarah: "Jeremiah 2:4–2:28", britChadashah: "James 4:1–12", book: "numbers", date: "11 JUL 2026", combined: true },
-
-  // DEUTERONOMY (Jul-Oct 2026) - Portions 44-54
-  { number: 38, name: "Words", hebrewName: "Devarim", torahReading: "Deuteronomy 1:1–3:22", haftarah: "Isaiah 1:1–27", britChadashah: "Acts 9:1–21", book: "deuteronomy", date: "18 JUL 2026" },
-  { number: 39, name: "I Pleaded", hebrewName: "Va'etchanan", torahReading: "Deuteronomy 3:23–7:11", haftarah: "Isaiah 40:1–26", britChadashah: "Matthew 23:31–39", book: "deuteronomy", date: "25 JUL 2026" },
-  { number: 40, name: "Because", hebrewName: "Eikev", torahReading: "Deuteronomy 7:12–11:25", haftarah: "Isaiah 49:14–51:3", britChadashah: "Hebrews 11:8–16", book: "deuteronomy", date: "1 AUG 2026" },
-  { number: 41, name: "See", hebrewName: "Re'eh", torahReading: "Deuteronomy 11:26–16:17", haftarah: "Isaiah 54:11–55:5", britChadashah: "1 John 4:1–6", book: "deuteronomy", date: "8 AUG 2026" },
-  { number: 42, name: "Judges", hebrewName: "Shoftim", torahReading: "Deuteronomy 16:18–21:9", haftarah: "Isaiah 51:12–52:12", britChadashah: "Matthew 5:38–42", book: "deuteronomy", date: "15 AUG 2026" },
-  { number: 43, name: "When You Go Out", hebrewName: "Ki Teitzei", torahReading: "Deuteronomy 21:10–25:19", haftarah: "Isaiah 54:1–10", britChadashah: "1 Corinthians 5:1–5", book: "deuteronomy", date: "22 AUG 2026" },
-  { number: 44, name: "When You Come In", hebrewName: "Ki Tavo", torahReading: "Deuteronomy 26:1–29:8", haftarah: "Isaiah 60:1–22", britChadashah: "Luke 24:44–53", book: "deuteronomy", date: "29 AUG 2026" },
-  { number: 45, name: "You Stand / He Went", hebrewName: "Nitzavim-Vayelech", torahReading: "Deuteronomy 29:9–31:30", haftarah: "Isaiah 61:10–63:9", britChadashah: "Romans 9:30–10:13", book: "deuteronomy", date: "5 SEP 2026", combined: true },
-  { number: 46, name: "Give Ear", hebrewName: "Ha'azinu", torahReading: "Deuteronomy 32:1–52", haftarah: "2 Samuel 22:1–51", britChadashah: "Romans 10:14–21", book: "deuteronomy", date: "19 SEP 2026" },
-  { number: 47, name: "The Blessing", hebrewName: "V'Zot HaBerachah", torahReading: "Deuteronomy 33:1–34:12", haftarah: "Joshua 1:1–18", britChadashah: "Revelation 22:1–5", book: "deuteronomy", date: "4 OCT 2026" },
+/** The 54 portions in order; a combined reading takes its first half's number. */
+const PORTION_ORDER = [
+  'breisheet', 'noach', 'lech-lecha', 'vayera', 'chayei-sarah', 'toldot', 'vayetze',
+  'vayishlach', 'vayeshev', 'miketz', 'vayigash', 'vayechi',
+  'shemot', 'vaera', 'bo', 'beshalach', 'yitro', 'mishpatim', 'terumah', 'tetzaveh',
+  'ki-tisa', 'vayakhel', 'pekudei',
+  'vayikra', 'tzav', 'shemini', 'tazria', 'metzora', 'acharei-mot', 'kedoshim', 'emor',
+  'behar', 'bechukotai',
+  'bamidbar', 'nasso', 'behaalotcha', 'shelach', 'korach', 'chukat', 'balak', 'pinchas',
+  'mattot', 'massei',
+  'devarim', 'vaetchanan', 'ekev', 'reeh', 'shoftim', 'ki-tetze', 'ki-tavo', 'nitzavim',
+  'vayelech', 'haazinu', 'vezot-habracha',
 ];
 
-// Torah portion dates for the 5787 cycle (2026-2027), Diaspora schedule per
-// Hebcal. 5787 is a leap year, so Vayakhel/Pekudei, Tazria/Metzora, Acharei
-// Mot/Kedoshim and Behar/Bechukotai are read on separate weeks. Numbers here
-// are each portion's place among the 54 (a combined reading takes the number
-// of its first half).
+/**
+ * Other spellings of a portion's name, so a YouTube title that says
+ * "Beresheet" or "Eikev" still finds FFOZ's "B’reisheet" or "Ekev".
+ */
+export const PORTION_ALIASES: Record<string, readonly string[]> = {
+  'breisheet': ['Beresheet', 'Bereshit', 'Bereishit', 'Bereshith'],
+  'lech-lecha': ['Lech Lecha', 'Lekh Lekha'],
+  'chayei-sarah': ['Chayei Sara', 'Chaye Sarah'],
+  'vayetze': ['Vayetzei', 'Vayeitzei'],
+  'vaera': ["Va'eira", 'Vaeira'],
+  'vayakhel': ['Vayakhel'],
+  'vayakhel-pekudei': ['Vayakhel-Pekudei'],
+  'shemini': ['Shemini', 'Shmini'],
+  'acharei-mot': ['Achrei Mot', 'Acharei'],
+  'nasso': ['Naso'],
+  'behaalotcha': ["Beha'alotecha", 'Behaalotecha'],
+  'shelach': ["Sh'lach", 'Shlach', 'Shelach Lecha'],
+  'mattot': ['Matot'],
+  'massei': ['Masei'],
+  'mattot-massei': ['Matot-Masei'],
+  'ekev': ['Eikev'],
+  'ki-tetze': ['Ki Teitzei', 'Ki Tetzei', 'Ki Tetzeh'],
+  'vayelech': ['Vayeilech'],
+  'nitzavim-vayelech': ['Nitzavim-Vayeilech'],
+  'vezot-habracha': ["V'Zot HaBerachah", 'Vezot Haberakhah', 'Vzot Habracha'],
+};
+
+const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+/** "2026-10-31" -> "31 OCT 2026" */
+function displayDate(iso: string): string {
+  const [year, month, day] = iso.split('-').map(Number);
+  return `${day} ${MONTHS[month - 1]} ${year}`;
+}
+
+/** One dated reading, with FFOZ's special-Sabbath replacements applied. */
+function week(
+  iso: string,
+  slug: string,
+  extra: Partial<Pick<TorahPortionWithDate, 'special' | 'haftarah' | 'gospel' | 'provisional'>> = {},
+): TorahPortionWithDate {
+  const portion = FFOZ_PORTIONS[slug];
+  if (!portion) throw new Error(`No FFOZ portion "${slug}"`);
+  const combined = !PORTION_ORDER.includes(slug);
+  const number = PORTION_ORDER.findIndex(s => slug === s || slug.startsWith(`${s}-`)) + 1;
+  return {
+    number,
+    name: portion.meaning,
+    hebrewName: portion.name,
+    slug,
+    torahReading: portion.torah,
+    haftarah: extra.haftarah ?? portion.haftarah,
+    gospel: extra.gospel ?? portion.gospel,
+    book: portion.book.toLowerCase() as TorahBook,
+    date: displayDate(iso),
+    ...(combined ? { combined: true } : {}),
+    ...(extra.special ? { special: extra.special } : {}),
+    ...(extra.provisional ? { provisional: true } : {}),
+  };
+}
+
+const fromFfoz = (from: string, to: string) =>
+  FFOZ_SCHEDULE.filter(w => w.date >= from && w.date <= to).map(w =>
+    week(w.date, w.slug, { special: w.special, haftarah: w.haftarah, gospel: w.gospel }),
+  );
+
+// 5786 (2025-2026) has passed and FFOZ no longer publishes its dates, which
+// were the same diaspora schedule. Names and regular readings follow FFOZ;
+// that year's special-Sabbath replacements aren't shown. Its last two
+// readings are on FFOZ's current schedule and come from it.
+const PORTIONS_5786: TorahPortionWithDate[] = [
+  ...([
+    ['2025-10-18', 'breisheet'], ['2025-10-25', 'noach'], ['2025-11-01', 'lech-lecha'],
+    ['2025-11-08', 'vayera'], ['2025-11-15', 'chayei-sarah'], ['2025-11-22', 'toldot'],
+    ['2025-11-29', 'vayetze'], ['2025-12-06', 'vayishlach'], ['2025-12-13', 'vayeshev'],
+    ['2025-12-20', 'miketz'], ['2025-12-27', 'vayigash'], ['2026-01-03', 'vayechi'],
+    ['2026-01-10', 'shemot'], ['2026-01-17', 'vaera'], ['2026-01-24', 'bo'],
+    ['2026-01-31', 'beshalach'], ['2026-02-07', 'yitro'], ['2026-02-14', 'mishpatim'],
+    ['2026-02-21', 'terumah'], ['2026-02-28', 'tetzaveh'], ['2026-03-07', 'ki-tisa'],
+    ['2026-03-14', 'vayakhel-pekudei'], ['2026-03-21', 'vayikra'], ['2026-03-28', 'tzav'],
+    ['2026-04-11', 'shemini'], ['2026-04-18', 'tazria-metzora'], ['2026-04-25', 'acharei-mot-kedoshim'],
+    ['2026-05-02', 'emor'], ['2026-05-09', 'behar-bechukotai'], ['2026-05-16', 'bamidbar'],
+    ['2026-05-30', 'nasso'], ['2026-06-06', 'behaalotcha'], ['2026-06-13', 'shelach'],
+    ['2026-06-20', 'korach'], ['2026-06-27', 'chukat-balak'], ['2026-07-04', 'pinchas'],
+    ['2026-07-11', 'mattot-massei'], ['2026-07-18', 'devarim'], ['2026-07-25', 'vaetchanan'],
+    ['2026-08-01', 'ekev'], ['2026-08-08', 'reeh'], ['2026-08-15', 'shoftim'],
+    ['2026-08-22', 'ki-tetze'], ['2026-08-29', 'ki-tavo'], ['2026-09-05', 'nitzavim-vayelech'],
+  ] as const).map(([iso, slug]) => week(iso, slug)),
+  ...fromFfoz('2026-09-01', '2026-10-09'),
+];
+
+// 5787 (2026-2027), exactly as FFOZ publishes it. FFOZ hasn't yet dated the
+// cycle's last two readings (they fall in Tishrei 5788), so those two are
+// provisional: Hebrew-calendar dates, FFOZ's readings, and Ha'azinu again on
+// Shabbat Shuva as this year. Re-run the fetch script once FFOZ publishes.
+const haazinu5787 = FFOZ_SCHEDULE.find(w => w.date === '2026-09-19');
 const PORTIONS_5787: TorahPortionWithDate[] = [
-  // GENESIS (Oct-Dec 2026)
-  { number: 1, name: "In the Beginning", hebrewName: "Beresheet", torahReading: "Genesis 1:1–6:8", haftarah: "Isaiah 42:5–43:10", britChadashah: "John 1:1–18", book: "genesis", date: "10 OCT 2026" },
-  { number: 2, name: "Noah", hebrewName: "Noach", torahReading: "Genesis 6:9–11:32", haftarah: "Isaiah 54:1–55:5", britChadashah: "Matthew 24:36–46", book: "genesis", date: "17 OCT 2026" },
-  { number: 3, name: "Go Forth", hebrewName: "Lech Lecha", torahReading: "Genesis 12:1–17:27", haftarah: "Isaiah 40:27–41:16", britChadashah: "Romans 4:1–25", book: "genesis", date: "24 OCT 2026" },
-  { number: 4, name: "He Appeared", hebrewName: "Vayera", torahReading: "Genesis 18:1–22:24", haftarah: "2 Kings 4:1–37", britChadashah: "Luke 1:26–38", book: "genesis", date: "31 OCT 2026" },
-  { number: 5, name: "Life of Sarah", hebrewName: "Chayei Sarah", torahReading: "Genesis 23:1–25:18", haftarah: "1 Kings 1:1–31", britChadashah: "Matthew 8:19–22", book: "genesis", date: "7 NOV 2026" },
-  { number: 6, name: "Generations", hebrewName: "Toldot", torahReading: "Genesis 25:19–28:9", haftarah: "Malachi 1:1–2:7", britChadashah: "Romans 9:6–16", book: "genesis", date: "14 NOV 2026" },
-  { number: 7, name: "He Went Out", hebrewName: "Vayetze", torahReading: "Genesis 28:10–32:3", haftarah: "Hosea 12:13–14:10", britChadashah: "John 1:43–51", book: "genesis", date: "21 NOV 2026" },
-  { number: 8, name: "He Sent", hebrewName: "Vayishlach", torahReading: "Genesis 32:4–36:43", haftarah: "Obadiah 1:1–21", britChadashah: "Hebrews 11:11–20", book: "genesis", date: "28 NOV 2026" },
-  { number: 9, name: "He Settled", hebrewName: "Vayeshev", torahReading: "Genesis 37:1–40:23", haftarah: "Amos 2:6–3:8", britChadashah: "Acts 7:9–16", book: "genesis", date: "5 DEC 2026" },
-  { number: 10, name: "At the End", hebrewName: "Miketz", torahReading: "Genesis 41:1–44:17", haftarah: "1 Kings 3:15–4:1", britChadashah: "Luke 4:16–30", book: "genesis", date: "12 DEC 2026" },
-  { number: 11, name: "He Approached", hebrewName: "Vayigash", torahReading: "Genesis 44:18–47:27", haftarah: "Ezekiel 37:15–28", britChadashah: "Ephesians 2:1–22", book: "genesis", date: "19 DEC 2026" },
-  { number: 12, name: "He Lived", hebrewName: "Vayechi", torahReading: "Genesis 47:28–50:26", haftarah: "1 Kings 2:1–12", britChadashah: "1 Peter 1:3–9", book: "genesis", date: "26 DEC 2026" },
-
-  // EXODUS (Jan-Mar 2027)
-  { number: 13, name: "Names", hebrewName: "Shemot", torahReading: "Exodus 1:1–6:1", haftarah: "Isaiah 27:6–28:13", britChadashah: "Acts 7:17–35", book: "exodus", date: "2 JAN 2027" },
-  { number: 14, name: "I Appeared", hebrewName: "Va'eira", torahReading: "Exodus 6:2–9:35", haftarah: "Ezekiel 28:25–29:21", britChadashah: "Revelation 15:1–8", book: "exodus", date: "9 JAN 2027" },
-  { number: 15, name: "Go/Come", hebrewName: "Bo", torahReading: "Exodus 10:1–13:16", haftarah: "Jeremiah 46:13–28", britChadashah: "Luke 22:7–20", book: "exodus", date: "16 JAN 2027" },
-  { number: 16, name: "When He Sent", hebrewName: "Beshalach", torahReading: "Exodus 13:17–17:16", haftarah: "Judges 4:4–5:31", britChadashah: "John 6:22–40", book: "exodus", date: "23 JAN 2027" },
-  { number: 17, name: "He Heard", hebrewName: "Yitro", torahReading: "Exodus 18:1–20:23", haftarah: "Isaiah 6:1–7:6", britChadashah: "Matthew 5:17–20", book: "exodus", date: "30 JAN 2027" },
-  { number: 18, name: "Judgments", hebrewName: "Mishpatim", torahReading: "Exodus 21:1–24:18", haftarah: "Jeremiah 34:8–22", britChadashah: "Hebrews 9:15–22", book: "exodus", date: "6 FEB 2027" },
-  { number: 19, name: "Contribution", hebrewName: "Terumah", torahReading: "Exodus 25:1–27:19", haftarah: "1 Kings 5:12–6:13", britChadashah: "2 Corinthians 9:1–15", book: "exodus", date: "13 FEB 2027" },
-  { number: 20, name: "You Shall Command", hebrewName: "Tetzaveh", torahReading: "Exodus 27:20–30:10", haftarah: "Ezekiel 43:10–27", britChadashah: "Hebrews 13:10–16", book: "exodus", date: "20 FEB 2027" },
-  { number: 21, name: "When You Take", hebrewName: "Ki Tisa", torahReading: "Exodus 30:11–34:35", haftarah: "1 Kings 18:1–39", britChadashah: "2 Corinthians 3:1–18", book: "exodus", date: "27 FEB 2027" },
-  { number: 22, name: "He Assembled", hebrewName: "Vayakhel", torahReading: "Exodus 35:1–38:20", haftarah: "1 Kings 7:40–50", britChadashah: "Hebrews 9:1–14", book: "exodus", date: "6 MAR 2027" },
-  { number: 23, name: "Accounts", hebrewName: "Pekudei", torahReading: "Exodus 38:21–40:38", haftarah: "1 Kings 7:51–8:21", britChadashah: "Revelation 15:5–8", book: "exodus", date: "13 MAR 2027" },
-
-  // LEVITICUS (Mar-May 2027)
-  { number: 24, name: "He Called", hebrewName: "Vayikra", torahReading: "Leviticus 1:1–5:26", haftarah: "Isaiah 43:21–44:23", britChadashah: "Hebrews 10:1–18", book: "leviticus", date: "20 MAR 2027" },
-  { number: 25, name: "Command", hebrewName: "Tzav", torahReading: "Leviticus 6:1–8:36", haftarah: "Jeremiah 7:21–8:3", britChadashah: "Hebrews 7:23–28", book: "leviticus", date: "27 MAR 2027" },
-  { number: 26, name: "Eighth", hebrewName: "Shemini", torahReading: "Leviticus 9:1–11:47", haftarah: "2 Samuel 6:1–7:17", britChadashah: "Acts 10:1–35", book: "leviticus", date: "3 APR 2027" },
-  { number: 27, name: "She Conceives", hebrewName: "Tazria", torahReading: "Leviticus 12:1–13:59", haftarah: "2 Kings 4:42–5:19", britChadashah: "Luke 5:12–16", book: "leviticus", date: "10 APR 2027" },
-  { number: 28, name: "Infected One", hebrewName: "Metzora", torahReading: "Leviticus 14:1–15:33", haftarah: "2 Kings 7:3–20", britChadashah: "Matthew 9:20–26", book: "leviticus", date: "17 APR 2027" },
-  { number: 29, name: "After the Death", hebrewName: "Acharei Mot", torahReading: "Leviticus 16:1–18:30", haftarah: "Ezekiel 22:1–19", britChadashah: "Hebrews 9:11–28", book: "leviticus", date: "1 MAY 2027" },
-  { number: 30, name: "Holy", hebrewName: "Kedoshim", torahReading: "Leviticus 19:1–20:27", haftarah: "Amos 9:7–15", britChadashah: "1 Peter 1:13–21", book: "leviticus", date: "8 MAY 2027" },
-  { number: 31, name: "Say", hebrewName: "Emor", torahReading: "Leviticus 21:1–24:23", haftarah: "Ezekiel 44:15–31", britChadashah: "Luke 14:12–24", book: "leviticus", date: "15 MAY 2027" },
-  { number: 32, name: "On the Mount", hebrewName: "Behar", torahReading: "Leviticus 25:1–26:2", haftarah: "Jeremiah 32:6–27", britChadashah: "Luke 4:16–21", book: "leviticus", date: "22 MAY 2027" },
-  { number: 33, name: "In My Statutes", hebrewName: "Bechukotai", torahReading: "Leviticus 26:3–27:34", haftarah: "Jeremiah 16:19–17:14", britChadashah: "John 14:15–21", book: "leviticus", date: "29 MAY 2027" },
-
-  // NUMBERS (Jun-Jul 2027)
-  { number: 34, name: "In the Wilderness", hebrewName: "Bamidbar", torahReading: "Numbers 1:1–4:20", haftarah: "Hosea 2:1–22", britChadashah: "Romans 9:22–33", book: "numbers", date: "5 JUN 2027" },
-  { number: 35, name: "Take Up", hebrewName: "Naso", torahReading: "Numbers 4:21–7:89", haftarah: "Judges 13:2–25", britChadashah: "Acts 21:17–26", book: "numbers", date: "19 JUN 2027" },
-  { number: 36, name: "When You Set Up", hebrewName: "Beha'alotcha", torahReading: "Numbers 8:1–12:16", haftarah: "Zechariah 2:14–4:7", britChadashah: "John 6:1–14", book: "numbers", date: "26 JUN 2027" },
-  { number: 37, name: "Send for Yourself", hebrewName: "Shelach", torahReading: "Numbers 13:1–15:41", haftarah: "Joshua 2:1–24", britChadashah: "Hebrews 3:7–19", book: "numbers", date: "3 JUL 2027" },
-  { number: 38, name: "Korach", hebrewName: "Korach", torahReading: "Numbers 16:1–18:32", haftarah: "1 Samuel 11:14–12:22", britChadashah: "Jude 1:1–25", book: "numbers", date: "10 JUL 2027" },
-  { number: 39, name: "Statute / Balak", hebrewName: "Chukat-Balak", torahReading: "Numbers 19:1–25:9", haftarah: "Micah 5:6–6:8", britChadashah: "John 3:10–21", book: "numbers", date: "17 JUL 2027", combined: true },
-  { number: 41, name: "Phinehas", hebrewName: "Pinchas", torahReading: "Numbers 25:10–30:1", haftarah: "1 Kings 18:46–19:21", britChadashah: "John 2:13–22", book: "numbers", date: "24 JUL 2027" },
-  { number: 42, name: "Tribes / Journeys", hebrewName: "Matot-Masei", torahReading: "Numbers 30:2–36:13", haftarah: "Jeremiah 2:4–2:28", britChadashah: "James 4:1–12", book: "numbers", date: "31 JUL 2027", combined: true },
-
-  // DEUTERONOMY (Aug-Oct 2027)
-  { number: 44, name: "Words", hebrewName: "Devarim", torahReading: "Deuteronomy 1:1–3:22", haftarah: "Isaiah 1:1–27", britChadashah: "Acts 9:1–21", book: "deuteronomy", date: "7 AUG 2027" },
-  { number: 45, name: "I Pleaded", hebrewName: "Va'etchanan", torahReading: "Deuteronomy 3:23–7:11", haftarah: "Isaiah 40:1–26", britChadashah: "Matthew 23:31–39", book: "deuteronomy", date: "14 AUG 2027" },
-  { number: 46, name: "Because", hebrewName: "Eikev", torahReading: "Deuteronomy 7:12–11:25", haftarah: "Isaiah 49:14–51:3", britChadashah: "Hebrews 11:8–16", book: "deuteronomy", date: "21 AUG 2027" },
-  { number: 47, name: "See", hebrewName: "Re'eh", torahReading: "Deuteronomy 11:26–16:17", haftarah: "Isaiah 54:11–55:5", britChadashah: "1 John 4:1–6", book: "deuteronomy", date: "28 AUG 2027" },
-  { number: 48, name: "Judges", hebrewName: "Shoftim", torahReading: "Deuteronomy 16:18–21:9", haftarah: "Isaiah 51:12–52:12", britChadashah: "Matthew 5:38–42", book: "deuteronomy", date: "4 SEP 2027" },
-  { number: 49, name: "When You Go Out", hebrewName: "Ki Teitzei", torahReading: "Deuteronomy 21:10–25:19", haftarah: "Isaiah 54:1–10", britChadashah: "1 Corinthians 5:1–5", book: "deuteronomy", date: "11 SEP 2027" },
-  { number: 50, name: "When You Come In", hebrewName: "Ki Tavo", torahReading: "Deuteronomy 26:1–29:8", haftarah: "Isaiah 60:1–22", britChadashah: "Luke 24:44–53", book: "deuteronomy", date: "18 SEP 2027" },
-  { number: 51, name: "You Stand / He Went", hebrewName: "Nitzavim-Vayelech", torahReading: "Deuteronomy 29:9–31:30", haftarah: "Isaiah 61:10–63:9", britChadashah: "Romans 9:30–10:13", book: "deuteronomy", date: "25 SEP 2027", combined: true },
-  { number: 53, name: "Give Ear", hebrewName: "Ha'azinu", torahReading: "Deuteronomy 32:1–52", haftarah: "2 Samuel 22:1–51", britChadashah: "Romans 10:14–21", book: "deuteronomy", date: "9 OCT 2027" },
-  { number: 54, name: "The Blessing", hebrewName: "V'Zot HaBerachah", torahReading: "Deuteronomy 33:1–34:12", haftarah: "Joshua 1:1–18", britChadashah: "Revelation 22:1–5", book: "deuteronomy", date: "24 OCT 2027" },
+  ...fromFfoz('2026-10-10', '2027-09-30'),
+  week('2027-10-09', 'haazinu', {
+    special: haazinu5787?.special,
+    haftarah: haazinu5787?.haftarah,
+    gospel: haazinu5787?.gospel,
+    provisional: true,
+  }),
+  week('2027-10-24', 'vezot-habracha', { provisional: true }),
 ];
 
 /** Each annual cycle, oldest first. Add the next year here when it is published. */
@@ -329,4 +362,30 @@ export function getCycleRange(): { first: Date; last: Date } | null {
 
   if (dates.length === 0) return null;
   return { first: dates[0], last: dates[dates.length - 1] };
+}
+
+// ============================================================
+// FFOZ display helpers
+// ============================================================
+
+/** A reading as FFOZ shows it: an asterisk when a special Sabbath replaced it
+ *  (non-breaking, so it never wraps onto a line by itself). */
+export function markSpecial(reading: string, portion: Pick<TorahPortionWithDate, 'special'>): string {
+  return portion.special ? `${reading}\u00a0*` : reading;
+}
+
+/** FFOZ's footnote for a special Sabbath, e.g. "* Special readings for Shabbat Hanukkah". */
+export function specialNote(portion: Pick<TorahPortionWithDate, 'special'>): string | undefined {
+  return portion.special ? `* Special readings for ${portion.special}` : undefined;
+}
+
+/** Every portion name with its other spellings, for matching YouTube titles. */
+export function getPortionMatchNames(): { name: string; aliases: readonly string[] }[] {
+  const seen = new Map<string, readonly string[]>();
+  for (const portion of TORAH_PORTIONS_WITH_DATES) {
+    if (!seen.has(portion.hebrewName)) {
+      seen.set(portion.hebrewName, PORTION_ALIASES[portion.slug] ?? []);
+    }
+  }
+  return [...seen].map(([name, aliases]) => ({ name, aliases }));
 }

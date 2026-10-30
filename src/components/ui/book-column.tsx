@@ -158,7 +158,7 @@ function PortionDetails({
           </p>
         </div>
 
-        {/* Brit Chadashah */}
+        {/* Gospel */}
         <div>
           <p
             className={cn(
@@ -166,10 +166,10 @@ function PortionDetails({
               isCurrent ? "text-primary-foreground/80" : "text-gray-600"
             )}
           >
-            BRIT CHADASHAH
+            GOSPEL
           </p>
           <p className={isCurrent ? "text-white" : "text-gray-800"}>
-            {portion.britChadashah}
+            {portion.gospel}
           </p>
         </div>
       </div>

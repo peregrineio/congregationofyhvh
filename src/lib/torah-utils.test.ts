@@ -26,8 +26,8 @@ test("home, /shabbat and /resources agree with /events (getNextPortion) every da
 });
 
 test("between cycles the Torah Portions page shows the cycle that holds this week's portion", () => {
-  // 5 Oct 2026: 5786 has ended (V'Zot HaBerachah, 4 Oct); Beresheet 5787 is next (10 Oct).
+  // 5 Oct 2026: 5786 has ended (V'Zot HaBerachah, 4 Oct); B’reisheet 5787 is next (10 Oct).
   const today = day(2026, 10, 5);
-  assert.equal(getCurrentPortion(today), "Beresheet");
-  assert.ok(getCurrentCycle(today).some((p) => p.hebrewName === "Beresheet" && p.date === "10 OCT 2026"));
+  assert.equal(getCurrentPortion(today), "B’reisheet");
+  assert.ok(getCurrentCycle(today).some((p) => p.hebrewName === "B’reisheet" && p.date === "10 OCT 2026"));
 });

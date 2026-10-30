@@ -14,7 +14,7 @@ import {
 export const metadata: Metadata = {
   title: "Torah Portions | Congregation of YHVH",
   description:
-    "The annual parashot reading schedule — all 54 Torah portions with their Torah, Haftarah, and Brit Chadashah readings.",
+    "The annual parashot reading schedule — all 54 Torah portions with their Torah, Haftarah and Gospel readings.",
 };
 
 // The "this week" highlight has to move with the calendar rather than being

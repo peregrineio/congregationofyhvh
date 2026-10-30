@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { TorahPortionWithDate } from "@/lib/torah-utils";
-import { toDateKey } from "@/lib/torah-utils";
+import { toDateKey, markSpecial, specialNote } from "@/lib/torah-utils";
 import { SITE_CONFIG } from "@/lib/constants";
 import { Flame, CalendarDays, Play, ArrowRight } from "@/components/icons";
 
@@ -459,8 +459,8 @@ function EventDetail({
 
   const readings = [
     { label: "Torah", value: portion.torahReading },
-    { label: "Haftarah", value: portion.haftarah },
-    { label: "Brit Chadashah", value: portion.britChadashah },
+    { label: "Haftarah", value: markSpecial(portion.haftarah, portion) },
+    { label: "Gospel", value: markSpecial(portion.gospel, portion) },
   ];
 
   const readable = new Date(`${entry.dateKey}T12:00:00`).toLocaleDateString(
@@ -486,6 +486,11 @@ function EventDetail({
         &ldquo;{portion.name}&rdquo; &mdash; Portion {portion.number} of 54
         {portion.combined && " (combined)"}
       </p>
+      {specialNote(portion) && (
+        <p className="mt-1 font-subheading text-xs uppercase tracking-widest text-yhvh-gold-dark">
+          {specialNote(portion)}
+        </p>
+      )}
 
       <dl className="mt-6 grid gap-4 sm:grid-cols-3">
         {readings.map((reading) => (

@@ -1,5 +1,10 @@
 import { SITE_CONFIG } from "@/lib/constants";
-import { TORAH_PORTIONS_WITH_DATES, parsePortionDate } from "@/lib/torah-utils";
+import {
+  TORAH_PORTIONS_WITH_DATES,
+  parsePortionDate,
+  markSpecial,
+  specialNote,
+} from "@/lib/torah-utils";
 
 /**
  * Subscribable calendar feed of every Shabbat gathering in the reading cycle.
@@ -110,8 +115,10 @@ export async function GET() {
           [
             `Portion ${portion.number} of 54 — "${portion.name}"`,
             `Torah: ${portion.torahReading}`,
-            `Haftarah: ${portion.haftarah}`,
-            `Brit Chadashah: ${portion.britChadashah}`,
+            `Haftarah: ${markSpecial(portion.haftarah, portion)}`,
+            `Gospel: ${markSpecial(portion.gospel, portion)}`,
+            ...(portion.special ? [specialNote(portion)!] : []),
+            "Readings: First Fruits of Zion weekly schedule",
             "",
             `${SITE_CONFIG.domain}/events`,
           ].join("\n")
