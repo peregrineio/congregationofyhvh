@@ -3,6 +3,7 @@ import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { AboutHero } from "@/components/about/about-hero";
+import { DonationForm } from "@/components/give/donation-form";
 import {
   BookOpen,
   Users,
@@ -76,7 +77,8 @@ const otherWays = [
   },
 ];
 
-export default function GivePage() {
+export default async function GivePage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  const sp = await searchParams;
   return (
     <>
       <AboutHero
@@ -129,8 +131,8 @@ export default function GivePage() {
           </ul>
         </section>
 
-        {/* ── Online giving + the ways that work today ─────────── */}
-        <section className="parchment-plate rounded-xl">
+        {/* ── Online giving + the other ways to give ───────────── */}
+        <section id="give-online" className="parchment-plate scroll-mt-24 rounded-xl">
           <div className="grid divide-y divide-yhvh-gold/15 lg:grid-cols-2 lg:divide-y-0 lg:divide-x">
             <div className="p-7 text-center md:p-9">
               <span className="inline-flex size-14 items-center justify-center rounded-full border border-yhvh-gold/25 bg-yhvh-gold/[0.07] text-yhvh-gold-dark">
@@ -139,37 +141,16 @@ export default function GivePage() {
               <h2 className="mt-5 font-heading text-2xl text-foreground">
                 Online Giving
               </h2>
-              <p className="mt-1 font-subheading text-sm uppercase tracking-widest text-yhvh-gold-dark">
-                Coming soon
+              <p className="mx-auto mt-3 max-w-sm font-body text-sm leading-relaxed text-muted-foreground">
+                Give a freewill offering by card, once or every month.
               </p>
 
-              <p className="mx-auto mt-5 max-w-sm font-body text-sm leading-relaxed text-muted-foreground">
-                We are currently setting up our secure online donation system to provide
-                you with a simple and safe way to give.
-              </p>
-
-              {/* Deliberately a disabled button rather than a live link — there
-                  is no payment processor behind it yet, and a giving page must
-                  never imply it can take a gift it cannot. */}
-              <button
-                type="button"
-                disabled
-                aria-describedby="giving-status"
-                className="mt-6 inline-flex cursor-not-allowed items-center gap-2 rounded-md bg-yhvh-gold/50 px-7 py-3 font-subheading text-sm uppercase tracking-widest text-white"
-              >
-                Give online (launching soon)
-              </button>
-              <p
-                id="giving-status"
-                className="mt-3 font-body text-xs text-muted-foreground/70"
-              >
-                Secure payment processing will be available soon.
-              </p>
+              <DonationForm canceled={sp.canceled === "1"} />
             </div>
 
             <div className="p-7 md:p-9">
               <h2 className="font-heading text-lg text-foreground">
-                In the meantime, you can give:
+                You can also give:
               </h2>
               <span aria-hidden className="mt-3 block h-px w-full bg-yhvh-gold/25" />
 

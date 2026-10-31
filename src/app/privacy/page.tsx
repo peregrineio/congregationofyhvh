@@ -6,14 +6,15 @@ import { PageHero } from "@/components/ui/page-hero";
 export const metadata: Metadata = {
   title: "Privacy | Congregation of YHVH",
   description:
-    "What the Congregation of YHVH website collects through the contact form and chat assistant, who sees it, and how to ask us to delete it.",
+    "What the Congregation of YHVH website collects through the contact form, chat assistant and online giving, who sees it, and how to ask us to delete it.",
 };
 
 // Keep this in step with what the site actually does: the contact form and
-// chat flows email the church inbox (no database), the chat keeps its
+// chat flows email the church inbox (no database), online gifts go through
+// Stripe Checkout into the back-office giving records, the chat keeps its
 // conversation in the visitor's own browser for 7 days, and there are no
 // analytics or advertising cookies.
-const EFFECTIVE = "29 October 2026";
+const EFFECTIVE = "31 October 2026";
 
 const sections: { title: string; body: React.ReactNode }[] = [
   {
@@ -31,6 +32,13 @@ const sections: { title: string; body: React.ReactNode }[] = [
           off, and you can clear it at any time by clearing this site&apos;s data. Nothing is sent
           to us unless you finish a request (such as planning a visit or a prayer request) and
           press <em>Send</em>. Then the details you entered are emailed to the same church inbox.
+        </p>
+        <p>
+          <strong>Online gifts.</strong> When you give online, you enter your card on Stripe&apos;s
+          secure page; we never see or store your card number. Stripe shares with us your name,
+          email address, the amount, the date, and whether the gift is one-time or monthly. We
+          keep only that, in our church&apos;s giving records, so we can thank you, send you a
+          receipt and a year-end summary of your giving, and keep accurate financial records.
         </p>
         <p>
           <strong>Prayer requests</strong> are shared only with the pastor and the board. Please
@@ -59,6 +67,10 @@ const sections: { title: string; body: React.ReactNode }[] = [
           service provider.
         </p>
         <p>
+          Online gifts are processed by Stripe, which handles your card and payment details under
+          its own privacy policy (stripe.com/privacy) and sends you its own receipt.
+        </p>
+        <p>
           The map on our home and contact pages is provided by Google Maps. Teaching thumbnails
           come from YouTube, and a teaching video loads from YouTube only when you press play.
           Those services handle your visit under their own privacy policies.
@@ -71,7 +83,8 @@ const sections: { title: string; body: React.ReactNode }[] = [
     body: (
       <p>
         Messages stay in our church inbox only as long as we need them to respond to you and
-        care for you.
+        care for you. Records of gifts are kept as long as the law requires us to keep
+        financial records.
       </p>
     ),
   },
@@ -87,7 +100,8 @@ const sections: { title: string; body: React.ReactNode }[] = [
           {SITE_CONFIG.email}
         </a>{" "}
         with the subject &ldquo;Privacy request&rdquo; to see, correct or delete anything you
-        have sent us. We will delete it and confirm by email.
+        have sent us. We will delete it and confirm by email. Records of gifts are the one
+        exception: we must keep them as financial records, but we will correct them.
       </p>
     ),
   },
