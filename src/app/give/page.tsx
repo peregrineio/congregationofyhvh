@@ -199,9 +199,9 @@ export default function GivePage() {
                     <address className="mt-2 font-body text-sm not-italic leading-relaxed text-foreground">
                       {SITE_CONFIG.name}
                       <br />
-                      {SITE_CONFIG.addressLine1} {SITE_CONFIG.addressLine2}
+                      {SITE_CONFIG.mailingLine1}
                       <br />
-                      {SITE_CONFIG.city}, {SITE_CONFIG.state} {SITE_CONFIG.zip}
+                      {SITE_CONFIG.mailingCity}, {SITE_CONFIG.mailingState} {SITE_CONFIG.mailingZip}
                     </address>
                   </div>
                 </li>

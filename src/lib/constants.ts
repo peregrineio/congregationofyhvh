@@ -16,6 +16,12 @@ export const SITE_CONFIG = {
   city: "Houston",
   state: "TX",
   zip: "77041",
+  // Mailing address for gifts sent by mail (Frank, 2026-10-31). The street address above is where the congregation meets.
+  mailingLine1: "P.O. Box #295",
+  mailingCity: "Spring",
+  mailingState: "TX",
+  mailingZip: "77383",
+  mailingAddress: "P.O. Box #295, Spring, TX 77383",
   email: "info@congregationofyhvh.com",
   domain: "https://congregationofyhvh.com",
 } as const;
