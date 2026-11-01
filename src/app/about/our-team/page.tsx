@@ -13,13 +13,13 @@ export const metadata: Metadata = {
 // only until each member provides their own; photos are placeholders.
 const teamMembers = [
   {
-    name: "Franklin \u201cFrank\u201d Longoria",
+    name: "Frank Longoria",
     role: "Pastor & President",
     bio: "Shepherds the congregation, teaches the Word, and serves as President of the board.",
     featured: true,
   },
   {
-    name: "Matt Wong",
+    name: "Matt Koo",
     role: "Secretary & Treasurer",
     bio: "Keeps the records and oversees the finances of the congregation.",
     featured: false,
