@@ -43,3 +43,9 @@ test("construction gate still serves the notice on a locked host, without the gi
   assert.equal(res.headers.get("content-security-policy"), null);
   assert.equal(res.headers.get("x-robots-tag"), "noindex, nofollow");
 });
+
+test("the Stripe webhook is never sent to the construction notice", () => {
+  const res = proxy(req("/api/give/webhook", "locked.example"));
+  assert.equal(res.headers.get("x-middleware-rewrite"), null);
+  assert.equal(res.headers.get("x-middleware-next"), "1");
+});

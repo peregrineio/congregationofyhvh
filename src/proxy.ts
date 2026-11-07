@@ -55,6 +55,9 @@ function serveSite(request: NextRequest) {
 
 export default function proxy(request: NextRequest) {
   if (LOCKED_HOSTS.length === 0) return serveSite(request);
+  // Stripe's webhook must reach the route even while a host shows the construction
+  // notice; it is protected by Stripe's signature, not by this gate.
+  if (request.nextUrl.pathname === "/api/give/webhook") return NextResponse.next();
 
   const host = (request.headers.get("host") ?? "")
     .toLowerCase()
