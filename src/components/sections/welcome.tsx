@@ -82,7 +82,7 @@ export function Welcome() {
                 <div className="mx-auto lg:mx-0">
                   <div className="arch-frame relative h-64 w-44 overflow-hidden border border-yhvh-gold/30 bg-gradient-to-b from-warm-sand to-soft-cream shadow-inner md:h-72 md:w-52">
                     <Image
-                      src="/images/leaders/frank.jpg"
+                      src="/images/leaders/frank-longoria.jpg"
                       alt="Pastor Frank, Senior Pastor of the Congregation of YHVH"
                       fill
                       sizes="(min-width: 768px) 208px, 176px"

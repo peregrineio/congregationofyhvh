@@ -25,7 +25,7 @@ const leaders: Leader[] = [
   {
     name: "Frank Longoria",
     role: "Senior Pastor",
-    photo: "/images/leaders/frank.jpg",
+    photo: "/images/leaders/frank-longoria.jpg",
     bio: "Shepherds the congregation, teaches the Word, and serves as President of the board.",
     featured: true,
   },
