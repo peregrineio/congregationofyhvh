@@ -4,6 +4,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { LiveBar } from "@/components/layout/live-bar";
 import { ChatWidget } from "@/components/chat/ChatWidget";
+import { NotOnGive } from "@/components/layout/not-on-give";
 import { SITE_CONFIG } from "@/lib/constants";
 import "./globals.css";
 
@@ -107,11 +108,13 @@ export default function RootLayout({
         <Header />
         <main id="main-content" className="pt-28 md:pt-32 lg:pt-36">{children}</main>
         <Footer />
-        {/* Staging-only client feedback. Inert unless the env vars say
-            staging AND the host is *.vercel.app — see the component. */}
         {/* Ported from the Aeopic site's assistant. Runs in the browser;
-            only a completed visit / prayer / message flow is ever sent. */}
-        <ChatWidget />
+            only a completed visit / prayer / message flow is ever sent.
+            Never mounted on /give or /give/*: no third-party or extra
+            scripts on the giving pages (CSP in src/proxy.ts). */}
+        <NotOnGive>
+          <ChatWidget />
+        </NotOnGive>
       </body>
     </html>
   );

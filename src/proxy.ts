@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { giveCsp, isGivePath, newNonce } from "@/lib/give-csp";
 
 /**
  * Under-construction gate.
@@ -35,14 +36,31 @@ const LOCKED_HOSTS =
 const BYPASS_TOKEN = process.env.CONSTRUCTION_BYPASS_TOKEN;
 const BYPASS_COOKIE = "cyhvh_preview";
 
+/**
+ * The real site. On /give and /give/* only, a per-request nonce and the giving CSP:
+ * the nonce goes to Next on the request (x-nonce + the CSP request header, which Next
+ * reads to stamp its own scripts) and the policy goes on the response.
+ */
+function serveSite(request: NextRequest) {
+  if (!isGivePath(request.nextUrl.pathname)) return NextResponse.next();
+  const nonce = newNonce();
+  const csp = giveCsp(nonce, process.env.NODE_ENV === "development");
+  const headers = new Headers(request.headers);
+  headers.set("x-nonce", nonce);
+  headers.set("Content-Security-Policy", csp);
+  const response = NextResponse.next({ request: { headers } });
+  response.headers.set("Content-Security-Policy", csp);
+  return response;
+}
+
 export default function proxy(request: NextRequest) {
-  if (LOCKED_HOSTS.length === 0) return NextResponse.next();
+  if (LOCKED_HOSTS.length === 0) return serveSite(request);
 
   const host = (request.headers.get("host") ?? "")
     .toLowerCase()
     .split(":")[0];
 
-  if (!LOCKED_HOSTS.includes(host)) return NextResponse.next();
+  if (!LOCKED_HOSTS.includes(host)) return serveSite(request);
 
   if (BYPASS_TOKEN) {
     const url = request.nextUrl;
@@ -64,7 +82,7 @@ export default function proxy(request: NextRequest) {
     }
 
     if (request.cookies.get(BYPASS_COOKIE)?.value === BYPASS_TOKEN) {
-      return NextResponse.next();
+      return serveSite(request);
     }
   }
 
