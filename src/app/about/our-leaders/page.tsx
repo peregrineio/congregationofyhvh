@@ -39,8 +39,7 @@ const leaders: Leader[] = [
     role: "Audio and Video Specialist & Youth Ministry Leader",
     photo: "/images/leaders/hussam-shahin-solo.jpg",
   },
-  // TODO: headshot coming (Sam, 2026-11-07)
-  { name: "John Nunez", role: "Deacon", photo: null },
+  { name: "John Nunez", role: "Deacon", photo: "/images/leaders/john-nunez.jpg" },
 ];
 
 export default function OurLeadersPage() {
