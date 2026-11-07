@@ -170,3 +170,26 @@ test("customer.subscription.* at 2026-09-30 (no top-level current_period_end) â†
 test("the library has no logging", () => {
   assert.doesNotMatch(readFileSync(new URL("./stripe-webhook.ts", import.meta.url), "utf8"), /console\./);
 });
+
+test("fee arrives late: the charge is re-read until its balance transaction is attached", async () => {
+  const { withBalance } = await import("./stripe-webhook");
+  let n = 0;
+  const get: StripeGet = async (path) => {
+    assert.match(path, /^\/v1\/charges\/ch_1\?expand\[\]=balance_transaction$/);
+    n++;
+    return n < 2 ? { id: "ch_1", balance_transaction: null } : { ...charge };
+  };
+  const c = (await withBalance({ id: "ch_1", balance_transaction: null }, get, 3, 0)) as typeof charge;
+  assert.equal(c.balance_transaction.fee, 175);
+  assert.equal(n, 2);
+  // already attached â†’ no extra call
+  assert.equal(await withBalance(charge, async () => { throw new Error("no call expected"); }, 3, 0), charge);
+});
+
+test("checkout asks Stripe for exactly one payment method type: card", async () => {
+  const { checkoutParams } = await import("./giving");
+  const p = checkoutParams({ amount: 5, frequency: "once", anonymous: false }, "https://x");
+  assert.deepEqual([...p.keys()].filter((k) => k.startsWith("payment_method_types")), ["payment_method_types[0]"]);
+  assert.equal(p.get("payment_method_types[0]"), "card");
+  assert.equal(p.get("automatic_payment_methods[enabled]"), null);
+});

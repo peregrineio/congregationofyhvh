@@ -112,6 +112,21 @@ function chargeFields(chargeV: unknown) {
   };
 }
 
+/**
+ * A charge's fee lives on its balance transaction, which Stripe can attach a moment after
+ * checkout.session.completed / invoice.paid fires (seen in the sandbox on 2026-11-07: the
+ * first $5 gift recorded with no fee). If it isn't there yet, re-read the charge a few times.
+ * After that the gift is recorded without fee/net; payouts still carry every fee.
+ */
+export async function withBalance(chargeV: unknown, get: StripeGet, tries = 3, waitMs = 1500): Promise<unknown> {
+  let charge = chargeV;
+  for (let i = 0; i < tries && id(charge) && n(o(o(charge).balance_transaction).fee) === null; i++) {
+    if (waitMs) await new Promise((r) => setTimeout(r, waitMs));
+    charge = await get(`/v1/charges/${encodeURIComponent(String(id(charge)))}?expand[]=balance_transaction`);
+  }
+  return charge;
+}
+
 const base = (e: StripeEvent) => ({ id: e.id, type: e.type, livemode: e.livemode === true, created: e.created });
 const forward = (event: Normalized): Enriched => ({ status: "forward", event });
 const ignored = (reason: string): Enriched => ({ status: "ignored", reason });
@@ -138,7 +153,7 @@ export async function enrichEvent(e: StripeEvent, get: StripeGet): Promise<Enric
       const pi = o(session.payment_intent);
       return forward({
         ...base(e), kind: "gift",
-        ...chargeFields(pi.latest_charge),
+        ...chargeFields(await withBalance(pi.latest_charge, get)),
         payment_intent_id: id(session.payment_intent),
         checkout_email: s(o(session.customer_details).email),
         frequency: "once",
@@ -151,7 +166,7 @@ export async function enrichEvent(e: StripeEvent, get: StripeGet): Promise<Enric
       if (!(n(inv.amount_paid) ?? 0)) return ignored("invoice paid nothing");
       return forward({
         ...base(e), kind: "gift",
-        ...chargeFields(inv.charge),
+        ...chargeFields(await withBalance(inv.charge, get)),
         invoice_id: id(inv.id),
         subscription_id: id(inv.subscription),
         payment_intent_id: id(inv.payment_intent),
