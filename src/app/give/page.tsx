@@ -3,7 +3,7 @@ import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { AboutHero } from "@/components/about/about-hero";
-import { DonationForm } from "@/components/give/donation-form";
+import { DonationForm, PortalLink } from "@/components/give/donation-form";
 import {
   BookOpen,
   Users,
@@ -79,6 +79,8 @@ const otherWays = [
 
 export default async function GivePage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const sp = await searchParams;
+  // Stripe customer-portal login link (server env; read here so it can change without a rebuild).
+  const portalUrl = process.env.STRIPE_CUSTOMER_PORTAL_URL || undefined;
   return (
     <>
       <AboutHero
@@ -144,8 +146,19 @@ export default async function GivePage({ searchParams }: { searchParams: Promise
               <p className="mx-auto mt-3 max-w-sm font-body text-sm leading-relaxed text-muted-foreground">
                 Give a freewill offering by card, once or every month.
               </p>
+              <p className="mx-auto mt-2 max-w-sm font-body text-sm italic text-muted-foreground">
+                Gifts go to the church&apos;s General fund.
+                <br />
+                The church pays the card processing fee.
+              </p>
 
-              <DonationForm canceled={sp.canceled === "1"} />
+              <DonationForm canceled={sp.canceled === "1"} portalUrl={portalUrl} />
+
+              {portalUrl && (
+                <p className="mt-5 font-body text-xs text-muted-foreground">
+                  <PortalLink url={portalUrl}>Manage a monthly gift</PortalLink>
+                </p>
+              )}
             </div>
 
             <div className="p-7 md:p-9">
