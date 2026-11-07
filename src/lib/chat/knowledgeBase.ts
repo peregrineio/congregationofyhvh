@@ -459,7 +459,7 @@ export const faqPatterns: KBEntry[] = [
     ],
     keywords: ["give", "giving", "donate", "donation", "donations", "tithe", "tithes", "offering", "offerings", "support", "money"],
     response:
-      `Thank you for your heart to give. 🙏 We give freewill offerings, joyfully and from the heart, never out of necessity.\n\nOnline giving is **coming soon**. For now you can give **in person** on Shabbat, or **by mail** to ${SITE_CONFIG.name}, ${SITE_CONFIG.mailingAddress}.\n\n**[More on giving](/give)**`,
+      `Thank you for your heart to give. 🙏 We give freewill offerings, joyfully and from the heart, never out of necessity.\n\nYou can give a freewill offering **online by card, once or monthly**, on our **[Give page](/give#give-online)**, or **in person** on Shabbat, or **by mail** to ${SITE_CONFIG.name}, ${SITE_CONFIG.mailingAddress}.\n\nPlease never type card details in this chat. Cards are entered only on Stripe's secure page.`,
     quickReplies: ["Get involved", "Service times"],
     boostOn: ["/give"],
   },

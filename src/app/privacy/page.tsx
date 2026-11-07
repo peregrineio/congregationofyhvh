@@ -14,7 +14,8 @@ export const metadata: Metadata = {
 // Stripe Checkout into the back-office giving records, the chat keeps its
 // conversation in the visitor's own browser for 7 days, and there are no
 // analytics or advertising cookies.
-const EFFECTIVE = "31 October 2026";
+// Set to the merge date at go-live step L7 (the online-giving text below takes effect then).
+const EFFECTIVE = "7 November 2026";
 
 const sections: { title: string; body: React.ReactNode }[] = [
   {
@@ -34,11 +35,27 @@ const sections: { title: string; body: React.ReactNode }[] = [
           press <em>Send</em>. Then the details you entered are emailed to the same church inbox.
         </p>
         <p>
-          <strong>Online gifts.</strong> When you give online, you enter your card on Stripe&apos;s
-          secure page; we never see or store your card number. Stripe shares with us your name,
-          email address, the amount, the date, and whether the gift is one-time or monthly. We
-          keep only that, in our church&apos;s giving records, so we can thank you, send you a
-          receipt and a year-end summary of your giving, and keep accurate financial records.
+          <strong>Online gifts: your card.</strong> You type your card only on Stripe&apos;s secure
+          page. We never see or store your full card number.
+        </p>
+        <p>
+          <strong>Online gifts: what we keep.</strong> For each gift: the amount, the date, whether
+          it is one-time or monthly, the card brand and last 4 digits, and Stripe&apos;s reference
+          numbers. We keep your name and email only if you didn&apos;t choose to give anonymously.
+        </p>
+        <p>
+          <strong>Anonymous gifts.</strong> If you tick &ldquo;give anonymously&rdquo;, the gift is
+          recorded as a guest gift and is not linked to a giving account, so it won&apos;t appear on a
+          year-end giving statement. Stripe still receives the email and cardholder name you enter
+          at checkout, and church staff with Stripe access can see them there.
+        </p>
+        <p>
+          <strong>Monthly gifts.</strong> Stripe keeps a customer profile (your name, email and card
+          on file) so it can charge you each month. You can cancel any time with the{" "}
+          <Link href="/give#give-online" className="underline underline-offset-2 hover:text-yhvh-gold-dark">
+            Manage monthly gift
+          </Link>{" "}
+          link on our Give page, or by emailing {SITE_CONFIG.email}.
         </p>
         <p>
           <strong>Prayer requests</strong> are shared only with the pastor and the board. Please
@@ -83,8 +100,10 @@ const sections: { title: string; body: React.ReactNode }[] = [
     body: (
       <p>
         Messages stay in our church inbox only as long as we need them to respond to you and
-        care for you. Records of gifts are kept as long as the law requires us to keep
-        financial records.
+        care for you. Gift records, including gifts that were refunded or disputed, are kept as
+        financial records for the period in the church&apos;s records-retention schedule
+        (currently 7 years for gift records). We will correct a gift record if it is wrong, but
+        we can&apos;t delete it.
       </p>
     ),
   },

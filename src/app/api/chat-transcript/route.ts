@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { SITE_CONFIG } from "@/lib/constants";
+import { redactCardNumbers } from "@/lib/chat/cardGuard";
 
 /**
  * Delivers what a visitor chose to send from the chat assistant — a visit
@@ -46,8 +47,10 @@ interface TranscriptRequest {
   unmatched?: string[];
 }
 
+// Every visitor field goes through clip, so a card-like number never reaches the email
+// (the widget already refuses such messages; this covers a modified client).
 function clip(value: unknown, limit: number): string {
-  return typeof value === "string" ? value.trim().slice(0, limit) : "";
+  return typeof value === "string" ? redactCardNumbers(value.trim()).slice(0, limit) : "";
 }
 
 function cleanLead(raw: unknown): LeadInfo {

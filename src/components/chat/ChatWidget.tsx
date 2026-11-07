@@ -27,6 +27,7 @@ import {
 } from "@/lib/chat/memory";
 import { refineSemantic, warmSemantic } from "@/lib/chat/semantic";
 import { SITE_CONFIG } from "@/lib/constants";
+import { CARD_WARNING, looksLikeCardNumber } from "@/lib/chat/cardGuard";
 
 const TEASER_SESSION_KEY = "cyhvh_teaser_session";
 const PAGEVIEWS_SESSION_KEY = "cyhvh_pageviews";
@@ -425,6 +426,12 @@ export function ChatWidget() {
     (content: string) => {
       const trimmed = content.trim();
       if (!trimmed) return;
+
+      // Never accept card details: the message is not shown, stored or sent.
+      if (looksLikeCardNumber(trimmed)) {
+        sendBotBubbles([CARD_WARNING]);
+        return;
+      }
 
       appendMessage({ id: generateId(), role: "user", content: trimmed, timestamp: new Date() });
 
