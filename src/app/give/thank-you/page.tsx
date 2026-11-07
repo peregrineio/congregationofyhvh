@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ACKNOWLEDGMENT, formatUsd } from "@/lib/giving";
+import { SITE_CONFIG } from "@/lib/constants";
+import { PortalLink } from "@/components/give/donation-form";
 import { CheckCircle, ArrowRight } from "@/components/icons";
 
 export const metadata: Metadata = {
@@ -17,6 +19,7 @@ interface Session {
   mode?: string;
   amount_total?: number;
   customer_details?: { email?: string | null } | null;
+  metadata?: { anonymous?: string } | null;
 }
 
 /** The Checkout session Stripe sent the giver back with, if it is real and paid. */
@@ -40,7 +43,15 @@ export default async function ThankYouPage({
   const sp = await searchParams;
   const session = await readSession(typeof sp.session_id === "string" ? sp.session_id : undefined);
   const monthly = session?.mode === "subscription";
+  const anonymous = session?.metadata?.anonymous === "true";
+  const email = session?.customer_details?.email ?? null; // rendered as text (React escapes it); never logged
   const amount = session?.amount_total != null ? formatUsd(session.amount_total / 100) : null;
+  const portalUrl = process.env.STRIPE_CUSTOMER_PORTAL_URL || undefined;
+  const mail = (
+    <a href={`mailto:${SITE_CONFIG.email}`} className="font-medium text-yhvh-gold-dark underline underline-offset-2 hover:text-foreground">
+      {SITE_CONFIG.email}
+    </a>
+  );
 
   return (
     <section className="bg-background px-4 py-20 sm:px-6">
@@ -55,12 +66,25 @@ export default async function ThankYouPage({
             <p className="mt-4 font-body text-base leading-relaxed text-foreground">
               We received your {monthly ? "monthly " : ""}freewill offering
               {amount ? <> of <strong>{amount}</strong></> : null}.
-              {monthly ? " It will repeat each month until you ask us to stop." : ""}
             </p>
-            <p className="mt-3 font-body text-sm leading-relaxed text-muted-foreground">
-              A receipt is on its way to {session.customer_details?.email ? <strong>{session.customer_details.email}</strong> : "your email"}.
-              Please keep it for your records.
-            </p>
+            {anonymous ? (
+              <p className="mt-3 font-body text-sm leading-relaxed text-muted-foreground">
+                This gift is recorded anonymously in the church&apos;s records, so it won&apos;t appear on a year-end giving
+                statement. Keep Stripe&apos;s emailed receipt for your records.
+              </p>
+            ) : (
+              <p className="mt-3 font-body text-sm leading-relaxed text-muted-foreground">
+                Stripe is emailing your receipt to {email ? <strong>{email}</strong> : "your email"}. If this email is on your
+                church giving account, this gift will appear on your year-end giving statement.
+              </p>
+            )}
+            {monthly && (
+              <p className="mt-3 font-body text-sm leading-relaxed text-muted-foreground">
+                It repeats each month until you cancel.{" "}
+                {portalUrl ? <><PortalLink url={portalUrl}>Manage monthly gift</PortalLink> or email </> : "Email "}
+                {mail} to stop it.
+              </p>
+            )}
             <p className="mt-5 border-t border-yhvh-gold/20 pt-5 font-body text-sm text-muted-foreground">{ACKNOWLEDGMENT}</p>
           </>
         ) : (
@@ -69,6 +93,9 @@ export default async function ThankYouPage({
             was made, and you can try again from the Give page.
           </p>
         )}
+        <p className="mt-3 font-body text-xs text-muted-foreground/80">
+          Gave in error? Email {mail} within 30 days and the Treasurer will refund it.
+        </p>
 
         <p className="mt-6 font-scripture text-base italic text-foreground">
           &ldquo;So let each one give as he purposes in his heart, not grudgingly or of necessity; for God loves a cheerful giver.&rdquo;
@@ -79,11 +106,6 @@ export default async function ThankYouPage({
           <Link href="/" className="inline-flex items-center gap-2 rounded-md bg-yhvh-gold px-6 py-3 font-subheading text-sm uppercase tracking-widest text-white hover:bg-yhvh-gold-dark">
             Back to home <ArrowRight className="size-4" aria-hidden />
           </Link>
-          {monthly && (
-            <Link href="/contact" className="font-subheading text-xs uppercase tracking-widest text-yhvh-gold-dark underline-offset-4 hover:underline">
-              Change or stop a monthly gift
-            </Link>
-          )}
         </div>
       </div>
     </section>
