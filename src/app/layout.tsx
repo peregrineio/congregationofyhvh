@@ -1,11 +1,5 @@
 import type { Metadata } from "next";
-import {
-  Cinzel,
-  DM_Sans,
-  Source_Serif_4,
-  Crimson_Pro,
-  Frank_Ruhl_Libre,
-} from "next/font/google";
+import localFont from "next/font/local";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { LiveBar } from "@/components/layout/live-bar";
@@ -13,39 +7,45 @@ import { ChatWidget } from "@/components/chat/ChatWidget";
 import { SITE_CONFIG } from "@/lib/constants";
 import "./globals.css";
 
-const cinzel = Cinzel({
-  subsets: ["latin"],
-  weight: ["600", "700"],
+// Self-hosted (src/app/fonts, OFL licences alongside): Vercel builds failed while
+// fetching next/font/google, and the /give CSP allows fonts from this site only.
+// Variable woff2 files, latin subset (+ hebrew for Frank Ruhl Libre).
+const cinzel = localFont({
+  src: [{ path: "./fonts/cinzel-latin.woff2", weight: "600 700", style: "normal" }],
   variable: "--font-cinzel",
   display: "swap",
 });
 
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
+const dmSans = localFont({
+  src: [{ path: "./fonts/dm-sans-latin.woff2", weight: "400 600", style: "normal" }],
   variable: "--font-dm-sans",
   display: "swap",
 });
 
-const sourceSerif = Source_Serif_4({
-  subsets: ["latin"],
-  weight: ["400", "500"],
+const sourceSerif = localFont({
+  src: [{ path: "./fonts/source-serif-4-latin.woff2", weight: "400 500", style: "normal" }],
   variable: "--font-source-serif",
   display: "swap",
 });
 
-const crimsonPro = Crimson_Pro({
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["italic"],
+const crimsonPro = localFont({
+  src: [{ path: "./fonts/crimson-pro-italic-latin.woff2", weight: "400", style: "italic" }],
   variable: "--font-crimson-pro",
   display: "swap",
 });
 
-const frankRuhl = Frank_Ruhl_Libre({
-  subsets: ["hebrew", "latin"],
-  weight: ["400", "500", "700"],
+// Latin and Hebrew are separate files; globals.css stacks the two families. No generated
+// fallback on the latin one, or the fallback (a system serif) would draw the Hebrew first.
+const frankRuhl = localFont({
+  src: [{ path: "./fonts/frank-ruhl-libre-latin.woff2", weight: "400 700", style: "normal" }],
   variable: "--font-frank-ruhl",
+  display: "swap",
+  adjustFontFallback: false,
+});
+
+const frankRuhlHebrew = localFont({
+  src: [{ path: "./fonts/frank-ruhl-libre-hebrew.woff2", weight: "400 700", style: "normal" }],
+  variable: "--font-frank-ruhl-he",
   display: "swap",
 });
 
@@ -98,7 +98,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${cinzel.variable} ${dmSans.variable} ${sourceSerif.variable} ${crimsonPro.variable} ${frankRuhl.variable}`}
+      className={`${cinzel.variable} ${dmSans.variable} ${sourceSerif.variable} ${crimsonPro.variable} ${frankRuhl.variable} ${frankRuhlHebrew.variable}`}
     >
       <body className="min-h-screen antialiased">
         {/* Renders only while the channel is actually streaming; otherwise

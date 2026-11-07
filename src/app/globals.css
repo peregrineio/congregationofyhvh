@@ -226,7 +226,7 @@ html {
 
 /* Hebrew display font token */
 @theme inline {
-  --font-hebrew: var(--font-frank-ruhl), "Times New Roman", serif;
+  --font-hebrew: var(--font-frank-ruhl), var(--font-frank-ruhl-he), "Times New Roman", serif;
 }
 
 /* Gold-leaf foil text */
