@@ -1,5 +1,5 @@
 import { PASTOR_WELCOME } from "@/lib/content";
-import { User } from "@/components/icons";
+import Image from "next/image";
 import { FadeIn } from "@/components/ui/motion";
 
 export function Welcome() {
@@ -68,7 +68,6 @@ export function Welcome() {
                   <div className="flex items-center gap-4 pt-4">
                     <div className="h-px w-10 bg-yhvh-gold" />
                     <div>
-                      {/* TODO: Update with Pastor's confirmed name */}
                       <p className="font-heading text-base font-semibold tracking-wide text-warm-black">
                         Pastor Frank
                       </p>
@@ -81,9 +80,14 @@ export function Welcome() {
 
                 {/* Pastor portrait — arched frame, like a sanctuary window */}
                 <div className="mx-auto lg:mx-0">
-                  <div className="arch-frame flex h-64 w-44 items-end justify-center overflow-hidden border border-yhvh-gold/30 bg-gradient-to-b from-warm-sand to-soft-cream shadow-inner md:h-72 md:w-52">
-                    {/* TODO: Replace with Pastor Frank's photo */}
-                    <User className="mb-6 size-24 text-yhvh-gold-dark/20" />
+                  <div className="arch-frame relative h-64 w-44 overflow-hidden border border-yhvh-gold/30 bg-gradient-to-b from-warm-sand to-soft-cream shadow-inner md:h-72 md:w-52">
+                    <Image
+                      src="/images/leaders/frank.jpg"
+                      alt="Pastor Frank, Senior Pastor of the Congregation of YHVH"
+                      fill
+                      sizes="(min-width: 768px) 208px, 176px"
+                      className="object-cover object-top"
+                    />
                   </div>
                 </div>
               </div>

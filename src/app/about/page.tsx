@@ -29,9 +29,9 @@ const aboutPages = [
     icon: Heart,
   },
   {
-    title: "Our Team",
+    title: "Our Leaders",
     description: "Meet the shepherds YHVH has placed over this congregation.",
-    href: "/about/our-team",
+    href: "/about/our-leaders",
     icon: Users,
   },
 ] as const;

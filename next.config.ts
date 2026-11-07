@@ -16,6 +16,11 @@ const nextConfig: NextConfig = {
 
   // Strict mode for React
   reactStrictMode: true,
+
+  // "Our Team" was renamed "Our Leaders" (2026-11-07); keep old links working.
+  async redirects() {
+    return [{ source: "/about/our-team", destination: "/about/our-leaders", permanent: true }];
+  },
 };
 
 export default nextConfig;

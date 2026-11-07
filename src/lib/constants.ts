@@ -42,7 +42,7 @@ export const NAV_LINKS: NavLink[] = [
       { label: "Statement of Faith", href: "/about/statement-of-faith" },
       { label: "What We Believe", href: "/about/what-we-believe" },
       { label: "Core Values", href: "/about/core-values" },
-      { label: "Our Team", href: "/about/our-team" },
+      { label: "Our Leaders", href: "/about/our-leaders" },
     ],
   },
   { label: "Weekly Shabbat", href: "/shabbat" },
@@ -67,7 +67,7 @@ export const FOOTER_LINKS = {
     { label: "Vision & Mission", href: "/about/vision-mission" },
     { label: "Statement of Faith", href: "/about/statement-of-faith" },
     { label: "What We Believe", href: "/about/what-we-believe" },
-    { label: "Our Team", href: "/about/our-team" },
+    { label: "Our Leaders", href: "/about/our-leaders" },
   ],
   quickLinks: [
     { label: "Weekly Shabbat", href: "/shabbat" },

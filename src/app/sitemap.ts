@@ -14,7 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/about/statement-of-faith",
     "/about/what-we-believe",
     "/about/core-values",
-    "/about/our-team",
+    "/about/our-leaders",
     "/shabbat",
     "/teachings",
     "/events",

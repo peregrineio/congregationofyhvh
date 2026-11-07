@@ -440,7 +440,7 @@ export const faqPatterns: KBEntry[] = [
     ],
     keywords: ["pastor", "rabbi", "leader", "leaders", "leadership", "team", "elder", "elders", "frank"],
     response:
-      "The congregation is led by **Pastor Frank**. You can meet him and the rest of the team on Shabbat.\n\n**[Meet our team](/about/our-team)** — or I can pass a message along.",
+      "The congregation is led by **Pastor Frank**. You can meet him and the rest of our leaders on Shabbat.\n\n**[Meet our leaders](/about/our-leaders)** — or I can pass a message along.",
     quickReplies: ["Talk to someone", "Plan a visit"],
     boostOn: ["/about"],
   },
