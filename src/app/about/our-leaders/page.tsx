@@ -37,7 +37,7 @@ const leaders: Leader[] = [
   {
     name: "Hussam Shahin",
     role: "Audio and Video Specialist & Youth Ministry Leader",
-    photo: "/images/leaders/hussam-shahin-square.jpg",
+    photo: "/images/leaders/hussam-shahin-solo.jpg",
   },
   // TODO: headshot coming (Sam, 2026-11-07)
   { name: "John Nunez", role: "Deacon", photo: null },
