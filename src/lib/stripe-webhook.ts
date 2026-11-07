@@ -3,6 +3,13 @@
 // (backoffice migration 0029, part B header). Amounts are integer cents, times unix
 // seconds. Only the listed fields are kept; nothing else from Stripe leaves this file.
 // No logging here: the route logs only event id, type, livemode and result.
+//
+// The event payload is treated as a NOTIFICATION only: its envelope (id, type, livemode,
+// created, request) and the object id. Every object is then re-read through the REST API
+// pinned to 2024-06-20, so the endpoint's own API version doesn't matter. (Stripe's
+// Workbench destinations only offer the account's current version, 2026-09-30, whose
+// Invoice has no `charge`/`payment_intent` and whose Subscription has no
+// `current_period_end`.)
 import { createHmac, timingSafeEqual } from "node:crypto";
 
 export const STRIPE_API_VERSION = "2024-06-20";
@@ -109,21 +116,25 @@ const base = (e: StripeEvent) => ({ id: e.id, type: e.type, livemode: e.livemode
 const forward = (event: Normalized): Enriched => ({ status: "forward", event });
 const ignored = (reason: string): Enriched => ({ status: "ignored", reason });
 
+/** The id of the event's object (stable across API versions). */
+const objectId = (e: StripeEvent) => encodeURIComponent(String(id(o(e.data?.object).id) ?? ""));
+
 export async function enrichEvent(e: StripeEvent, get: StripeGet): Promise<Enriched> {
   if (!isSubscribed(e.type)) return ignored("event type not subscribed");
-  const obj = o(e.data?.object);
+  if (!id(o(e.data?.object).id)) return ignored("event without an object id");
+  const oid = objectId(e);
 
   switch (e.type) {
     case "checkout.session.completed": {
-      if (obj.mode === "subscription") {
+      const session = await get(`/v1/checkout/sessions/${oid}?expand[]=payment_intent.latest_charge.balance_transaction`);
+      if (session.mode === "subscription") {
         return forward({
           ...base(e), kind: "subscription_started",
-          subscription_id: id(obj.subscription), amount: n(obj.amount_total),
-          checkout_email: s(o(obj.customer_details).email), metadata: giftMetadata(obj.metadata),
+          subscription_id: id(session.subscription), amount: n(session.amount_total),
+          checkout_email: s(o(session.customer_details).email), metadata: giftMetadata(session.metadata),
         });
       }
-      if (obj.mode !== "payment" || obj.payment_status !== "paid") return ignored("checkout not paid");
-      const session = await get(`/v1/checkout/sessions/${encodeURIComponent(String(obj.id))}?expand[]=payment_intent.latest_charge.balance_transaction`);
+      if (session.mode !== "payment" || session.payment_status !== "paid") return ignored("checkout not paid");
       const pi = o(session.payment_intent);
       return forward({
         ...base(e), kind: "gift",
@@ -136,8 +147,8 @@ export async function enrichEvent(e: StripeEvent, get: StripeGet): Promise<Enric
     }
 
     case "invoice.paid": {
-      if (!(n(obj.amount_paid) ?? 0)) return ignored("invoice paid nothing");
-      const inv = await get(`/v1/invoices/${encodeURIComponent(String(obj.id))}?expand[]=charge.balance_transaction&expand[]=subscription`);
+      const inv = await get(`/v1/invoices/${oid}?expand[]=charge.balance_transaction&expand[]=subscription`);
+      if (!(n(inv.amount_paid) ?? 0)) return ignored("invoice paid nothing");
       return forward({
         ...base(e), kind: "gift",
         ...chargeFields(inv.charge),
@@ -151,45 +162,47 @@ export async function enrichEvent(e: StripeEvent, get: StripeGet): Promise<Enric
     }
 
     case "charge.refunded": {
-      const chargeId = id(obj.id);
-      const list = await get(`/v1/refunds?charge=${encodeURIComponent(String(chargeId))}&limit=100`);
+      const [charge, list] = await Promise.all([get(`/v1/charges/${oid}`), get(`/v1/refunds?charge=${oid}&limit=100`)]);
       const req = s(e.request?.id);
       const refunds = ((list.data as unknown[]) ?? [])
         .map(o)
         .filter((r) => r.status !== "failed" && r.status !== "canceled")
         .map((r) => ({ refund_id: id(r.id), amount: n(r.amount), created: n(r.created), request_id: req }));
-      return forward({ ...base(e), charge_id: chargeId, amount_refunded: n(obj.amount_refunded), refunds });
+      return forward({ ...base(e), charge_id: id(charge.id), amount_refunded: n(charge.amount_refunded), refunds });
     }
 
     case "charge.dispute.created":
     case "charge.dispute.funds_withdrawn":
     case "charge.dispute.funds_reinstated":
     case "charge.dispute.closed": {
-      const bts = ((obj.balance_transactions as unknown[]) ?? []).map(o).map((b) => ({ amount: n(b.amount), fee: n(b.fee) }));
+      const dp = await get(`/v1/disputes/${oid}`);
+      const bts = ((dp.balance_transactions as unknown[]) ?? []).map(o).map((b) => ({ amount: n(b.amount), fee: n(b.fee) }));
       const out: Normalized = {
         ...base(e),
-        dispute_id: id(obj.id), charge_id: id(obj.charge), amount: n(obj.amount),
-        reason: s(obj.reason), status: s(obj.status), evidence_due_by: n(o(obj.evidence_details).due_by),
+        dispute_id: id(dp.id), charge_id: id(dp.charge), amount: n(dp.amount),
+        reason: s(dp.reason), status: s(dp.status), evidence_due_by: n(o(dp.evidence_details).due_by),
       };
       if (e.type === "charge.dispute.funds_withdrawn" || e.type === "charge.dispute.funds_reinstated") {
         out.balance_transactions = bts;
-        if (e.type === "charge.dispute.funds_withdrawn") out.dispute_fee = bts.reduce((a, b) => a + Math.max(0, b.fee ?? 0), 0);
+        // the withdrawal's fee (a reinstatement's balance transaction carries a negative fee)
+        if (e.type === "charge.dispute.funds_withdrawn") out.dispute_fee = bts.filter((b) => (b.amount ?? 0) < 0).reduce((a, b) => a + Math.max(0, b.fee ?? 0), 0);
       }
       return forward(out);
     }
 
     case "payout.paid":
     case "payout.failed": {
+      const po = await get(`/v1/payouts/${oid}`);
       const out: Normalized = {
         ...base(e),
-        payout_id: id(obj.id), amount: n(obj.amount), arrival_date: n(obj.arrival_date),
-        status: s(obj.status), failure_message: s(obj.failure_message),
+        payout_id: id(po.id), amount: n(po.amount), arrival_date: n(po.arrival_date),
+        status: s(po.status), failure_message: s(po.failure_message),
       };
       if (e.type === "payout.paid") {
         const lines: Obj[] = [];
         let after: string | null = null;
         for (let page = 0; page < 50; page++) {
-          const q = `/v1/balance_transactions?payout=${encodeURIComponent(String(out.payout_id))}&limit=100${after ? `&starting_after=${encodeURIComponent(after)}` : ""}`;
+          const q = `/v1/balance_transactions?payout=${oid}&limit=100${after ? `&starting_after=${encodeURIComponent(after)}` : ""}`;
           const res = await get(q);
           const data = ((res.data as unknown[]) ?? []).map(o);
           for (const b of data) {
@@ -210,16 +223,17 @@ export async function enrichEvent(e: StripeEvent, get: StripeGet): Promise<Enric
     }
 
     default: {
-      // customer.subscription.created / updated / deleted
-      const item = o(((o(obj.items).data as unknown[]) ?? [])[0]);
+      // customer.subscription.created / updated / deleted (a canceled subscription is still retrievable)
+      const sub = await get(`/v1/subscriptions/${oid}`);
+      const item = o(((o(sub.items).data as unknown[]) ?? [])[0]);
       const unit = n(o(item.price).unit_amount);
       const qty = n(item.quantity) ?? 1;
       return forward({
         ...base(e),
-        subscription_id: id(obj.id), status: s(obj.status),
+        subscription_id: id(sub.id), status: s(sub.status),
         amount: unit === null ? null : unit * qty,
-        started_at: n(obj.start_date), current_period_end: n(obj.current_period_end), canceled_at: n(obj.canceled_at),
-        metadata: giftMetadata(obj.metadata),
+        started_at: n(sub.start_date), current_period_end: n(sub.current_period_end), canceled_at: n(sub.canceled_at),
+        metadata: giftMetadata(sub.metadata),
       });
     }
   }

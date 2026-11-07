@@ -20,7 +20,7 @@ function signed(body: unknown, secret = ENV.STRIPE_WEBHOOK_SECRET!) {
 
 const invoice = (id = "evt_inv") => ({ id, type: "invoice.paid", livemode: false, created: NOW, data: { object: { id: "in_1", amount_paid: 2500 } } });
 const stripe: StripeGet = async () => ({
-  id: "in_1", customer_email: "Giver.Person@example.com", payment_intent: "pi_1",
+  id: "in_1", amount_paid: 2500, customer_email: "Giver.Person@example.com", payment_intent: "pi_1",
   charge: { id: "ch_1", amount: 2500, created: NOW, balance_transaction: { fee: 103, net: 2397 }, payment_method_details: { card: { brand: "visa", last4: "4242" } }, billing_details: { name: "Ruth Ben-Ami" } },
   subscription: { id: "sub_1", metadata: { anonymous: "false", give_name: "Ruth Ben-Ami" } },
 });
