@@ -40,6 +40,7 @@ const leaders: Leader[] = [
     photo: "/images/leaders/hussam-shahin-solo.jpg",
   },
   { name: "John Nunez", role: "Deacon", photo: "/images/leaders/john-nunez.jpg" },
+  { name: "Frankie Galvan", role: "Deacon", photo: "/images/leaders/frankie-galvan.jpg" },
 ];
 
 export default function OurLeadersPage() {
@@ -58,7 +59,7 @@ export default function OurLeadersPage() {
         }}
       />
 
-      <div className="mx-auto max-w-5xl px-4 py-16 space-y-12">
+      <div className="mx-auto max-w-6xl px-4 py-16 space-y-12">
         {/* Featured pastor */}
         {featured.map((leader) => (
           <Card key={leader.name} className="border-primary/20 bg-card overflow-hidden">
@@ -96,17 +97,17 @@ export default function OurLeadersPage() {
         ))}
 
         {/* Leaders grid */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
           {others.map((leader) => (
             <Card key={leader.name} className="border-border/40 bg-card">
-              <CardContent className="py-6 text-center space-y-4">
-                <div className="relative mx-auto size-32 overflow-hidden rounded-full border border-primary/20 bg-background">
+              <CardContent className="px-3 py-6 text-center space-y-3">
+                <div className="relative mx-auto size-24 overflow-hidden rounded-full border border-primary/20 bg-background sm:size-28">
                   {leader.photo ? (
                     <Image
                       src={leader.photo}
                       alt={`${leader.name}, ${leader.role}`}
                       fill
-                      sizes="128px"
+                      sizes="112px"
                       className="object-cover object-top"
                     />
                   ) : (
@@ -116,8 +117,8 @@ export default function OurLeadersPage() {
                   )}
                 </div>
                 <div>
-                  <h3 className="font-subheading text-base font-semibold text-foreground">{leader.name}</h3>
-                  <p className="text-xs text-primary">{leader.role}</p>
+                  <h3 className="font-subheading text-sm font-semibold text-foreground sm:text-base">{leader.name}</h3>
+                  <p className="text-xs leading-snug text-primary">{leader.role}</p>
                 </div>
                 {leader.bio && <p className="text-sm text-muted-foreground">{leader.bio}</p>}
               </CardContent>
