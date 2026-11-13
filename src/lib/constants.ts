@@ -22,7 +22,7 @@ export const SITE_CONFIG = {
   mailingState: "TX",
   mailingZip: "77383",
   mailingAddress: "P.O. Box #295, Spring, TX 77383",
-  email: "info@congregationofyhvh.com",
+  email: "contact@congregationofyhvh.com",
   domain: "https://congregationofyhvh.com",
 } as const;
 
