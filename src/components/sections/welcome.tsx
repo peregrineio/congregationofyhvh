@@ -69,7 +69,7 @@ export function Welcome() {
                     <div className="h-px w-10 bg-yhvh-gold" />
                     <div>
                       <p className="font-heading text-base font-semibold tracking-wide text-warm-black">
-                        Pastor Frank
+                        Pastor Frank Longoria
                       </p>
                       <p className="font-subheading text-xs uppercase tracking-[0.2em] text-light-gray">
                         Senior Pastor · Congregation of YHVH
