@@ -29,7 +29,7 @@ const leaders: Leader[] = [
     bio: "Shepherds the congregation, teaches the Word, and serves as President of the board.",
     featured: true,
   },
-  { name: "Matt Koo", role: "Deacon", photo: "/images/leaders/matt-koo.jpg" },
+  { name: "Matt Koo", role: "Deacon/Administrator", photo: "/images/leaders/matt-koo.jpg" },
   { name: "Raymond E. Flowers", role: "Associate Pastor & Director", photo: "/images/leaders/raymond-flowers.jpg" },
   { name: "Jeremiah Longoria", role: "Director & Elder", photo: "/images/leaders/jeremiah-longoria.jpg" },
   { name: "Jairo Medrano", role: "Worship Team Leader", photo: "/images/leaders/jairo-medrano.jpg" },
