@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 // conversation in the visitor's own browser for 7 days, and there are no
 // analytics or advertising cookies.
 // Set to the merge date at go-live step L7 (the online-giving text below takes effect then).
-const EFFECTIVE = "7 November 2026";
+const EFFECTIVE = "12 November 2026";
 
 const sections: { title: string; body: React.ReactNode }[] = [
   {
