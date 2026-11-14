@@ -248,3 +248,63 @@ test("happy path → playlists; a video in two playlists appears once; All = uni
   assert.equal(lib.featuredSlug, "torah-portion-2025-2026");
   assert.equal(lib.series[1].blurb, "Teachings from Ray.");
 });
+
+// ── view selection (prompt 11) and the QA override guard (prompt 12)
+import { forcedSource, selectView } from "./teachings";
+import type { TeachingsLibrary, TeachingVideo } from "./teachings-types";
+
+const vid = (id: string, title: string, day: number): TeachingVideo => ({ id, title, publishedAt: `2026-10-${String(day).padStart(2, "0")}T15:00:00Z`, thumbnail: "", thumbnailFallback: "", url: `https://www.youtube.com/watch?v=${id}` });
+const LIB: TeachingsLibrary = {
+  source: "playlists",
+  series: orderSeries([
+    { id: "PLt", title: "Torah Portion 2025-2026", position: 0, videoIds: ["t1", "t2", "t3"] },
+    { id: "PLr", title: "Ray Flowers - Associate Pastor", position: 1, videoIds: ["r1", "t2"] },
+    { id: "PLs", title: "Spanish Teachings", position: 2, videoIds: ["s1"] },
+  ]),
+  videos: Object.fromEntries(
+    [vid("t1", "Re'eh", 9), vid("t2", "Shoftim", 8), vid("t3", "Ki Tetze", 7), vid("r1", "Walking in obedience", 6), vid("s1", "La Porción de la semana", 5), vid("u1", "New upload", 10), vid("u2", "Another", 4), vid("u3", "One more", 3)].map((v) => [v.id, v]),
+  ),
+  allIds: ["u1", "t1", "t2", "t3", "r1", "s1", "u2", "u3"],
+  featuredSlug: "torah-portion-2025-2026",
+  fetchedAt: "",
+};
+
+test("default view: Latest Teachings, all ids, 6 first, Featured shown", () => {
+  const v = selectView(LIB, {});
+  assert.equal(v.heading, "Latest Teachings");
+  assert.equal(v.initialPageSize, 6);
+  assert.equal(v.showFeatured, true);
+  assert.equal(v.ids.length, 8);
+});
+
+test("series view: title (count), its videos, 12 first, &list= for playlists", () => {
+  const v = selectView(LIB, { series: "ray-flowers-associate-pastor" });
+  assert.equal(v.heading, "Ray Flowers - Associate Pastor (2)");
+  assert.deepEqual(v.ids, ["r1", "t2"]);
+  assert.equal(v.listId, "PLr");
+  assert.equal(v.showFeatured, false);
+  assert.equal(v.initialPageSize, 12);
+});
+
+test("search: series titles count, accents ignored, scoping by series", () => {
+  assert.deepEqual(selectView(LIB, { q: "flowers" }).ids, ["t2", "r1"]);
+  assert.deepEqual(selectView(LIB, { q: "porcion" }).ids, ["s1"]);
+  const scoped = selectView(LIB, { q: "shoftim", series: "torah-portion-2025-2026" });
+  assert.deepEqual(scoped.ids, ["t2"]);
+  assert.equal(scoped.heading, "Results for “shoftim” (1) in Torah Portion 2025-2026");
+  assert.equal(selectView(LIB, { q: "zzz" }).ids.length, 0);
+});
+
+test("view=all and unknown slugs", () => {
+  assert.equal(selectView(LIB, { view: "all" }).heading, "All Teachings (8)");
+  const unknown = selectView(LIB, { series: "nonsense" });
+  assert.equal(unknown.unknownSlug, true);
+  assert.equal(unknown.heading, "Latest Teachings");
+});
+
+test("TEACHINGS_FORCE_SOURCE is ignored in production", () => {
+  assert.equal(forcedSource({ VERCEL_ENV: "production", TEACHINGS_FORCE_SOURCE: "none" }), undefined);
+  assert.equal(forcedSource({ VERCEL_ENV: "preview", TEACHINGS_FORCE_SOURCE: "rss" }), "rss");
+  assert.equal(forcedSource({ TEACHINGS_FORCE_SOURCE: "uploads" }), "uploads");
+  assert.equal(forcedSource({ TEACHINGS_FORCE_SOURCE: "playlists" }), undefined);
+});

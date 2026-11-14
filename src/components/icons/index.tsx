@@ -52,6 +52,8 @@ export {
   Star,
   Sparkles,
   Music,
+  Mic,
+  Languages,
 
   // UI
   Search,

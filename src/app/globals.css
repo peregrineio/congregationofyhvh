@@ -394,3 +394,12 @@ html {
     scroll-behavior: auto !important;
   }
 }
+
+/* /teachings (v3 phone standard P17, scoped so /contact and /give are untouched):
+   16px, 44px-tall fields on phones, so iOS never zooms. */
+@media (max-width: 639.98px) {
+  .teachings-page :is(input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]), select, textarea) {
+    min-height: 44px;
+    font-size: max(16px, 1em);
+  }
+}

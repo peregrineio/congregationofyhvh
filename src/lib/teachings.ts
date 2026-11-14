@@ -2,7 +2,7 @@
 // network, no server-only: safe for client components and node tests.
 
 import type { YouTubeVideo } from "./youtube";
-import type { Series, SeriesGroup, SeriesIcon } from "./teachings-types";
+import type { Series, SeriesGroup, SeriesIcon, TeachingsLibrary } from "./teachings-types";
 
 // ── durations and dates
 
@@ -255,4 +255,81 @@ export function normalizeForSearch(text: string): string {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, " ")
     .trim();
+}
+
+// ── what the page shows for a given URL (blueprint §4, "Grid header text by state")
+
+export interface TeachingsParams {
+  series?: string | null;
+  q?: string | null;
+  view?: string | null;
+}
+
+export interface TeachingsViewModel {
+  heading: string;
+  ids: string[];
+  showFeatured: boolean;
+  /** 6 in the default view (mock 02), 12 otherwise */
+  initialPageSize: number;
+  /** the selected series' slug, if it exists */
+  activeSlug?: string;
+  /** playlist id to add as &list= on card links */
+  listId?: string;
+  /** a ?series= that matches nothing: the page drops it */
+  unknownSlug: boolean;
+  /** the normalised search, if any */
+  query?: string;
+}
+
+export function selectView(library: TeachingsLibrary, params: TeachingsParams): TeachingsViewModel {
+  const active = params.series ? library.series.find((s) => s.slug === params.series) : undefined;
+  const unknownSlug = Boolean(params.series) && !active;
+  const raw = (params.q ?? "").trim();
+  const query = normalizeForSearch(raw);
+  const listId = active?.isPlaylist ? active.id : undefined;
+
+  if (query) {
+    const tokens = query.split(" ");
+    const seriesTitles = new Map<string, string[]>();
+    for (const s of library.series) for (const id of s.videoIds) seriesTitles.set(id, [...(seriesTitles.get(id) ?? []), s.title]);
+    const scope = active ? active.videoIds : library.allIds;
+    const ids = scope.filter((id) => {
+      const v = library.videos[id];
+      if (!v) return false;
+      const hay = normalizeForSearch([v.title, ...(seriesTitles.get(id) ?? [])].join(" "));
+      return tokens.every((t) => hay.includes(t));
+    });
+    return {
+      heading: `Results for “${raw}” (${ids.length})${active ? ` in ${active.title}` : ""}`,
+      ids,
+      showFeatured: false,
+      initialPageSize: 12,
+      activeSlug: active?.slug,
+      listId,
+      unknownSlug,
+      query,
+    };
+  }
+  if (active)
+    return { heading: `${active.title} (${active.count})`, ids: active.videoIds, showFeatured: false, initialPageSize: 12, activeSlug: active.slug, listId, unknownSlug };
+  if (params.view === "all")
+    return { heading: `All Teachings (${library.allIds.length})`, ids: library.allIds, showFeatured: false, initialPageSize: 12, unknownSlug };
+  return { heading: "Latest Teachings", ids: library.allIds, showFeatured: Boolean(library.featuredSlug), initialPageSize: 6, unknownSlug };
+}
+
+/** "1 Teaching" / "12 Teachings" */
+export const teachingCount = (n: number) => `${n} ${n === 1 ? "Teaching" : "Teachings"}`;
+
+// ── QA-only override of the data source (never in production)
+
+export type ForcedSource = "uploads" | "rss" | "none";
+
+/**
+ * TEACHINGS_FORCE_SOURCE lets QA render each fallback locally. It is ignored when
+ * VERCEL_ENV is "production", so the live site can never be forced.
+ */
+export function forcedSource(env: { VERCEL_ENV?: string; TEACHINGS_FORCE_SOURCE?: string }): ForcedSource | undefined {
+  if (env.VERCEL_ENV === "production") return undefined;
+  const v = env.TEACHINGS_FORCE_SOURCE;
+  return v === "uploads" || v === "rss" || v === "none" ? v : undefined;
 }

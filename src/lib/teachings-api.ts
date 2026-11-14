@@ -184,8 +184,14 @@ async function fromUploads(apiKey: string | undefined, portionNames: readonly Po
  * with durations. Falls back to grouped uploads, then RSS, then "none" (blueprint §3.6).
  * The key is a parameter: the server-only caller reads it from the environment.
  */
-export async function buildTeachingsLibrary(apiKey: string | undefined, portionNames: readonly PortionName[] = []): Promise<TeachingsLibrary> {
+export async function buildTeachingsLibrary(
+  apiKey: string | undefined,
+  portionNames: readonly PortionName[] = [],
+  force?: "uploads" | "rss" | "none",
+): Promise<TeachingsLibrary> {
   try {
+    if (force === "none") return { source: "none", series: [], videos: {}, allIds: [], fetchedAt: new Date().toISOString() };
+    if (force) return await fromUploads(force === "uploads" ? apiKey : undefined, portionNames, `forced-${force}`);
     if (!apiKey) return await fromUploads(undefined, portionNames, "no-key");
 
     let playlists: ChannelPlaylist[];
