@@ -6,6 +6,7 @@
 
 import { YOUTUBE_CHANNEL_ID } from "./youtube";
 import type { ChannelPlaylist, TeachingVideo } from "./teachings-types";
+import { parseIsoDuration } from "./teachings";
 
 const API = "https://www.googleapis.com/youtube/v3";
 const CACHE: RequestInit = { next: { revalidate: 3600, tags: ["youtube-playlists"] } };
@@ -96,4 +97,34 @@ export async function getPlaylistVideos(apiKey: string, playlistId: string): Pro
     if (!pageToken) break;
   }
   return out.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+}
+
+/**
+ * Durations in seconds via videos.list (contentDetails), 50 ids per call, at most
+ * 10 calls. A failed chunk is skipped; P0D / live / upcoming give no entry, so the
+ * card simply hides its clock.
+ */
+export async function getDurations(apiKey: string, ids: readonly string[]): Promise<Map<string, number>> {
+  const unique = [...new Set(ids)];
+  const out = new Map<string, number>();
+  for (let i = 0, calls = 0; i < unique.length && calls < 10; i += 50, calls++) {
+    const chunk = unique.slice(i, i + 50);
+    const url = new URL(`${API}/videos`);
+    url.searchParams.set("part", "contentDetails");
+    url.searchParams.set("id", chunk.join(","));
+    url.searchParams.set("maxResults", "50");
+    url.searchParams.set("key", apiKey);
+    try {
+      const res = await fetch(url, CACHE);
+      if (!res.ok) continue;
+      const payload = (await res.json()) as { items?: { id?: string; contentDetails?: { duration?: string } }[] };
+      for (const item of payload.items ?? []) {
+        const seconds = parseIsoDuration(item.contentDetails?.duration);
+        if (item.id && seconds) out.set(item.id, seconds);
+      }
+    } catch {
+      // skip this chunk: those videos just show no duration
+    }
+  }
+  return out;
 }
