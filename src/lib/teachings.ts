@@ -1,6 +1,9 @@
 // Pure helpers for the /teachings library (blueprint §3.2–3.4). No env, no
 // network, no server-only: safe for client components and node tests.
 
+import type { YouTubeVideo } from "./youtube";
+import type { Series, SeriesGroup, SeriesIcon } from "./teachings-types";
+
 // ── durations and dates
 
 /** ISO 8601 duration → seconds. P0D, empty or invalid → undefined. */
@@ -32,4 +35,224 @@ export function formatTeachingDate(iso: string): string {
     day: "numeric",
     year: "numeric",
   });
+}
+
+// ── series rules
+
+/*
+ * Display order (blueprint §3.3), rule-based so new playlists need no code:
+ * | Rank | Group (rule on the verbatim title)                                   | Order inside the group                         | Icon      |
+ * | 0    | "All Teachings" (synthetic, always first; rendered by the page)     | none                                            | play      |
+ * | 1    | torah: /^torah portions?\b.*?(\d{4})\s*[-–]\s*(\d{4})/i         | start year, newest first                        | book      |
+ * | 2    | teacher: any other title that isn't Spanish                          | role after " - ": Pastor → Associate Pastor →   | mic       |
+ * |      |                                                                      | Deacon → none; ties keep channel order          |           |
+ * | 3    | spanish: /spanish|español|espanol/i                                  | channel order                                   | languages |
+ * Labels are verbatim from YouTube: nothing is mapped, merged or renamed.
+ */
+const TORAH = /^torah portions?\b.*?(\d{4})\s*[-–]\s*(\d{4})/i;
+const SPANISH = /spanish|español|espanol/i;
+
+export type SeriesClass = { group: "torah"; startYear: number } | { group: "spanish" } | { group: "teacher"; roleRank: number };
+
+export function classifySeries(title: string): SeriesClass {
+  const torah = TORAH.exec(title);
+  if (torah) return { group: "torah", startYear: Number(torah[1]) };
+  if (SPANISH.test(title)) return { group: "spanish" };
+  const dash = title.lastIndexOf(" - ");
+  const role = dash >= 0 ? title.slice(dash + 3).trim() : "";
+  // "Associate Pastor" is matched before "Pastor"
+  const roleRank = /associate pastor/i.test(role) ? 1 : /pastor/i.test(role) ? 0 : /deacon/i.test(role) ? 2 : 3;
+  return { group: "teacher", roleRank };
+}
+
+export function iconFor(group: SeriesGroup, topicId?: string): SeriesIcon {
+  if (group === "torah") return "book";
+  if (group === "teacher") return "mic";
+  if (group === "spanish") return "languages";
+  return topicId === "torah-portions" ? "book" : topicId === "feasts" ? "flame" : topicId === "espanol" ? "languages" : "play";
+}
+
+/** lowercase, no diacritics, non-alphanumerics → "-", trimmed */
+export function slugify(title: string): string {
+  return title
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/** slugs for a list of titles; a collision appends -2, -3 */
+export function uniqueSlugs(titles: readonly string[]): string[] {
+  const seen = new Map<string, number>();
+  return titles.map((t) => {
+    const base = slugify(t) || "series";
+    const n = (seen.get(base) ?? 0) + 1;
+    seen.set(base, n);
+    return n === 1 ? base : `${base}-${n}`;
+  });
+}
+
+const DEFAULT_BLURB: Record<SeriesGroup, string> = {
+  torah: "The weekly reading, taught portion by portion.",
+  teacher: "Every teaching in this series, newest first.",
+  spanish: "Enseñanzas en español.",
+  topic: "",
+};
+
+/** the playlist description's first sentence (≤160 chars), else the group's default */
+export function seriesBlurb(description: string | undefined, group: SeriesGroup): string {
+  const text = (description ?? "").replace(/\s+/g, " ").trim();
+  if (!text) return DEFAULT_BLURB[group];
+  const first = /^.*?[.!?](\s|$)/.exec(text)?.[0].trim() ?? text;
+  return first.length > 160 ? `${first.slice(0, 157).trimEnd()}…` : first;
+}
+
+export type PlaylistInput = { id: string; title: string; description?: string; position: number; videoIds: string[] };
+
+/** Playlists → Series in display order, empty playlists dropped. */
+export function orderSeries(list: readonly PlaylistInput[]): Series[] {
+  const visible = list.filter((p) => p.videoIds.length > 0);
+  const rank = (c: SeriesClass) => (c.group === "torah" ? 1 : c.group === "teacher" ? 2 : 3);
+  const sorted = visible
+    .map((p) => ({ p, c: classifySeries(p.title) }))
+    .sort((a, b) => {
+      if (rank(a.c) !== rank(b.c)) return rank(a.c) - rank(b.c);
+      if (a.c.group === "torah" && b.c.group === "torah") return b.c.startYear - a.c.startYear || a.p.position - b.p.position;
+      if (a.c.group === "teacher" && b.c.group === "teacher") return a.c.roleRank - b.c.roleRank || a.p.position - b.p.position;
+      return a.p.position - b.p.position;
+    });
+  const slugs = uniqueSlugs(sorted.map((x) => x.p.title));
+  return sorted.map(({ p, c }, i) => ({
+    id: p.id,
+    slug: slugs[i],
+    title: p.title,
+    description: p.description || undefined,
+    blurb: seriesBlurb(p.description, c.group),
+    group: c.group,
+    icon: iconFor(c.group),
+    videoIds: p.videoIds,
+    count: p.videoIds.length,
+    isPlaylist: true,
+  }));
+}
+
+/**
+ * Featured series (blueprint §3.4): the newest torah series with 3+ videos; else the
+ * newest torah series with any; else the first series in display order.
+ */
+export function pickFeatured(series: readonly Series[]): string | undefined {
+  const torah = series.filter((s) => s.group === "torah" && s.count > 0);
+  return (torah.find((s) => s.count >= 3) ?? torah[0] ?? series[0])?.slug;
+}
+
+// ── fallback buckets (moved verbatim from the old app/teachings/page.tsx)
+
+export const FEAST_WORDS = [
+  "feast",
+  "pesach",
+  "passover",
+  "matzot",
+  "unleavened",
+  "shavuot",
+  "pentecost",
+  "teruah",
+  "trumpets",
+  "yom kippur",
+  "atonement",
+  "sukkot",
+  "tabernacles",
+  "shemini",
+  "hanukkah",
+  "chanukah",
+  "purim",
+  "first fruits",
+  "bikkurim",
+];
+
+// Extra Spanish cues for titles the shared detector in lib/youtube misses
+// (e.g. "Deberían Los Cristianos Seguir Observando Las Fiestas Bíblicas").
+export const SPANISH_WORDS = /\b(deberían|cristianos|fiestas|bíblicas|nuestro|dios|iglesia|enseñanza|porción)\b/i;
+
+export interface Topic {
+  id: string;
+  title: string;
+  blurb: string;
+  videos: YouTubeVideo[];
+}
+
+/**
+ * Group by topic from the title alone. Order matters: Spanish first (a
+ * Spanish Torah teaching belongs with the other Spanish ones), then Torah
+ * portions, then the feasts, and everything else under "More Teachings".
+ */
+export function groupByTopic(videos: YouTubeVideo[]): Topic[] {
+  const topics: Topic[] = [
+    {
+      id: "torah-portions",
+      title: "Torah Portions",
+      blurb: "The weekly reading, taught portion by portion.",
+      videos: [],
+    },
+    {
+      id: "feasts",
+      title: "The Appointed Feasts",
+      blurb: "The moedim of YHVH and what they teach us.",
+      videos: [],
+    },
+    {
+      id: "more",
+      title: "More Teachings",
+      blurb: "Messages and studies beyond the weekly portion.",
+      videos: [],
+    },
+    {
+      id: "espanol",
+      title: "En Español",
+      blurb: "Enseñanzas en español.",
+      videos: [],
+    },
+  ];
+  const [torah, feasts, more, spanish] = topics;
+
+  for (const video of videos) {
+    const lower = video.title.toLowerCase();
+    if (video.isSpanish || SPANISH_WORDS.test(video.title)) spanish.videos.push(video);
+    // Titles that say "Torah Portion" count even when the portion name is
+    // spelled differently from our data (Bereshit vs Bereishit).
+    else if (video.portionHebrewName || lower.includes("torah portion")) torah.videos.push(video);
+    else if (FEAST_WORDS.some((word) => lower.includes(word)))
+      feasts.videos.push(video);
+    else more.videos.push(video);
+  }
+
+  return topics.filter((topic) => topic.videos.length > 0);
+}
+
+/** The fallback buckets as Series (group "topic"). */
+export function topicsToSeries(topics: readonly Topic[]): Series[] {
+  const slugs = uniqueSlugs(topics.map((t) => t.title));
+  return topics.map((t, i) => ({
+    id: t.id,
+    slug: slugs[i],
+    title: t.title,
+    blurb: t.blurb,
+    group: "topic" as const,
+    icon: iconFor("topic", t.id),
+    videoIds: t.videos.map((v) => v.id),
+    count: t.videos.length,
+    isPlaylist: false,
+  }));
+}
+
+// ── search
+
+/** case-, accent- and punctuation-insensitive form for matching */
+export function normalizeForSearch(text: string): string {
+  return text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
 }

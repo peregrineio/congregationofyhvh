@@ -54,3 +54,102 @@ test("getDurations: 120 ids make exactly 3 videos.list calls", async () => {
     globalThis.fetch = realFetch;
   }
 });
+
+// ── series rules (prompt 4)
+import { groupByTopic, orderSeries, pickFeatured, slugify, uniqueSlugs, topicsToSeries, normalizeForSearch } from "./teachings";
+import type { YouTubeVideo } from "./youtube";
+
+const CHANNEL: [string, number][] = [
+  ["Torah Portion 2026-2027", 1],
+  ["Frank Galvan", 3],
+  ["Spanish Teachings", 4],
+  ["Torah Portion 2025-2026", 15],
+  ["Torah Portions 2024-2025", 13],
+  ["Ray Flowers - Associate Pastor", 23],
+  ["Dolen Lene - Deacon", 11],
+  ["Jeremiah Longoria - Deacon", 13],
+  ["Frank Longoria - Pastor", 0],
+];
+const playlists = (overrides: Record<string, number> = {}) =>
+  CHANNEL.map(([title, n], position) => ({
+    id: `PL${position}`,
+    title,
+    position,
+    videoIds: Array.from({ length: overrides[title] ?? n }, (_, i) => `${position}-${i}`),
+  }));
+
+test("display order: torah newest first, teachers by role then channel order, Spanish last; empty hidden", () => {
+  assert.deepEqual(
+    orderSeries(playlists()).map((s) => s.title),
+    [
+      "Torah Portion 2026-2027",
+      "Torah Portion 2025-2026",
+      "Torah Portions 2024-2025",
+      "Ray Flowers - Associate Pastor",
+      "Dolen Lene - Deacon",
+      "Jeremiah Longoria - Deacon",
+      "Frank Galvan",
+      "Spanish Teachings",
+    ],
+  );
+});
+
+test("the Pastor's playlist slots before Ray Flowers once it has a video", () => {
+  const titles = orderSeries(playlists({ "Frank Longoria - Pastor": 1 })).map((s) => s.title);
+  assert.equal(titles.indexOf("Frank Longoria - Pastor"), titles.indexOf("Ray Flowers - Associate Pastor") - 1);
+});
+
+test("featured: newest Torah year with 3+ videos", () => {
+  assert.equal(pickFeatured(orderSeries(playlists())), "torah-portion-2025-2026");
+  assert.equal(pickFeatured(orderSeries(playlists({ "Torah Portion 2026-2027": 3 }))), "torah-portion-2026-2027");
+});
+
+test("titles stay verbatim (no renaming); icons and counts follow the rules", () => {
+  const series = orderSeries(playlists());
+  for (const s of series) assert.ok(CHANNEL.some(([t]) => t === s.title));
+  assert.ok(series.every((s) => s.count === s.videoIds.length));
+  assert.equal(series.find((s) => s.title === "Frank Galvan")?.icon, "mic");
+  assert.equal(series.find((s) => s.title === "Spanish Teachings")?.icon, "languages");
+  assert.equal(series[0].icon, "book");
+  assert.ok(!series.some((s) => /Frankie|Franklin/.test(s.title)));
+});
+
+test("slugs: lowercase, diacritics stripped, collisions get -2", () => {
+  assert.equal(slugify("Ray Flowers - Associate Pastor"), "ray-flowers-associate-pastor");
+  assert.equal(slugify("Enseñanzas en Español"), "ensenanzas-en-espanol");
+  assert.deepEqual(uniqueSlugs(["A b", "a-b", "A B"]), ["a-b", "a-b-2", "a-b-3"]);
+});
+
+test("fallback buckets: groupByTopic behaves as the old page did", () => {
+  const v = (id: string, title: string, extra: Partial<YouTubeVideo> = {}): YouTubeVideo => ({ id, title, published: "2026-01-01T00:00:00Z", url: "", thumbnail: "", isSpanish: false, ...extra });
+  const topics = groupByTopic([
+    v("1", "Torah Portion Re'eh"),
+    v("2", "Bereshit teaching", { portionHebrewName: "Bereishit" }),
+    v("3", "The Feast of Sukkot"),
+    v("4", "Walking in faith"),
+    v("5", "Deberían Los Cristianos Seguir Observando Las Fiestas Bíblicas"),
+    v("6", "Shabbat en español", { isSpanish: true }),
+  ]);
+  assert.deepEqual(
+    topics.map((t) => [t.id, t.videos.map((x) => x.id)]),
+    [
+      ["torah-portions", ["1", "2"]],
+      ["feasts", ["3"]],
+      ["more", ["4"]],
+      ["espanol", ["5", "6"]],
+    ],
+  );
+  assert.deepEqual(
+    topicsToSeries(topics).map((s) => [s.title, s.icon, s.group]),
+    [
+      ["Torah Portions", "book", "topic"],
+      ["The Appointed Feasts", "flame", "topic"],
+      ["More Teachings", "play", "topic"],
+      ["En Español", "languages", "topic"],
+    ],
+  );
+});
+
+test("search normalises case, accents and punctuation", () => {
+  assert.equal(normalizeForSearch("Re'eh — Enseñanza!"), "re eh ensenanza");
+});
