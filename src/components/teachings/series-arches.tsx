@@ -60,14 +60,14 @@ export function SeriesArches({ series, allCount, activeSlug, onSelect }: { serie
                   onSelect(a.slug);
                 }}
                 className={cn(
-                  "arch-frame group relative flex h-[160px] w-[132px] shrink-0 snap-start flex-col items-center justify-end gap-2 border bg-gradient-to-b px-3 pb-5 pt-6 text-center no-underline backdrop-blur-sm transition-[box-shadow,border-color] sm:h-[190px] sm:w-44",
+                  "arch-frame group relative flex h-[172px] w-[144px] shrink-0 snap-start flex-col items-center justify-end gap-1.5 border bg-gradient-to-b px-2.5 pb-5 pt-6 text-center no-underline backdrop-blur-sm transition-[box-shadow,border-color] sm:h-[200px] sm:w-48",
                   active
                     ? "border-yhvh-gold from-[#5a4119]/85 to-warm-black/80 shadow-[0_0_28px_rgba(201,162,39,.55)]"
                     : "border-yhvh-gold/45 from-[#3a2a12]/70 to-warm-black/70 hover:border-yhvh-gold/80",
                 )}
               >
-                <SeriesIcon icon={a.icon} className="size-10 text-yhvh-gold-light sm:size-12" />
-                <span className="line-clamp-2 font-heading text-[15px] leading-tight text-[#FEFDFB] [overflow-wrap:anywhere] sm:text-[17px]">{a.title}</span>
+                <SeriesIcon icon={a.icon} className="size-9 shrink-0 text-yhvh-gold-light sm:size-11" />
+                <span className="font-heading text-[14px] leading-tight text-[#FEFDFB] [overflow-wrap:anywhere] sm:text-[16px]">{a.title}</span>
                 <span className="font-subheading text-[13px] text-white/75">{teachingCount(a.count)}</span>
                 {active ? <span aria-hidden className="absolute -bottom-px left-1/2 h-[2px] w-16 -translate-x-1/2 rounded-full bg-yhvh-gold shadow-[0_0_10px_rgba(201,162,39,.9)]" /> : null}
               </Link>
@@ -78,10 +78,10 @@ export function SeriesArches({ series, allCount, activeSlug, onSelect }: { serie
         {edges.right ? <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-soft-cream/90 to-transparent" /> : null}
         {edges.overflow ? (
           <>
-            <button type="button" aria-label="Scroll series left" disabled={!edges.left} onClick={() => scrollBy(-1)} className="absolute -left-3 top-1/2 hidden size-10 -translate-y-1/2 items-center justify-center rounded-full bg-warm-white text-foreground sacred-shadow disabled:opacity-0 [@media(pointer:fine)]:sm:flex">
+            <button type="button" aria-label="Scroll series left" disabled={!edges.left} onClick={() => scrollBy(-1)} className="absolute -left-12 top-1/2 hidden size-10 -translate-y-1/2 items-center justify-center rounded-full bg-warm-white text-foreground sacred-shadow disabled:opacity-0 [@media(pointer:fine)]:min-[1360px]:flex">
               <ChevronLeft className="size-5" aria-hidden />
             </button>
-            <button type="button" aria-label="Scroll series right" disabled={!edges.right} onClick={() => scrollBy(1)} className="absolute -right-3 top-1/2 hidden size-10 -translate-y-1/2 items-center justify-center rounded-full bg-warm-white text-foreground sacred-shadow disabled:opacity-0 [@media(pointer:fine)]:sm:flex">
+            <button type="button" aria-label="Scroll series right" disabled={!edges.right} onClick={() => scrollBy(1)} className="absolute -right-12 top-1/2 hidden size-10 -translate-y-1/2 items-center justify-center rounded-full bg-warm-white text-foreground sacred-shadow disabled:opacity-0 [@media(pointer:fine)]:min-[1360px]:flex">
               <ChevronRight className="size-5" aria-hidden />
             </button>
           </>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CalendarDays, Clock, Play } from "@/components/icons";
 import { formatTeachingDate } from "@/lib/teachings";
 import type { TeachingVideo } from "@/lib/teachings-types";
@@ -13,13 +13,22 @@ import { cn } from "@/lib/utils";
  */
 export function TeachingCard({ video, listId, className }: { video: TeachingVideo; listId?: string; className?: string }) {
   const [src, setSrc] = useState(video.thumbnail);
+  const img = useRef<HTMLImageElement>(null);
   const href = listId ? `${video.url}&list=${listId}` : video.url;
+  const date = formatTeachingDate(video.publishedAt);
+  // an image that finished loading before hydration (onLoad never ran): check it once
+  useEffect(() => {
+    const el = img.current;
+    if (!el?.complete || el.naturalWidth === 0 || el.naturalWidth > 120) return;
+    const frame = requestAnimationFrame(() => setSrc((s) => (s === video.thumbnailFallback ? s : video.thumbnailFallback)));
+    return () => cancelAnimationFrame(frame);
+  }, [video.thumbnailFallback]);
   return (
     <a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label={`${video.title}, watch on YouTube (opens in a new tab)`}
+      aria-label={`${video.title}, ${date}${video.durationLabel ? `, ${video.durationLabel}` : ""}, watch on YouTube (opens in a new tab)`}
       className={cn(
         "parchment-plate group flex min-w-0 flex-col overflow-hidden rounded-xl text-foreground no-underline transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-[0_18px_44px_-14px_rgba(139,105,20,.35)] focus:outline-none focus-visible:ring-2 focus-visible:ring-yhvh-gold motion-reduce:transition-none motion-reduce:hover:translate-y-0",
         className,
@@ -28,6 +37,7 @@ export function TeachingCard({ video, listId, className }: { video: TeachingVide
       <span className="relative block aspect-video overflow-hidden bg-warm-sand">
         {/* eslint-disable-next-line @next/next/no-img-element -- YouTube thumbnails, with a one-time fallback */}
         <img
+          ref={img}
           src={src}
           alt=""
           loading="lazy"
@@ -48,7 +58,7 @@ export function TeachingCard({ video, listId, className }: { video: TeachingVide
         <span className="mt-auto flex items-center justify-between gap-3 text-sm text-muted-foreground">
           <span className="flex items-center gap-1.5">
             <CalendarDays className="size-4" aria-hidden />
-            {formatTeachingDate(video.publishedAt)}
+            {date}
           </span>
           {video.durationLabel ? (
             <span className="flex items-center gap-1.5 tabular-nums">

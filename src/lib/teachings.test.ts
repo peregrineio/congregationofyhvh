@@ -348,3 +348,18 @@ test("no page-level sideways scroll: both sideways scrollers are positioned (abs
   // 12 one-card pages on a phone = 12 × 44px dots: they must wrap, not widen the page
   assert.ok(readFileSync("src/components/teachings/series-carousel.tsx", "utf8").includes('className="mt-2 flex flex-wrap justify-center"'));
 });
+
+test("carousel dots: at most 5, windowed around the current page", async () => {
+  const { dotWindow } = await import("../components/teachings/series-carousel");
+  assert.deepEqual(dotWindow(0, 4), [0, 1, 2, 3]);
+  assert.deepEqual(dotWindow(0, 12), [0, 1, 2, 3, 4]);
+  assert.deepEqual(dotWindow(6, 12), [4, 5, 6, 7, 8]);
+  assert.deepEqual(dotWindow(11, 12), [7, 8, 9, 10, 11]);
+});
+
+test("a11y: card names include the visible date and duration; arch titles never clamp", () => {
+  const card = readFileSync("src/components/teachings/teaching-card.tsx", "utf8");
+  assert.ok(card.includes("aria-label={`${video.title}, ${date}${video.durationLabel ? `, ${video.durationLabel}` : \"\"}, watch on YouTube (opens in a new tab)`}"));
+  assert.ok(!readFileSync("src/components/teachings/series-arches.tsx", "utf8").includes("line-clamp"));
+  assert.ok(readFileSync("src/components/layout/live-bar.tsx", "utf8").includes("aria-label={`LIVE NOW"));
+});

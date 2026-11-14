@@ -7,6 +7,13 @@ import { cn } from "@/lib/utils";
 import { TeachingCard } from "./teaching-card";
 import { prefersReducedMotion } from "./use-scroll-edges";
 
+/** Which page dots to show: all when ≤5, else a window of 5 around the current page (each dot is a 44px box). */
+export function dotWindow(page: number, pages: number, max = 5): number[] {
+  if (pages <= max) return Array.from({ length: pages }, (_, i) => i);
+  const start = Math.max(0, Math.min(page - Math.floor(max / 2), pages - max));
+  return Array.from({ length: max }, (_, i) => start + i);
+}
+
 /**
  * Featured carousel: native scroll-snap (no library). 3 per view at lg, 2 at sm, one card
  * at ~85% on phones (the next one peeks). Prev/next and dots page by the visible width;
@@ -79,14 +86,14 @@ export function SeriesCarousel({ title, videos, listId }: { title: string; video
       </div>
       {pages > 1 ? (
         <>
-          <button type="button" aria-label="Previous teachings" disabled={page === 0} onClick={() => go(page - 1)} className="absolute -left-5 top-[28%] hidden size-12 items-center justify-center rounded-full bg-warm-white text-foreground sacred-shadow disabled:opacity-40 sm:flex">
+          <button type="button" aria-label="Previous teachings" disabled={page === 0} onClick={() => go(page - 1)} className="absolute -left-14 top-[28%] hidden size-12 items-center justify-center rounded-full bg-warm-white text-foreground sacred-shadow disabled:opacity-40 sm:flex">
             <ChevronLeft className="size-5" aria-hidden />
           </button>
-          <button type="button" aria-label="Next teachings" disabled={page >= pages - 1} onClick={() => go(page + 1)} className="absolute -right-5 top-[28%] hidden size-12 items-center justify-center rounded-full bg-warm-white text-foreground sacred-shadow disabled:opacity-40 sm:flex">
+          <button type="button" aria-label="Next teachings" disabled={page >= pages - 1} onClick={() => go(page + 1)} className="absolute -right-6 top-[28%] hidden size-12 min-[1360px]:-right-14 items-center justify-center rounded-full bg-warm-white text-foreground sacred-shadow disabled:opacity-40 sm:flex">
             <ChevronRight className="size-5" aria-hidden />
           </button>
           <div className="mt-2 flex flex-wrap justify-center">
-            {Array.from({ length: pages }, (_, i) => (
+            {dotWindow(page, pages).map((i) => (
               <button
                 key={i}
                 type="button"
