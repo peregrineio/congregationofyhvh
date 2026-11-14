@@ -153,3 +153,98 @@ test("fallback buckets: groupByTopic behaves as the old page did", () => {
 test("search normalises case, accents and punctuation", () => {
   assert.equal(normalizeForSearch("Re'eh — Enseñanza!"), "re eh ensenanza");
 });
+
+// ── library + fallback chain (prompt 5), mocked fetch
+import { buildTeachingsLibrary } from "./teachings-api";
+
+type Route = (url: URL) => Response | undefined;
+async function withFetch<T>(route: Route, key: string | undefined, run: () => Promise<T>): Promise<T> {
+  const realFetch = globalThis.fetch;
+  const realKey = process.env.YOUTUBE_API_KEY;
+  const realWarn = console.warn;
+  console.warn = () => {};
+  if (key) process.env.YOUTUBE_API_KEY = key;
+  else delete process.env.YOUTUBE_API_KEY;
+  globalThis.fetch = (async (input: string | URL | Request) => route(new URL(String(input))) ?? new Response("", { status: 404 })) as typeof fetch;
+  try {
+    return await run();
+  } finally {
+    globalThis.fetch = realFetch;
+    console.warn = realWarn;
+    if (realKey === undefined) delete process.env.YOUTUBE_API_KEY;
+    else process.env.YOUTUBE_API_KEY = realKey;
+  }
+}
+const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status });
+const item = (id: string, title: string, day: number) => ({
+  snippet: { title, publishedAt: `2026-0${(day % 9) + 1}-10T15:00:00Z`, resourceId: { videoId: id }, thumbnails: {} },
+  contentDetails: { videoId: id, videoPublishedAt: `2026-0${(day % 9) + 1}-10T15:00:00Z` },
+});
+const feed = (n: number) =>
+  `<feed>${Array.from({ length: n }, (_, i) => `<entry><yt:videoId>r${i}</yt:videoId><title>Torah Portion Re'eh ${i}</title><published>2026-08-0${(i % 9) + 1}T15:00:00Z</published></entry>`).join("")}</feed>`;
+
+test("no key → rss (grouped RSS, no durations)", async () => {
+  const lib = await withFetch((u) => (u.hostname === "www.youtube.com" ? new Response(feed(3)) : undefined), undefined, () => buildTeachingsLibrary(undefined));
+  assert.equal(lib.source, "rss");
+  assert.equal(lib.allIds.length, 3);
+  assert.ok(lib.series.every((s) => s.group === "topic"));
+  assert.ok(Object.values(lib.videos).every((v) => v.durationLabel === undefined));
+});
+
+test("quota 403 on playlists → uploads (grouped archive)", async () => {
+  const archive = Array.from({ length: 20 }, (_, i) => item(`u${i}`, `Torah Portion Re'eh ${i}`, i));
+  const lib = await withFetch(
+    (u) => {
+      if (u.pathname.endsWith("/playlists")) return json({ error: "quota" }, 403);
+      if (u.pathname.endsWith("/playlistItems")) return json({ items: archive });
+      if (u.pathname.endsWith("/videos")) return json({ items: [] });
+      return undefined;
+    },
+    "TEST-KEY",
+    () => buildTeachingsLibrary("TEST-KEY"),
+  );
+  assert.equal(lib.source, "uploads");
+  assert.equal(lib.allIds.length, 20);
+});
+
+test("everything empty → none", async () => {
+  const lib = await withFetch((u) => (u.hostname === "www.youtube.com" ? new Response("<feed></feed>") : undefined), undefined, () => buildTeachingsLibrary(undefined));
+  assert.equal(lib.source, "none");
+  assert.deepEqual(lib.series, []);
+});
+
+test("happy path → playlists; a video in two playlists appears once; All = union with uploads", async () => {
+  const lib = await withFetch(
+    (u) => {
+      if (u.pathname.endsWith("/playlists"))
+        return json({
+          items: [
+            { id: "PLa", snippet: { title: "Torah Portion 2025-2026", description: "" }, contentDetails: { itemCount: 2 } },
+            { id: "PLb", snippet: { title: "Ray Flowers - Associate Pastor", description: "Teachings from Ray. More here." }, contentDetails: { itemCount: 2 } },
+            { id: "PLc", snippet: { title: "Frank Longoria - Pastor", description: "" }, contentDetails: { itemCount: 1 } },
+          ],
+        });
+      if (u.pathname.endsWith("/playlistItems")) {
+        const pl = u.searchParams.get("playlistId");
+        if (pl === "PLa") return json({ items: [item("a1", "Re'eh", 1), item("shared", "Shared teaching", 2)] });
+        if (pl === "PLb") return json({ items: [item("shared", "Shared teaching", 2), item("b1", "Walking", 3)] });
+        if (pl === "PLc") return json({ items: [{ snippet: { title: "Private video", resourceId: { videoId: "p" } }, contentDetails: { videoId: "p" } }] });
+        return json({ items: [item("up1", "New upload", 8)] }); // uploads archive (UU…)
+      }
+      if (u.pathname.endsWith("/videos")) return json({ items: (u.searchParams.get("id") ?? "").split(",").map((id) => ({ id, contentDetails: { duration: "PT45M32S" } })) });
+      return undefined;
+    },
+    "TEST-KEY",
+    () => buildTeachingsLibrary("TEST-KEY"),
+  );
+  assert.equal(lib.source, "playlists");
+  assert.deepEqual(lib.series.map((s) => [s.title, s.count]), [
+    ["Torah Portion 2025-2026", 2],
+    ["Ray Flowers - Associate Pastor", 2],
+  ]);
+  assert.equal(lib.allIds.filter((id) => id === "shared").length, 1);
+  assert.deepEqual([...lib.allIds].sort(), ["a1", "b1", "shared", "up1"]);
+  assert.equal(lib.videos.a1.durationLabel, "45:32");
+  assert.equal(lib.featuredSlug, "torah-portion-2025-2026");
+  assert.equal(lib.series[1].blurb, "Teachings from Ray.");
+});

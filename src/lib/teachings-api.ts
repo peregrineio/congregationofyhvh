@@ -4,9 +4,9 @@
 // src/lib/youtube-playlists.ts. Same style as getArchiveVideos() in
 // lib/youtube.ts: bounded pagination, cached fetches, private/deleted dropped.
 
-import { YOUTUBE_CHANNEL_ID } from "./youtube";
-import type { ChannelPlaylist, TeachingVideo } from "./teachings-types";
-import { parseIsoDuration } from "./teachings";
+import { getChannelVideos, getFeedVideos, YOUTUBE_CHANNEL_ID, type PortionName, type YouTubeVideo } from "./youtube";
+import type { ChannelPlaylist, TeachingsLibrary, TeachingVideo } from "./teachings-types";
+import { formatDuration, groupByTopic, orderSeries, parseIsoDuration, pickFeatured, topicsToSeries } from "./teachings";
 
 const API = "https://www.googleapis.com/youtube/v3";
 const CACHE: RequestInit = { next: { revalidate: 3600, tags: ["youtube-playlists"] } };
@@ -127,4 +127,94 @@ export async function getDurations(apiKey: string, ids: readonly string[]): Prom
     }
   }
   return out;
+}
+
+/** An RSS/archive video as a library video (thumbnail tries maxres, then hq on error). */
+function fromChannelVideo(v: YouTubeVideo): TeachingVideo {
+  return {
+    id: v.id,
+    title: v.title,
+    publishedAt: v.published,
+    thumbnail: `https://i.ytimg.com/vi/${v.id}/maxresdefault.jpg`,
+    thumbnailFallback: hqThumbnail(v.id),
+    url: watchUrl(v.id),
+  };
+}
+
+const newestFirst = (videos: Record<string, TeachingVideo>) => (a: string, b: string) =>
+  (videos[b]?.publishedAt ?? "").localeCompare(videos[a]?.publishedAt ?? "");
+
+async function withDurations(apiKey: string | undefined, videos: Record<string, TeachingVideo>) {
+  if (!apiKey) return;
+  try {
+    const durations = await getDurations(apiKey, Object.keys(videos));
+    for (const [id, seconds] of durations) {
+      const v = videos[id];
+      if (v) {
+        v.durationSeconds = seconds;
+        v.durationLabel = formatDuration(seconds);
+      }
+    }
+  } catch {
+    // durations are optional
+  }
+}
+
+/** The grouped fallback (blueprint §3.6): topic buckets over the uploads archive or RSS. */
+async function fromUploads(apiKey: string | undefined, portionNames: readonly PortionName[], reason: string): Promise<TeachingsLibrary> {
+  const archive = apiKey ? await getChannelVideos(portionNames) : await getFeedVideos(portionNames);
+  const fetchedAt = new Date().toISOString();
+  if (archive.length === 0) {
+    console.warn("[teachings] fallback", { source: "none", reason });
+    return { source: "none", series: [], videos: {}, allIds: [], fetchedAt };
+  }
+  // The archive only comes back with more than the feed's 15 when the API answered.
+  const source = apiKey && archive.length > 15 ? "uploads" : "rss";
+  console.warn("[teachings] fallback", { source, reason });
+  const videos: Record<string, TeachingVideo> = {};
+  for (const v of archive) videos[v.id] ??= fromChannelVideo(v);
+  if (source === "uploads") await withDurations(apiKey, videos);
+  const series = topicsToSeries(groupByTopic(archive));
+  return { source, series, videos, allIds: Object.keys(videos).sort(newestFirst(videos)), featuredSlug: pickFeatured(series), fetchedAt };
+}
+
+/**
+ * The whole library. Never throws. With a key: the channel's playlists (count =
+ * playable videos, empty ones dropped) ∪ the uploads archive, deduped, newest first,
+ * with durations. Falls back to grouped uploads, then RSS, then "none" (blueprint §3.6).
+ * The key is a parameter: the server-only caller reads it from the environment.
+ */
+export async function buildTeachingsLibrary(apiKey: string | undefined, portionNames: readonly PortionName[] = []): Promise<TeachingsLibrary> {
+  try {
+    if (!apiKey) return await fromUploads(undefined, portionNames, "no-key");
+
+    let playlists: ChannelPlaylist[];
+    let lists: TeachingVideo[][];
+    try {
+      playlists = await getChannelPlaylists(apiKey);
+      lists = await Promise.all(playlists.map((p) => getPlaylistVideos(apiKey, p.id)));
+    } catch (e) {
+      return await fromUploads(apiKey, portionNames, e instanceof YouTubeApiError ? `api-${e.status}` : "network");
+    }
+
+    const videos: Record<string, TeachingVideo> = {};
+    for (const list of lists) for (const v of list) videos[v.id] ??= v;
+    const series = orderSeries(playlists.map((p, i) => ({ id: p.id, title: p.title, description: p.description, position: p.position, videoIds: lists[i].map((v) => v.id) })));
+    if (series.length === 0) return await fromUploads(apiKey, portionNames, "no-playlists");
+
+    // "All" also holds uploads not in any playlist yet
+    for (const v of await getChannelVideos(portionNames)) videos[v.id] ??= fromChannelVideo(v);
+    await withDurations(apiKey, videos);
+    return {
+      source: "playlists",
+      series,
+      videos,
+      allIds: Object.keys(videos).sort(newestFirst(videos)),
+      featuredSlug: pickFeatured(series),
+      fetchedAt: new Date().toISOString(),
+    };
+  } catch {
+    console.warn("[teachings] fallback", { source: "none", reason: "unexpected" });
+    return { source: "none", series: [], videos: {}, allIds: [], fetchedAt: new Date().toISOString() };
+  }
 }
