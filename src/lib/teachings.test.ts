@@ -343,4 +343,6 @@ test("archive/RSS videos default to hqdefault (always exists), not maxresdefault
 test("no page-level sideways scroll: both sideways scrollers are positioned (absolute children stay clipped)", () => {
   assert.ok(readFileSync("src/components/teachings/series-carousel.tsx", "utf8").includes('className="relative flex snap-x'));
   assert.ok(readFileSync("src/components/teachings/series-arches.tsx", "utf8").includes('className="relative flex snap-x'));
+  // below lg the featured grid's single column must be able to shrink (minmax(0,1fr)), or the carousel widens the page
+  assert.ok(readFileSync("src/components/teachings/featured-series.tsx", "utf8").includes("grid max-w-7xl grid-cols-1 gap-8"));
 });
