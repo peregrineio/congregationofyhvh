@@ -221,7 +221,7 @@ export const faqPatterns: KBEntry[] = [
     ],
     keywords: ["livestream", "live", "stream", "streaming", "online", "watch", "youtube", "video", "videos", "sermon", "sermons", "teachings", "recording"],
     response:
-      `Yes — Shabbat services stream live on our **[YouTube channel](${YOUTUBE_CHANNEL_URL})**, and past teachings are there too. You can also browse them by topic on our **[Teachings page](/teachings)**.\n\nOn the **[Events page](/events)**, each Shabbat links to the teaching for that week's Torah portion.`,
+      `Yes — Shabbat services stream live on our **[YouTube channel](${YOUTUBE_CHANNEL_URL})**, and past teachings are there too. You can also browse them by series on our **[Teachings page](/teachings)**.\n\nOn the **[Events page](/events)**, each Shabbat links to the teaching for that week's Torah portion.`,
     quickReplies: ["Service times", "This week's Torah portion"],
     boostOn: ["/events"],
   },
