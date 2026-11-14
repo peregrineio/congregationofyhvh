@@ -85,7 +85,7 @@ export function SeriesCarousel({ title, videos, listId }: { title: string; video
           <button type="button" aria-label="Next teachings" disabled={page >= pages - 1} onClick={() => go(page + 1)} className="absolute -right-5 top-[28%] hidden size-12 items-center justify-center rounded-full bg-warm-white text-foreground sacred-shadow disabled:opacity-40 sm:flex">
             <ChevronRight className="size-5" aria-hidden />
           </button>
-          <div className="mt-2 flex justify-center">
+          <div className="mt-2 flex flex-wrap justify-center">
             {Array.from({ length: pages }, (_, i) => (
               <button
                 key={i}

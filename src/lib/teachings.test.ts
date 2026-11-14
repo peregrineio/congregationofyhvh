@@ -345,4 +345,6 @@ test("no page-level sideways scroll: both sideways scrollers are positioned (abs
   assert.ok(readFileSync("src/components/teachings/series-arches.tsx", "utf8").includes('className="relative flex snap-x'));
   // below lg the featured grid's single column must be able to shrink (minmax(0,1fr)), or the carousel widens the page
   assert.ok(readFileSync("src/components/teachings/featured-series.tsx", "utf8").includes("grid max-w-7xl grid-cols-1 gap-8"));
+  // 12 one-card pages on a phone = 12 × 44px dots: they must wrap, not widen the page
+  assert.ok(readFileSync("src/components/teachings/series-carousel.tsx", "utf8").includes('className="mt-2 flex flex-wrap justify-center"'));
 });
