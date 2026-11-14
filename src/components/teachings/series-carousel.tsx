@@ -30,7 +30,11 @@ export function SeriesCarousel({ title, videos, listId }: { title: string; video
     const card = el.firstElementChild as HTMLElement | null;
     const perView = card ? Math.max(1, Math.round(el.clientWidth / (card.offsetWidth || el.clientWidth))) : 1;
     setPages(Math.max(1, Math.ceil(videos.length / perView)));
-    setPage(Math.min(Math.round(el.scrollLeft / Math.max(1, el.clientWidth)), Math.ceil(videos.length / perView) - 1));
+    const last = Math.ceil(videos.length / perView) - 1;
+    // at the end of the track it IS the last page (on phones cards are 85% wide, so the
+    // track can't scroll a full page width and rounding would stop one short)
+    const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 2;
+    setPage(atEnd ? last : Math.min(Math.round(el.scrollLeft / Math.max(1, el.clientWidth)), last));
   }, [videos.length]);
 
   useEffect(() => {
@@ -55,7 +59,8 @@ export function SeriesCarousel({ title, videos, listId }: { title: string; video
     const el = track.current;
     if (!el) return;
     const target = Math.max(0, Math.min(pages - 1, n));
-    el.scrollTo({ left: target * el.clientWidth, behavior: prefersReducedMotion() ? "auto" : "smooth" });
+    const left = target === pages - 1 ? el.scrollWidth : target * el.clientWidth;
+    el.scrollTo({ left, behavior: prefersReducedMotion() ? "auto" : "smooth" });
   };
 
   return (
@@ -86,10 +91,10 @@ export function SeriesCarousel({ title, videos, listId }: { title: string; video
       </div>
       {pages > 1 ? (
         <>
-          <button type="button" aria-label="Previous teachings" disabled={page === 0} onClick={() => go(page - 1)} className="absolute -left-14 top-[28%] hidden size-12 items-center justify-center rounded-full bg-warm-white text-foreground sacred-shadow disabled:opacity-40 sm:flex">
+          <button type="button" aria-label="Previous teachings" disabled={page === 0} onClick={() => go(page - 1)} className="absolute left-1 top-[28%] hidden size-12 lg:-left-14 items-center justify-center rounded-full bg-warm-white text-foreground sacred-shadow disabled:opacity-40 sm:flex">
             <ChevronLeft className="size-5" aria-hidden />
           </button>
-          <button type="button" aria-label="Next teachings" disabled={page >= pages - 1} onClick={() => go(page + 1)} className="absolute -right-6 top-[28%] hidden size-12 min-[1360px]:-right-14 items-center justify-center rounded-full bg-warm-white text-foreground sacred-shadow disabled:opacity-40 sm:flex">
+          <button type="button" aria-label="Next teachings" disabled={page >= pages - 1} onClick={() => go(page + 1)} className="absolute right-1 top-[28%] hidden size-12 lg:-right-6 min-[1360px]:-right-14 items-center justify-center rounded-full bg-warm-white text-foreground sacred-shadow disabled:opacity-40 sm:flex">
             <ChevronRight className="size-5" aria-hidden />
           </button>
           <div className="mt-2 flex flex-wrap justify-center">

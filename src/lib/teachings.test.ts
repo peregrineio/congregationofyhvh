@@ -363,3 +363,13 @@ test("a11y: card names include the visible date and duration; arch titles never 
   assert.ok(!readFileSync("src/components/teachings/series-arches.tsx", "utf8").includes("line-clamp"));
   assert.ok(readFileSync("src/components/layout/live-bar.tsx", "utf8").includes("aria-label={`LIVE NOW"));
 });
+
+test("polish: last dot reachable, arrows on-screen below lg, live bar is a status region holding a link", () => {
+  const c = readFileSync("src/components/teachings/series-carousel.tsx", "utf8");
+  assert.ok(c.includes("el.scrollLeft + el.clientWidth >= el.scrollWidth - 2"));
+  assert.ok(c.includes('className="absolute left-1 top-[28%] hidden size-12 lg:-left-14'));
+  assert.ok(c.includes('className="absolute right-1 top-[28%] hidden size-12 lg:-right-6'));
+  const live = readFileSync("src/components/layout/live-bar.tsx", "utf8");
+  assert.ok(live.includes('<div ref={barRef} role="status"'));
+  assert.ok(!/<a[^>]*role="status"/.test(live));
+});

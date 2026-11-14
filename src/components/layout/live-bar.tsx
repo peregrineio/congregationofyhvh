@@ -19,7 +19,7 @@ import { liveHref, useLiveStatus } from "./use-live";
 
 export function LiveBar() {
   const live = useLiveStatus();
-  const barRef = useRef<HTMLAnchorElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
 
   /**
    * Publish the bar's own height on <html> so the fixed header and the page
@@ -62,15 +62,14 @@ export function LiveBar() {
   const href = liveHref(live);
 
   return (
+    // a status region (announced when it appears mid-visit) holding a normal link
+    <div ref={barRef} role="status" className="fixed inset-x-0 top-0 z-[70]">
     <a
-      ref={barRef}
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      // role=status so screen readers announce it when it appears mid-visit
-      role="status"
       aria-label={`LIVE NOW · ${live.title ?? "Shabbat service is streaming"}. Watch on YouTube (opens in a new tab)`}
-      className="group fixed inset-x-0 top-0 z-[70] flex items-center justify-center gap-3 bg-[#7f1d1d] px-4 py-2 text-center text-sm text-white shadow-lg"
+      className="group flex items-center justify-center gap-3 bg-[#7f1d1d] px-4 py-2 text-center text-sm text-white shadow-lg"
     >
       <span className="relative flex h-2.5 w-2.5 shrink-0" aria-hidden>
         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75 motion-reduce:animate-none" />
@@ -89,5 +88,6 @@ export function LiveBar() {
         Watch
       </span>
     </a>
+    </div>
   );
 }
