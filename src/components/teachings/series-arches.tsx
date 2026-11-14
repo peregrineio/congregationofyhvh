@@ -43,7 +43,7 @@ export function SeriesArches({ series, allCount, activeSlug, onSelect }: { serie
           role="region"
           aria-label="Teaching series, scrolls sideways"
           tabIndex={0}
-          className="flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain px-1 pb-4 pt-2 [scrollbar-width:none] focus:outline-none focus-visible:ring-2 focus-visible:ring-yhvh-gold [&::-webkit-scrollbar]:hidden"
+          className="relative flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain px-1 pb-4 pt-2 [scrollbar-width:none] focus:outline-none focus-visible:ring-2 focus-visible:ring-yhvh-gold [&::-webkit-scrollbar]:hidden"
         >
           {arches.map((a) => {
             const active = (a.slug ?? undefined) === activeSlug;

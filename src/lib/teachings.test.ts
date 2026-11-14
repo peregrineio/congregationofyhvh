@@ -1,6 +1,7 @@
 // node --import tsx --test src/lib/teachings.test.ts   (npm test)
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { formatDuration, formatTeachingDate, parseIsoDuration } from "./teachings";
 
 const fmt = (iso: string) => {
@@ -307,4 +308,39 @@ test("TEACHINGS_FORCE_SOURCE is ignored in production", () => {
   assert.equal(forcedSource({ VERCEL_ENV: "preview", TEACHINGS_FORCE_SOURCE: "rss" }), "rss");
   assert.equal(forcedSource({ TEACHINGS_FORCE_SOURCE: "uploads" }), "uploads");
   assert.equal(forcedSource({ TEACHINGS_FORCE_SOURCE: "playlists" }), undefined);
+});
+
+test("thumbnails: the largest listed size, never a guessed maxresdefault", async () => {
+  const { bestThumbnail, getVideoDetails } = await import("./teachings-api");
+  assert.equal(bestThumbnail({ maxres: { url: "M" }, high: { url: "H" } }, "x"), "M");
+  assert.equal(bestThumbnail({ standard: { url: "S" }, high: { url: "H" } }, "x"), "S");
+  assert.equal(bestThumbnail({ medium: { url: "D" } }, "x"), "D");
+  assert.equal(bestThumbnail(undefined, "abc"), "https://i.ytimg.com/vi/abc/hqdefault.jpg");
+  const realFetch = globalThis.fetch;
+  let part = "";
+  globalThis.fetch = (async (input: string | URL | Request) => {
+    const u = new URL(String(input));
+    part = u.searchParams.get("part") ?? "";
+    return new Response(JSON.stringify({ items: [{ id: "v1", snippet: { thumbnails: { high: { url: "H1" } } }, contentDetails: { duration: "PT5M7S" } }, { id: "v2", snippet: { thumbnails: {} }, contentDetails: { duration: "P0D" } }] }));
+  }) as typeof fetch;
+  try {
+    const d = await getVideoDetails("TEST-KEY", ["v1", "v2"]);
+    assert.equal(part, "snippet,contentDetails");
+    assert.deepEqual(d.get("v1"), { seconds: 307, thumbnail: "H1" });
+    assert.equal(d.get("v2")?.seconds, undefined);
+    assert.equal(d.get("v2")?.thumbnail, "https://i.ytimg.com/vi/v2/hqdefault.jpg");
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});
+
+test("archive/RSS videos default to hqdefault (always exists), not maxresdefault", () => {
+  const src = readFileSync("src/lib/teachings-api.ts", "utf8").replace(/\/\/.*$|\/\*[\s\S]*?\*\//gm, "");
+  assert.ok(!src.includes("maxresdefault"));
+  assert.ok(readFileSync("src/components/teachings/teaching-card.tsx", "utf8").includes("naturalWidth <= 120"));
+});
+
+test("no page-level sideways scroll: both sideways scrollers are positioned (absolute children stay clipped)", () => {
+  assert.ok(readFileSync("src/components/teachings/series-carousel.tsx", "utf8").includes('className="relative flex snap-x'));
+  assert.ok(readFileSync("src/components/teachings/series-arches.tsx", "utf8").includes('className="relative flex snap-x'));
 });

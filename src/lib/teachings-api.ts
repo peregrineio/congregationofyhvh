@@ -55,7 +55,16 @@ export async function getChannelPlaylists(apiKey: string): Promise<ChannelPlayli
   return out;
 }
 
-type Thumbs = { maxres?: { url?: string }; high?: { url?: string } };
+type Thumbs = { maxres?: { url?: string }; standard?: { url?: string }; high?: { url?: string }; medium?: { url?: string } };
+
+/**
+ * The largest thumbnail YouTube actually lists for the video (maxres > standard > high >
+ * medium), else hqdefault, which always exists. Never guess maxresdefault.jpg: for videos
+ * without one, i.ytimg answers 404 WITH a 120×90 gray image, so an <img> onError never fires.
+ */
+export function bestThumbnail(thumbs: Thumbs | undefined, id: string): string {
+  return thumbs?.maxres?.url ?? thumbs?.standard?.url ?? thumbs?.high?.url ?? thumbs?.medium?.url ?? hqThumbnail(id);
+}
 
 /** A playlist's playable videos, newest first. At most 10 pages of 50. */
 export async function getPlaylistVideos(apiKey: string, playlistId: string): Promise<TeachingVideo[]> {
@@ -88,7 +97,7 @@ export async function getPlaylistVideos(apiKey: string, playlistId: string): Pro
         id,
         title,
         publishedAt,
-        thumbnail: t?.maxres?.url ?? t?.high?.url ?? hqThumbnail(id),
+        thumbnail: bestThumbnail(t, id),
         thumbnailFallback: hqThumbnail(id),
         url: watchUrl(id),
       });
@@ -105,22 +114,33 @@ export async function getPlaylistVideos(apiKey: string, playlistId: string): Pro
  * card simply hides its clock.
  */
 export async function getDurations(apiKey: string, ids: readonly string[]): Promise<Map<string, number>> {
-  const unique = [...new Set(ids)];
   const out = new Map<string, number>();
+  for (const [id, d] of await getVideoDetails(apiKey, ids)) if (d.seconds) out.set(id, d.seconds);
+  return out;
+}
+
+/**
+ * Duration + best thumbnail per video, via videos.list (snippet,contentDetails), 50 ids per
+ * call, at most 10 calls (still 1 quota unit per call). A failed chunk is skipped.
+ */
+export async function getVideoDetails(apiKey: string, ids: readonly string[]): Promise<Map<string, { seconds?: number; thumbnail?: string }>> {
+  const unique = [...new Set(ids)];
+  const out = new Map<string, { seconds?: number; thumbnail?: string }>();
   for (let i = 0, calls = 0; i < unique.length && calls < 10; i += 50, calls++) {
     const chunk = unique.slice(i, i + 50);
     const url = new URL(`${API}/videos`);
-    url.searchParams.set("part", "contentDetails");
+    url.searchParams.set("part", "snippet,contentDetails");
     url.searchParams.set("id", chunk.join(","));
     url.searchParams.set("maxResults", "50");
     url.searchParams.set("key", apiKey);
     try {
       const res = await fetch(url, CACHE);
       if (!res.ok) continue;
-      const payload = (await res.json()) as { items?: { id?: string; contentDetails?: { duration?: string } }[] };
+      const payload = (await res.json()) as { items?: { id?: string; snippet?: { thumbnails?: Thumbs }; contentDetails?: { duration?: string } }[] };
       for (const item of payload.items ?? []) {
-        const seconds = parseIsoDuration(item.contentDetails?.duration);
-        if (item.id && seconds) out.set(item.id, seconds);
+        if (!item.id) continue;
+        const t = item.snippet?.thumbnails;
+        out.set(item.id, { seconds: parseIsoDuration(item.contentDetails?.duration), thumbnail: t ? bestThumbnail(t, item.id) : undefined });
       }
     } catch {
       // skip this chunk: those videos just show no duration
@@ -135,7 +155,7 @@ function fromChannelVideo(v: YouTubeVideo): TeachingVideo {
     id: v.id,
     title: v.title,
     publishedAt: v.published,
-    thumbnail: `https://i.ytimg.com/vi/${v.id}/maxresdefault.jpg`,
+    thumbnail: hqThumbnail(v.id), // upgraded to the listed best by videos.list when the API answers
     thumbnailFallback: hqThumbnail(v.id),
     url: watchUrl(v.id),
   };
@@ -147,13 +167,15 @@ const newestFirst = (videos: Record<string, TeachingVideo>) => (a: string, b: st
 async function withDurations(apiKey: string | undefined, videos: Record<string, TeachingVideo>) {
   if (!apiKey) return;
   try {
-    const durations = await getDurations(apiKey, Object.keys(videos));
-    for (const [id, seconds] of durations) {
+    const details = await getVideoDetails(apiKey, Object.keys(videos));
+    for (const [id, d] of details) {
       const v = videos[id];
-      if (v) {
-        v.durationSeconds = seconds;
-        v.durationLabel = formatDuration(seconds);
+      if (!v) continue;
+      if (d.seconds) {
+        v.durationSeconds = d.seconds;
+        v.durationLabel = formatDuration(d.seconds);
       }
+      if (d.thumbnail) v.thumbnail = d.thumbnail;
     }
   } catch {
     // durations are optional

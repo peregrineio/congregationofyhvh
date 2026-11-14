@@ -68,7 +68,8 @@ export function SeriesCarousel({ title, videos, listId }: { title: string; video
         }}
         className="rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-yhvh-gold"
       >
-        <div ref={track} className="flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth pb-2 [scrollbar-width:none] motion-reduce:scroll-auto [&::-webkit-scrollbar]:hidden">
+        {/* relative: absolutely positioned descendants (e.g. sr-only labels) stay inside the scroll box, so they never widen the page */}
+        <div ref={track} className="relative flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth pb-2 [scrollbar-width:none] motion-reduce:scroll-auto [&::-webkit-scrollbar]:hidden">
           {videos.map((v) => (
             <div key={v.id} className="flex w-[85%] shrink-0 snap-start sm:w-[calc((100%-1.25rem)/2)] lg:w-[calc((100%-2.5rem)/3)]">
               <TeachingCard video={v} listId={listId} className="w-full" />

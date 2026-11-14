@@ -33,6 +33,8 @@ export function TeachingCard({ video, listId, className }: { video: TeachingVide
           loading="lazy"
           decoding="async"
           onError={() => src !== video.thumbnailFallback && setSrc(video.thumbnailFallback)}
+          // i.ytimg serves a 120×90 gray placeholder (with a 404) for a missing size: treat it as missing
+          onLoad={(e) => e.currentTarget.naturalWidth <= 120 && src !== video.thumbnailFallback && setSrc(video.thumbnailFallback)}
           className="size-full object-cover"
         />
         <span aria-hidden className="absolute inset-0 flex items-center justify-center">
