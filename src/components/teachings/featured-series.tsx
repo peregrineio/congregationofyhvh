@@ -9,13 +9,11 @@ export function FeaturedSeries({ series, videos, onViewAll }: { series: Series; 
   return (
     <section aria-labelledby="featured-title" className="mx-auto mt-10 grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-[300px_minmax(0,1fr)] lg:px-8">
       <div className="min-w-0">
-        <p className="flex items-center gap-3 font-subheading text-xs font-semibold uppercase tracking-[0.3em] text-yhvh-gold-dark">
+        <h2 id="featured-title" className="flex items-center gap-3 font-subheading text-xs font-semibold uppercase tracking-[0.3em] text-yhvh-gold-dark">
           <span aria-hidden className="h-[1.5px] w-7 bg-yhvh-gold" />
           Featured Series
-        </p>
-        <h2 id="featured-title" className="mt-3 font-scripture text-[40px] italic leading-[1.05] text-foreground [overflow-wrap:anywhere] lg:text-[46px]">
-          {series.title}
         </h2>
+        <p className="mt-3 font-scripture text-[40px] italic leading-[1.05] text-foreground [overflow-wrap:anywhere] lg:text-[46px]">{series.title}</p>
         {series.blurb ? <p className="mt-3 font-body text-base leading-relaxed text-warm-gray">{series.blurb}</p> : null}
         <a
           href={`/teachings?series=${series.slug}`}

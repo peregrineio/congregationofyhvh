@@ -69,9 +69,7 @@ export function TeachingsLibraryView({ library, params, actions }: { library: Te
 
       <section ref={grid} aria-labelledby="teachings-grid-title" className="mx-auto mt-14 max-w-7xl scroll-mt-36 px-4 sm:px-6 lg:px-8">
         <div className="border-t border-yhvh-gold/15 pt-10">
-          <span id="teachings-grid-title" className="contents">
-            <SectionRuleHeader title={model.heading} actionLabel="View All Teachings" actionHref="/teachings?view=all" onAction={actions?.showAll} />
-          </span>
+          <SectionRuleHeader id="teachings-grid-title" title={model.heading} actionLabel="View All Teachings" actionHref="/teachings?view=all" onAction={actions?.showAll} />
         </div>
         <p aria-live="polite" className="sr-only">
           {model.ids.length} {model.ids.length === 1 ? "teaching" : "teachings"}
